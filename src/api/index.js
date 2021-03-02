@@ -313,7 +313,7 @@ export function resetclosefuwei(imei, states) {
     url: `/resetclose.action`,
     method: 'GET',
     params: {
-      id,
+      imei,
       states
     }
   })
@@ -428,6 +428,37 @@ export function fracture(did, my_username, st_date, en_date) {
     method: 'GET',
     params: {
       did, my_username, st_date, en_date
+    }
+  })
+}
+//高视达接口---------------------------------------------------------
+//设备管理
+export function getAllDeviceWeb(username, cp, col, state, kw, ls, deviceName, dSid) {
+  return service({
+    url: `/admin/device/getAllDeviceWeb.action`,
+    method: 'GET',
+    params: {
+      username, cp, col, state, kw, ls, deviceName, dSid
+    }
+  })
+}
+//编辑设备
+export function updateDeviceSim(devId, remark, my_username, installLocation) {
+  return service({
+    url: `/admin/device/check/updateDeviceSim.action`,
+    method: 'GET',
+    params: {
+      devId, remark, my_username, installLocation
+    }
+  })
+}
+//删除设备
+export function deleDevice(devId, username) {
+  return service({
+    url: `/admin/device/check/deleDevice.action`,
+    method: 'GET',
+    params: {
+      devId, username
     }
   })
 }

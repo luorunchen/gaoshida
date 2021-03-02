@@ -2,7 +2,7 @@
 module.exports = {
 
   devServer: {
-    proxy: 'http://psy119.cn'
+    proxy: 'http://124.71.11.195'
     // port: 8080, // 端口号配置
     // host: '127.0.0.1',
     // proxy: {

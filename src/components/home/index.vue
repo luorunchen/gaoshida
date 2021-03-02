@@ -11,7 +11,7 @@
         <div class="btnLeft">
           <div class="btnLeftOne"><span>首页</span></div>
           <div class="btnLeftTwo" @click="FireInternetOfThings">
-            <span>消防物联网</span>
+            <span>智慧用电</span>
           </div>
         </div>
       </div>
@@ -23,10 +23,13 @@
         <img src="../../assets/images/juxing3.png" alt="" />
         <div class="btnRight">
           <div class="btnRightOne" @click="FireManagement">
-            <span>消防管理</span>
+            <span>智慧消防</span>
           </div>
           <div class="btnRightTwo" @click="SystemSettings">
             <span>系统设置</span>
+          </div>
+          <div class="btnRightThree">
+            <span>报警声音(开)</span>
           </div>
         </div>
       </div>
@@ -701,7 +704,8 @@ export default {
       push_ProjectRegion(this.utils.userName, "").then((res) => {
         console.log(res, 6666);
         if (res.data.length <= 0) {
-          return this.$message.error("图表数据加载失败");
+          // return this.$message.error("图表数据加载失败");
+          return "";
         }
         let name = [];
         let num = [];
@@ -992,6 +996,12 @@ export default {
             font-weight: 900;
             transform: skewX(25deg);
           }
+        }
+        .btnRightThree {
+          cursor: pointer;
+          margin-left: 51px;
+          line-height: 25px;
+          font-size: 14px;
         }
       }
     }

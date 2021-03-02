@@ -1911,7 +1911,9 @@ export default {
         this.ElecDataList.DevData[0].productNumber,
         this.DeviceHistory[0],
         this.DeviceHistory[1]
-      ).then((res) => {});
+      ).then((res) => {
+        
+      });
     },
     //报警推送
     baojingtuisong() {
@@ -2174,47 +2176,48 @@ export default {
       this.callPoliceList_loading = true;
       this.alarm = alarm;
 
-      switch (this.$route.path) {
-        case "/FireInternetOfThings/electricalFire":
-          break;
-        case "/FireInternetOfThings/FireWaterSystem":
-          this.btnInfo = "消防水系统";
-          break;
-        case "/FireInternetOfThings/FireAlarmSystem":
-          this.btnInfo = "火灾报警系统";
-          break;
-        case "/FireInternetOfThings/KeyParts":
-          this.btnInfo = "重点部位";
-          break;
-        case "/FireInternetOfThings/SmartIndependentSmoke":
-          this.btnInfo = "智慧型独立烟感";
-          break;
-        case "/FireInternetOfThings/GasDetector":
-          this.btnInfo = "燃气探测器";
-          break;
-        case "/FireInternetOfThings/EmergencyManagement":
-          this.btnInfo = "应急处理";
-          break;
-        case "/FireInternetOfThings/IntelligentFireAlarm":
-          this.btnInfo = "智慧型消防报警";
-          break;
-        case "/FireInternetOfThings/FireExtinguisher":
-          this.btnInfo = "灭火器";
-          break;
-        case "/FireInternetOfThings/PowerDetection":
-          this.btnInfo = "电力检测系统";
-          break;
-        case "/FireInternetOfThings/Panorama":
-          this.btnInfo = "设备定位全景图";
-          break;
-      }
+      console.log(123);
+      // switch (this.$route.path) {
+      //   case "/FireInternetOfThings/electricalFire":
+      //     break;
+      //   case "/FireInternetOfThings/FireWaterSystem":
+      //     this.btnInfo = "消防水系统";
+      //     break;
+      //   case "/FireInternetOfThings/FireAlarmSystem":
+      //     this.btnInfo = "火灾报警系统";
+      //     break;
+      //   case "/FireInternetOfThings/KeyParts":
+      //     this.btnInfo = "重点部位";
+      //     break;
+      //   case "/FireInternetOfThings/SmartIndependentSmoke":
+      //     this.btnInfo = "智慧型独立烟感";
+      //     break;
+      //   case "/FireInternetOfThings/GasDetector":
+      //     this.btnInfo = "燃气探测器";
+      //     break;
+      //   case "/FireInternetOfThings/EmergencyManagement":
+      //     this.btnInfo = "应急处理";
+      //     break;
+      //   case "/FireInternetOfThings/IntelligentFireAlarm":
+      //     this.btnInfo = "智慧型消防报警";
+      //     break;
+      //   case "/FireInternetOfThings/FireExtinguisher":
+      //     this.btnInfo = "灭火器";
+      //     break;
+      //   case "/FireInternetOfThings/PowerDetection":
+      //     this.btnInfo = "电力检测系统";
+      //     break;
+      //   case "/FireInternetOfThings/Panorama":
+      //     this.btnInfo = "设备定位全景图";
+      //     break;
+      // }
       getDeviceStatus(
         this.utils.userName,
         this.currentPage4,
         alarm,
         this.pageSize,
         object,
-        type,
+        3,
         this.utils.userName,
         data
       ).then((res) => {
