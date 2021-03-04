@@ -1,49 +1,40 @@
 <template>
-  <div>
-    <div id="dianqiHZ">
-      <div class="title2"></div>
-      <div class="leftWapper">
-        <div class="left_one" ref="leftOne">
-          <p>今日报警项目</p>
-          <div class="title">
-            <ul v-for="(item, index) in baojingNum" :key="index">
-              <li>{{ item }}</li>
-            </ul>
-          </div>
-
-          <ul
-            class="ulList"
-            v-for="(item, index) in DeviceAlarmList"
-            :key="index"
-          >
-            <li @click="callPolice(item.pid)">
-              <span>{{ item.typeName }}</span
-              ><span>共{{ item.value }}条未处理></span>
-            </li>
+  <div id="dianqiHZ">
+    <div class="leftWapper">
+      <div class="left_one" ref="leftOne">
+        <p>今日报警项目</p>
+        <div class="title">
+          <ul v-for="(item, index) in baojingNum" :key="index">
+            <li>{{ item }}</li>
           </ul>
         </div>
-        <div class="left_two">
-          <p>接入电气火灾探测器</p>
 
-          <Translate />
-        </div>
+        <ul
+          class="ulList"
+          v-for="(item, index) in DeviceAlarmList"
+          :key="index"
+        >
+          <li @click="callPolice(item.pid)">
+            <span>{{ item.typeName }}</span
+            ><span>共{{ item.value }}条未处理></span>
+          </li>
+        </ul>
       </div>
-      <PublicPopUps ref="publicPopUps" :pagetype="pagetype" />
-      <SearchTranslate
-        :SElec_DetailElecDevice_List="SElec_DetailElecDevice_List"
-        :pagetype="pagetype"
-      />
+      <div class="left_two">
+        <p>接入电气火灾探测器</p>
+
+        <Translate />
+      </div>
     </div>
+    <SearchTranslate
+      :SElec_DetailElecDevice_List="SElec_DetailElecDevice_List"
+      :pagetype="pagetype"
+    />
   </div>
 </template>
 
 <script>
-import {
-  DeviceAlarm,
-  SElec_DetailElecDevice,
-  DeviceProjectNew,
-} from "@/api/index.js";
-import PublicPopUps from "../translate/publicPopUps.vue";
+import { DeviceAlarm, SElec_DetailElecDevice } from "@/api/index.js";
 import Translate from "../translate/baojingTranslate.vue";
 import SearchTranslate from "../translate/searchTranslate.vue";
 export default {
@@ -53,14 +44,11 @@ export default {
       baojingNum: "",
       DeviceAlarmList: "",
       pagetype: 2,
-
       // DeviceNumList: "",
     };
   },
   mounted() {
     this.DeviceAlarm();
-    this.init();
-    console.log(123);
   },
   methods: {
     callPolice(pid) {
@@ -68,17 +56,7 @@ export default {
         this.SElec_DetailElecDevice_List = res.data;
       });
     },
-    //地图部分
-    init() {
-      this.map = new AMap.Map("dianqiHZ", {
-        center: [116.397428, 39.90923],
-        resizeEnable: true,
-        zoom: 10,
-        mapStyle: "amap://styles/dcb78e5f043e25116ab6bdeaa6813234",
-      });
-      this.map.setZoomAndCenter(4, [116.205467, 39.907761]);
-      this.DeviceProjectNewFun();
-    },
+
     DeviceAlarm() {
       DeviceAlarm(this.utils.userName, 3, 1).then((res) => {
         this.DeviceAlarmList = res.data;
@@ -100,81 +78,15 @@ export default {
         }
       });
     },
-    DeviceProjectNewFun() {
-      // console.log(this.$refs.publicPopUps.initOff());
-      this.loading_map = true;
-      DeviceProjectNew(this.utils.userName, 3, 1).then((res) => {
-        // this.DeviceProjectNewData = res.data.Company;
-        let a = [];
-        let b = [];
-        for (let i = 0; i < res.data.Company.length; i++) {
-          if (res.data.Company[i].style == 1) {
-            b.push(res.data.Company[i]);
-          } else {
-            a.push(res.data.Company[i]);
-          }
-        }
-
-        this.DeviceProjectNewData = [...a, ...b];
-        // console.log(c, "我是aa,b");
-        this.$nextTick(() => {
-          const style = [
-            {
-              url: "https://a.amap.com/jsapi_demos/static/images/mass2.png",
-              anchor: new AMap.Pixel(4, 4),
-              size: new AMap.Size(8, 8),
-            },
-            {
-              url: "https://a.amap.com/jsapi_demos/static/images/mass0.png",
-              anchor: new AMap.Pixel(6, 6),
-              size: new AMap.Size(11, 11),
-            },
-          ];
-          // console.log(this.DeviceProjectNewData, 987987);
-
-          this.mass = new AMap.MassMarks(this.DeviceProjectNewData, {
-            opacity: 0.8,
-            zIndex: 111,
-            cursor: "pointer",
-            style: style,
-          });
-          // this.DeviceProjectNewData = [];
-          const marker = new AMap.Marker({ content: " ", map: this.map });
-          this.mass.setMap(this.map);
-
-          this.loading_map = false;
-          // 保存this
-          var _that = this;
-          //绑定事件模块
-          this.mass.on("click", function (e) {
-            // console.log(e);
-
-            // this.$refs.publicPopUps.initOff();
-
-            _that.$refs.publicPopUps.initOff();
-            _that.$refs.publicPopUps.echart_wapper(e.data.pid);
-          });
-        });
-      });
-    },
   },
   components: {
     Translate,
     SearchTranslate,
-    PublicPopUps,
   },
 };
 </script>
 <style lang='less' scoped>
-.title2 {
-  position: relative;
-  z-index: 999;
-  width: 100%;
-  height: 20px;
-  background-image: linear-gradient(to top, rgba(8, 48, 74, 0.5), #030542);
-}
 #dianqiHZ {
-  height: calc(100vh);
   // /deep/.el-input__inner {
   //   background: #021019;
   //   color: #fff;
@@ -196,7 +108,7 @@ export default {
       height: 450px;
       background-image: url("../../../assets//images/zhengchangbili.png");
 
-      background-size: 100% 450px;
+      background-size: 100% 100%;
       p {
         text-align: center;
         line-height: 70px;

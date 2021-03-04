@@ -105,12 +105,14 @@ export default {
         console.log(res);
         if (res.data.status === true) {
           var role = res.data.role[0]; //权限
-
+          // console.log(this.utils.userName, 666);
           sessionStorage.setItem("userName", username);
           sessionStorage.setItem("role", res.data.role[0]);
           sessionStorage.setItem("new_role", res.data.new_role);
           sessionStorage.setItem("region", res.data.region);
           sessionStorage.setItem("power", res.data.power);
+          this.utils.userName = username;
+          // console.log(this.utils.userName, 666);
           this.$router.push({ path: "/" });
           return this.$message({
             showClose: true,

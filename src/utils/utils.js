@@ -1,5 +1,6 @@
 
-let userName = sessionStorage.getItem('userName')
+let userName = window.sessionStorage.getItem('userName')
+// console.log(userName)
 // console.log()
 class PublicMethods {
   constructor() {

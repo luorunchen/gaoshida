@@ -442,6 +442,16 @@ export function getAllDeviceWeb(username, cp, col, state, kw, ls, deviceName, dS
     }
   })
 }
+//项目管理
+export function getAllProjecForState(username, cp, col, state, kw, ls, pname) {
+  return service({
+    url: `/admin/project/getAllProjecForState.action`,
+    method: 'GET',
+    params: {
+      username, cp, col, state, kw, ls, pname
+    }
+  })
+}
 //编辑设备
 export function updateDeviceSim(devId, remark, my_username, installLocation) {
   return service({
@@ -459,6 +469,66 @@ export function deleDevice(devId, username) {
     method: 'GET',
     params: {
       devId, username
+    }
+  })
+}
+//删除项目
+export function deleProject(devId, username) {
+  return service({
+    url: `/admin/project/check/deleProject.action`,
+    method: 'GET',
+    params: {
+      devId, username
+    }
+  })
+}
+//获取消防员/责任人数据
+export function getLegalFireMan(state, object) {
+  return service({
+    url: `/getLegalFireMan.action`,
+    method: 'GET',
+    params: {
+      state, object
+    }
+  })
+}
+//删除消防员/责任人数据
+export function deletegalFireMan(pid) {
+  return service({
+    url: `/admin/project/check/deletegalFireMan.action`,
+    method: 'GET',
+    params: {
+      pid
+    }
+  })
+}
+//新增设备
+export function addDevice(projName, devSignature, username, installLocation, long_lat, devtype, device_name, place, superiorEquipme, loopNumber, devId, devRemark, sms) {
+  return service({
+    url: `/admin/device/check/addDevice.action`,
+    method: 'GET',
+    params: {
+      projName, devSignature, username, installLocation, long_lat, devtype, device_name, place, superiorEquipme, loopNumber, devId, devRemark, sms
+    }
+  })
+}
+//新增人员
+export function addLegalFireMan(state, fname, username, fphone, tel, long_lat, long_latbai, ftelephone) {
+  return service({
+    url: `/admin/project/check/addLegalFireMan.action`,
+    method: 'GET',
+    params: {
+      state, fname, username, fphone, tel, long_lat, long_latbai, ftelephone
+    }
+  })
+}
+//新增项目
+export function addProject(username, projName, projLocation, fireGuardId, legalPersonId, projRemark, long_lat, placetype, code, gridmanId, street_charge) {
+  return service({
+    url: `/admin/project/check/addProject.action`,
+    method: 'GET',
+    params: {
+      username, projName, projLocation, fireGuardId, legalPersonId, projRemark, long_lat, placetype, code, gridmanId, street_charge
     }
   })
 }

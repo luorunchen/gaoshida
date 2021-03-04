@@ -2251,7 +2251,15 @@ export default {
         this.$forceUpdate();
       });
     },
-
+    //设备历史
+    deviceHistory() {
+      console.log(this.DeviceHistory);
+      getHistoryFault(
+        this.ElecDataList.DevData[0].productNumber,
+        this.DeviceHistory[0],
+        this.DeviceHistory[1]
+      ).then((res) => {});
+    },
     //报警推送
     baojingtuisong() {
       console.log(this.checkList);
@@ -2311,15 +2319,6 @@ export default {
           alert("参数设置失败");
         }
       });
-    },
-    //设备历史
-    deviceHistory() {
-      // console.log(this.DeviceHistory);
-      getHistoryFault(
-        this.ElecDataList.DevData[0].productNumber,
-        this.DeviceHistory[0],
-        this.DeviceHistory[1]
-      ).then((res) => {});
     },
     //提交处置情况
     management() {
@@ -3020,10 +3019,10 @@ export default {
           if (role == "1000" || power.indexOf("10003003") != -1) {
             resetclose(this.ElecDataList.DevData[0].productNumber, 0).then(
               (res) => {
-                if (res.data.message == "请求成功") {
-                  this.$message.success(res.data.message);
+                if (res.message == "请求成功") {
+                  this.$message.success(res.message);
                 } else {
-                  this.$message.error(res.data.message);
+                  this.$message.error(res.message);
                 }
               }
             );
@@ -3040,10 +3039,10 @@ export default {
               this.ElecDataList.DevData[0].productNumber,
               "shutdown"
             ).then((res) => {
-              if (res.data.message == "请求成功") {
-                this.$message.success("远程开机成功");
+              if (res.message == "请求成功") {
+                alert("远程开机成功");
               } else {
-                this.$message.error("请稍后重试");
+                alert("请稍后重试");
               }
             });
             break;
@@ -3057,10 +3056,10 @@ export default {
               this.ElecDataList.DevData[0].productNumber,
               "startup"
             ).then((res) => {
-              if (res.data.message == "请求成功") {
-                this.$message.success("远程关机成功");
+              if (res.message == "请求成功") {
+                alert("远程开机成功");
               } else {
-                this.$message.error("请稍后重试");
+                alert("请稍后重试");
               }
             });
             break;
@@ -3075,10 +3074,10 @@ export default {
               this.ElecDataList.DevData[0].productNumber,
               "voiceon"
             ).then((res) => {
-              if (res.data.message == "请求成功") {
-                this.$message.success("开启蜂鸣器成功");
+              if (res.message == "请求成功") {
+                alert("开启蜂鸣器成功");
               } else {
-                this.$message.error("请稍后重试");
+                alert("请稍后重试");
               }
             });
             break;
@@ -3093,10 +3092,10 @@ export default {
               this.ElecDataList.DevData[0].productNumber,
               "voiceoff"
             ).then((res) => {
-              if (res.data.message == "请求成功") {
-                this.$message.success("关闭蜂鸣器成功");
+              if (res.message == "请求成功") {
+                alert("开启蜂鸣器成功");
               } else {
-                this.$message.error("请稍后重试");
+                alert("请稍后重试");
               }
             });
             break;
@@ -3109,10 +3108,10 @@ export default {
           if (role == "1000" || power.indexOf("10003001") != -1) {
             resetclose(this.ElecDataList.DevData[0].productNumber, 2).then(
               (res) => {
-                if (res.data.message == "请求成功") {
-                  this.$message.success("远程消音成功");
+                if (res.message == "请求成功") {
+                  alert("远程消音成功");
                 } else {
-                  this.$message.error("远程消音失败");
+                  alert("远程消音失败");
                 }
               }
             );
@@ -3128,10 +3127,10 @@ export default {
               this.ElecDataList.DevData[0].productNumber,
               "openflow"
             ).then((res) => {
-              if (res.data.message == "请求成功") {
-                this.$message.success("开启流量成功");
+              if (res.message == "请求成功") {
+                alert("开启流量成功");
               } else {
-                this.$message.error("请稍后重试");
+                alert("请稍后重试");
               }
             });
             break;
@@ -3145,9 +3144,9 @@ export default {
             resetclosefuwei(this.ElecDataList.DevData[0].productNumber, 2).then(
               (res) => {
                 if (res.status == "1") {
-                  this.$message.success(res.data.message);
+                  this.$message.success(res.message);
                 } else {
-                  this.$message.error(res.data.message);
+                  this.$message.error(res.message);
                 }
               }
             );
@@ -3199,7 +3198,7 @@ export default {
               this.ElecDataList.DevData[0].productNumber,
               this.baoxiandanhao
             ).then((res) => {
-              if (res.data.message == "请求成功") {
+              if (res.message == "请求成功") {
                 alert("下发保险单号成功");
               } else {
                 this.$message.error("请稍后重试");
