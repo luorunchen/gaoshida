@@ -123,7 +123,7 @@ const routes = [
 const router = new VueRouter({
   routes,
   // mode: 'history',
-  // base: '/lingdong1',
+  base: '/GaoShiDa1',
 })
 router.beforeEach((to, from, next) => {
   let token = sessionStorage.getItem("userName");

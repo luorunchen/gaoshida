@@ -17,9 +17,9 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" >查询</el-button>
+        <el-button type="primary" @click="getAllProjecForStateFun(10,1)">查询</el-button>
 
-        <el-button type="primary" @click="addNewOpenFun">新增项目 </el-button>
+        <el-button type="primary" @click="addNewOpenFun('新增')">新增项目 </el-button>
         <el-button type="primary" @click="deletFun"
           >删除责任人和防火员</el-button
         >
@@ -106,7 +106,7 @@
             v-model="mapInfo.huilu"
             filterable
             placeholder="请选择"
-            @change="setq"
+            @change="setq($event,'防火员')"
             :filter-method="filter_method"
           >
             <el-option
@@ -137,7 +137,7 @@
             filterable
             placeholder="请选择"
             :loading="loading"
-            @change="setq"
+            @change="setq($event,'责任人')"
             :filter-method="filter_method"
           >
             <el-option
@@ -170,7 +170,7 @@
             v-model="mapInfo.xintiao"
             filterable
             placeholder="请选择"
-            @change="setq"
+            @change="setq($event,'街道')"
             :filter-method="filter_method"
           >
             <el-option
@@ -204,7 +204,7 @@
             v-model="mapInfo.zhuche"
             filterable
             placeholder="请选择"
-            @change="setq"
+            @change="setq($event,'网格员')"
             :filter-method="filter_method"
           >
             <el-option
@@ -385,6 +385,7 @@ import {
   deleDevice,
   deletegalFireMan,
   addDevice,
+  newUpdateProjectSim,
 } from "@/api/index.js";
 export default {
   data() {
@@ -402,7 +403,15 @@ export default {
       total: 0,
       currentPage4: 1,
       handleSizeChangeValue: 10,
-      mapInfo: {},
+      mapInfo: {
+        name: "",
+        zeRenRen: "",
+        zeRenRenPhone: "",
+        wangGeYuan: "",
+        wangGeYuanPhone: "",
+        jieDao: "",
+        jieDaoPhone: "",
+      },
       options: [],
       shebeiListValue: "",
       shebeiList: [
@@ -503,33 +512,69 @@ export default {
     },
     // 添加项目函数
     addProjectFun() {
-      addProject(
-        this.utils.userName,
-        this.mapInfo.name, //项目名称
-        this.mapInfo.address, //项目地址
-        this.mapInfo.huilu, //防火员
-        this.mapInfo.shebei, //责任人
-        this.mapInfo.remak, //备注
-        this.lanlat,
-        this.mapInfo.type, //应用场所
-        this.mapInfo.xintiao, //街道
-        this.mapInfo.zhuche, //网格员
-        this.mapInfo.xintiao
-      ).then(
-        (res) => {
-          if (res.data.list[0].status == "true") {
-            this.$message.success("添加成功");
-          } else {
-            this.$message.error(res.data.list[0].mess);
+      if (this.mapInfo.newType == "新增") {
+        addProject(
+          this.utils.userName,
+          this.mapInfo.name, //项目名称
+          this.mapInfo.address, //项目地址
+          this.mapInfo.huilu, //防火员
+          this.mapInfo.shebei, //责任人
+          this.mapInfo.remak, //备注
+          this.lanlat,
+          this.mapInfo.type, //应用场所
+          this.mapInfo.xintiao, //街道
+          this.mapInfo.zhuche, //网格员
+          this.mapInfo.xintiao
+        ).then(
+          (res) => {
+            if (res.data.list[0].status == "true") {
+              this.$message.success("添加成功");
+            } else {
+              this.$message.error(res.data.list[0].mess);
+            }
+          },
+          (rej) => {
+            this.$message.error("请稍后重试或联系管理员");
           }
-        },
-        (rej) => {
-          this.$message.error("添加失败");
-        }
-      );
+        );
+      } else {
+        // this.mapInfo.name = "";
+
+        newUpdateProjectSim(
+          this.mapInfo.pid,
+          this.mapInfo.address,
+          this.utils.userName,
+          this.mapInfo.huilu,
+          this.mapInfo.zeRenRen,
+          this.mapInfo.zeRenRenPhone,
+          this.mapInfo.lanlat,
+          this.mapInfo.name,
+          this.mapInfo.wangGeYuan,
+          this.mapInfo.wangGeYuanPhone,
+          this.mapInfo.jieDao,
+          this.mapInfo.jieDaoPhone,
+          this.mapInfo.lanlat
+        ).then(
+          (res) => {
+            if (res.data.status == "true") {
+              this.$message.success("添加成功");
+            } else {
+              this.$message.error(res.data.mess);
+            }
+          },
+          (rej) => {
+            this.$message.error("请稍后重试或联系管理员");
+          }
+        );
+        this.$forceUpdate();
+      }
+      // if(this.mapInfo)
+      // console.log(this.mapInfo);
     },
     //添加人员打开弹窗
-    addNewOpenFun() {
+    addNewOpenFun(type) {
+      //判断新增还是编辑
+      this.mapInfo.newType = type;
       this.dialogVisible = true;
       this.mapInfo = [];
       this.mapFun();
@@ -637,8 +682,34 @@ export default {
           });
         });
     },
-    setq(value) {
-      console.log(value);
+    setq(value, name) {
+      // console.log(value, name);
+      let obj = {};
+      obj = this.options.find((item) => {
+        // console.log(item);
+        return item.pid == value;
+      });
+      if (name == "责任人") {
+        this.mapInfo.zeRenRen = obj.user_name;
+        this.mapInfo.zeRenRenPhone = obj.phone;
+      }
+      if (name == "防火员") {
+        this.mapInfo.fangHuoYuan = obj.user_name;
+        this.mapInfo.fangHuoYuanPhone = obj.phone;
+      }
+      if (name == "街道") {
+        this.mapInfo.jieDao = obj.user_name;
+        this.mapInfo.jieDao = obj.phone;
+      }
+      if (name == "网格员") {
+        this.mapInfo.wangGeYuan = obj.user_name;
+        this.mapInfo.wangGeYuanPhone = obj.phone;
+      }
+
+      // let getName = "";
+      // getName = obj.locationName;
+      // this.mapInfo
+      console.log(obj.phone);
 
       this.$forceUpdate();
     },
@@ -674,6 +745,7 @@ export default {
     // 编辑弹窗点击函数
     bj_map(data, index) {
       this.mapInfo.name = this.getAllProjecForState_list[index].name;
+      this.mapInfo.pid = this.getAllProjecForState_list[index].pid;
       this.mapInfo.type = this.getAllProjecForState_list[index].dSName;
       this.mapInfo.huilu =
         this.getAllProjecForState_list[index].fireman +
@@ -689,6 +761,12 @@ export default {
       this.mapInfo.changshan = this.getAllProjecForState_list[index].dVName;
       this.mapInfo.remak = this.getAllProjecForState_list[index].remark;
       this.devID = data;
+
+      this.mapInfo.zeRenRen = this.getAllProjecForState_list[index].legalman;
+      this.mapInfo.zeRenRenPhone = this.getAllProjecForState_list[
+        index
+      ].legalmanPhone;
+
       this.mapFun();
     },
     mapFun() {

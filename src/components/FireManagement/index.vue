@@ -70,11 +70,11 @@
         </div>
         <div
           :class="
-            btnInfo == '烟雾火灾报警' ? 'infoBtn infoBtnClick' : 'infoBtn'
+            btnInfo == '烟雾火灾预警' ? 'infoBtn infoBtnClick' : 'infoBtn'
           "
-          @click="getInfo('烟雾火灾报警')"
+          @click="getInfo('烟雾火灾预警')"
         >
-          <p>烟雾火灾报警</p>
+          <p>烟雾火灾预警</p>
         </div>
         <div
           :class="btnInfo == '短路预警' ? 'infoBtn infoBtnClick' : 'infoBtn'"
@@ -97,16 +97,48 @@
       <template v-if="this.btnInfo == '设备管理'">
         <SheBeiGuanLi />
       </template>
-      <template v-if="this.btnInfo == '单位管理'"> </template>
-      <template v-if="this.btnInfo == '消防新闻'"> </template>
+      <template v-if="this.btnInfo == '单位管理'"> <DanWeiGuanLi /> </template>
+      <template v-if="this.btnInfo == '报警故障'">
+        <BaoJingGuZhang />
+      </template>
+      <template v-if="this.btnInfo == '用电规划'">
+        <YongDianGuiHua />
+      </template>
+      <template v-if="this.btnInfo == '功率管理'">
+        <GongLvGuanLi />
+      </template>
+      <template v-if="this.btnInfo == '电量统计'">
+        <DianLiangTongJi />
+      </template>
+      <template v-if="this.btnInfo == '线路老化预警'">
+        <XianLvLaoHuaYuJing />
+      </template>
+      <template v-if="this.btnInfo == '烟雾火灾预警'">
+        <YanWuHuoZaiYuJing />
+      </template>
+      <template v-if="this.btnInfo == '短路预警'">
+        <DuanLvYuJing />
+      </template>
+      <template v-if="this.btnInfo == '漏电预警'">
+        <LouDianYuJing />
+      </template>
     </div>
   </div>
 </template>
 
 
 <script>
+import BaoJingGuZhang from "./BaoJingGuZhang";
+import DanWeiGuanLi from "./DanWeiGuanLi";
 import XiangMuGuanLi from "./xiangmuguanli/xiangmuguanli";
 import SheBeiGuanLi from "./SheBeiGuanLi";
+import YongDianGuiHua from "./YongDianGuiHua";
+import GongLvGuanLi from "./GongLvGuanLi";
+import XianLvLaoHuaYuJing from "./XianLvLaoHuaYuJing";
+import DianLiangTongJi from "./DianLiangTongJi";
+import YanWuHuoZaiYuJing from "./YanWuHuoZaiYuJing";
+import DuanLvYuJing from "./DuanLvYuJing";
+import LouDianYuJing from "./LouDianYuJing";
 export default {
   data() {
     return {
@@ -140,6 +172,15 @@ export default {
   components: {
     XiangMuGuanLi,
     SheBeiGuanLi,
+    BaoJingGuZhang,
+    DanWeiGuanLi,
+    YongDianGuiHua,
+    GongLvGuanLi,
+    DianLiangTongJi,
+    XianLvLaoHuaYuJing,
+    YanWuHuoZaiYuJing,
+    DuanLvYuJing,
+    LouDianYuJing,
   },
   mounted() {
     if (window.name == "") {

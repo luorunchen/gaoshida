@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="title">
+    <div class="title" v-if="this.$route.name != 'FireManagement'">
       <ul v-for="(item, index) in deviceNum" :key="index">
         <li>{{ item }}</li>
       </ul>
@@ -54,7 +54,7 @@
       </li>
     </ul>
 
-    <ul class="ulList" v-else>
+    <ul class="ulList" v-else-if="this.$route.name != 'FireManagement'">
       <li @click="(dialogVisible = true), callPolice('')">
         <span>报警</span
         ><span style="color: #f9387f">{{ DeviceNumList.alarm }}></span>
@@ -2174,7 +2174,7 @@ export default {
       this.callPoliceList_loading = true;
       this.alarm = alarm;
 
-    let type;
+      let type;
       switch (this.$route.path) {
         case "/FireInternetOfThings/electricalFire":
           // this.btnInfo = "电气火灾隐患";
@@ -2336,6 +2336,7 @@ export default {
     },
     // 查看echart图片函数
     see(devId) {
+      this.innerVisible = true;
       this.callPoliceList_loading = true;
       //清空处置情况
       this.managementInput = "";

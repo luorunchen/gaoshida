@@ -532,3 +532,65 @@ export function addProject(username, projName, projLocation, fireGuardId, legalP
     }
   })
 }
+//新增项目
+export function newUpdateProjectSim(pid, projLocation, userName, userTel, resPeople, resTel, long_lat, projName, gridmanname, gridman, street_chargenanem, street_charge, long_latbai) {
+  return service({
+    url: `/admin/project/check/newUpdateProjectSim.action`,
+    method: 'GET',
+    params: {
+      pid, projLocation, userName, userTel, resPeople, resTel, long_lat, projName, gridmanname, gridman, street_chargenanem, street_charge, long_latbai
+    }
+  })
+}
+//新增项目
+export function getAllAlarmOrFault(username, type, proName, imei) {
+  return service({
+    url: `/getAllAlarmOrFault.action`,
+    method: 'GET',
+    params: {
+      username, type, proName, imei
+    }
+  })
+}
+//单位管理信息获取
+export function getProvince(username, otherParam, code) {
+  return service({
+    url: `/region/getProvince.action`,
+    method: 'GET',
+    params: {
+      username, otherParam, code
+    }
+  })
+}
+//单位管理信息获取
+export function getRegionList(username, pageSize, pno, region) {
+  return service({
+    url: `/region/getRegionList.action`,
+    method: 'GET',
+    params: {
+      username, pno, pageSize, region
+    }
+  })
+}
+//单位管理信息获取
+export function findRegion(username, region, pname) {
+  return service({
+    url: `region/findRegion.action`,
+    method: 'GET',
+    params: {
+      username, region, pname
+    }
+  })
+}
+//功率管理
+export function setPower(maxPower, minPower, devSignature) {
+  return service({
+    url: `setPower.action`,
+    method: 'GET',
+    params: {
+      maxPower, minPower, devSignature
+    }
+  })
+}
+
+

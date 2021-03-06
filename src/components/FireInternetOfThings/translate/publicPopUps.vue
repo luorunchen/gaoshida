@@ -26,7 +26,8 @@
                   this.$route.name == 'electricalFire' ||
                   this.$route.name == 'EmergencyManagement' ||
                   this.$route.name == 'PowerDetection' ||
-                  this.$route.name == 'Panorama'
+                  this.$route.name == 'Panorama' ||
+                  this.$route.name == 'FireManagement'
                 "
               >
                 <div class="scroll_wapper">
@@ -2541,7 +2542,7 @@ export default {
     // 外部弹窗echart
     echart_wapper(data) {
       this.loading = true;
-
+      this.innerVisible = true;
       // console.log(data)
       // const type = 2;
       this.equipmentColor = "onLine";

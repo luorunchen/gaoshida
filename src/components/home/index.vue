@@ -191,6 +191,10 @@
         <div class="fourEchart"></div>
       </div>
     </div>
+    <div class="center">
+      <p>电量统计图</p>
+      <div class="gaoshidaEchart"></div>
+    </div>
     <!-- RIGHT信息 -->
     <div class="infoRight">
       <div class="one">
@@ -400,6 +404,50 @@ export default {
       this.$refs[formName].resetFields();
     },
     drawLine() {
+      let gaoshida = this.$echarts.init(
+        document.querySelector(".gaoshidaEchart")
+      );
+      gaoshida.setOption({
+        xAxis: {
+          type: "category",
+          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+          axisLine: {
+            lineStyle: {
+              color: "#fff",
+            },
+          },
+        },
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            type: "cross",
+            label: {
+              backgroundColor: "#6a7985",
+            },
+          },
+        },
+        yAxis: {
+          type: "value",
+          axisLine: {
+            lineStyle: {
+              color: "#fff",
+            },
+          },
+        },
+        grid: {
+          top: "3%",
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true,
+        },
+        series: [
+          {
+            data: [150, 230, 224, 218, 135, 147, 260],
+            type: "line",
+          },
+        ],
+      });
       // 基于准备好的dom，初始化echarts实例
       let myChart = this.$echarts.init(document.querySelector(".twoEchart"));
       push_DeviceData(this.utils.userName, "").then((res) => {
@@ -1190,6 +1238,26 @@ export default {
       .fourEchart {
         height: 180px;
       }
+    }
+  }
+  .center {
+    position: absolute;
+    z-index: 9999999999;
+    left: 400px;
+    width: 58%;
+    bottom: 30px;
+    height: 250px;
+    // background: #fff;
+    background-image: url("../../assets/images/gaoshida.png");
+    background-size: 100% 100%;
+    p {
+      text-align: center;
+      line-height: 50px;
+      font-size: 18px;
+      color: #fff;
+    }
+    .gaoshidaEchart {
+      height: 200px;
     }
   }
   .infoRight {
