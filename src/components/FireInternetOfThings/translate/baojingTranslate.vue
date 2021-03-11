@@ -1,6 +1,9 @@
 <template>
   <div id="app">
-    <div class="title" v-if="this.$route.name != 'FireManagement'">
+    <div
+      class="title"
+      v-if="this.$route.name != 'FireManagement' || this.name == '电气火灾'"
+    >
       <ul v-for="(item, index) in deviceNum" :key="index">
         <li>{{ item }}</li>
       </ul>
@@ -54,6 +57,19 @@
       </li>
     </ul>
 
+    <ul class="ulList" v-else-if="this.name == '电气火灾'">
+      <li @click="(dialogVisible = true), callPolice(''), fatherMethod('1')">
+        <span>报警</span
+        ><span style="color: #f9387f">{{ DeviceNumList.alarm }}></span>
+      </li>
+      <li @click="(onlineVisible = true), online('', 1), fatherMethod('2')">
+        <span>在线</span><span>{{ DeviceNumList.online }}></span>
+      </li>
+      <li @click="(offlineVisible = true), online('', 0), fatherMethod('3')">
+        <span>离线</span
+        ><span style="color: #ffff00">{{ DeviceNumList.offline }}></span>
+      </li>
+    </ul>
     <ul class="ulList" v-else-if="this.$route.name != 'FireManagement'">
       <li @click="(dialogVisible = true), callPolice('')">
         <span>报警</span
@@ -279,7 +295,13 @@
           </el-table-column>
           <el-table-column prop="regdate" label="心跳时间"> </el-table-column>
           <el-table-column prop="address" label="操作">
-            <span @click="innerVisible = true" class="chakan">查看</span>
+            <template slot-scope="scope">
+              <span
+                @click="(innerVisible = true), see(scope.row.devId)"
+                class="chakan"
+                >查看</span
+              >
+            </template>
           </el-table-column>
         </el-table>
       </template>
@@ -359,7 +381,13 @@
           </el-table-column>
           <el-table-column prop="regdate" label="心跳时间"> </el-table-column>
           <el-table-column prop="address" label="操作">
-            <span @click="innerVisible = true" class="chakan">查看</span>
+            <template slot-scope="scope">
+              <span
+                @click="(innerVisible = true), see(scope.row.devId)"
+                class="chakan"
+                >查看</span
+              >
+            </template>
           </el-table-column>
         </el-table>
       </template>
@@ -459,8 +487,186 @@
 
         <div class="shebeiEcharts">
           <template
-            v-if="this.ElecDataList_typeName != ('离线' || '正常' || '')"
+            v-if="
+              this.ElecDataList_typeName == '正常' ||
+              this.ElecDataList_typeName == '离线' ||
+              this.ElecDataList_typeName == ''
+            "
           >
+            <el-row
+              :gutter="20"
+              v-for="(item, index) in getDeviceByDevIdList.mess2"
+              :key="index"
+            >
+              <el-col :span="8"
+                ><div class="grid-content bg-purple">
+                  <div class="imgWapper">
+                    <el-row>
+                      <el-col :span="6">
+                        <div style="height: 90px">
+                          <img
+                            src="../../../assets/images/dianliu.png"
+                            width="35px"
+                            height="35px"
+                          />
+                          <p>{{ shengyu_loudian.oneAlarm }}A</p>
+                          <p>{{ shengyu_loudian.oneDianLiu }}A</p>
+                        </div>
+                      </el-col>
+                      <el-col :span="6">
+                        <div style="height: 90px">
+                          <img
+                            src="../../../assets/images/dianliu.png"
+                            width="35px"
+                            height="35px"
+                          />
+                          <p>{{ shengyu_loudian.twoAlarm }}A</p>
+                          <p>{{ shengyu_loudian.twoDianLiu }}A</p>
+                        </div>
+                      </el-col>
+                      <el-col :span="6">
+                        <div style="height: 90px">
+                          <img
+                            src="../../../assets/images/dianliu.png"
+                            width="35px"
+                            height="35px"
+                          />
+                          <p>{{ shengyu_loudian.threeAlarm }}A</p>
+                          <p>{{ shengyu_loudian.threeDianLiu }}A</p>
+                        </div>
+                      </el-col>
+                      <el-col :span="6">
+                        <div style="height: 90px">
+                          <img
+                            src="../../../assets/images/dianliu.png"
+                            width="35px"
+                            height="35px"
+                          />
+                          <p>{{ shengyu_loudian.fourAlarm }}A</p>
+                          <p>{{ shengyu_loudian.fourDianLiu }}A</p>
+                        </div>
+                      </el-col>
+                    </el-row>
+                    <ul>
+                      <li>
+                        报警状态: <span>{{ item.type }}</span>
+                      </li>
+                      <li>
+                        报警值: <span>{{ item.leakageAlarmCurrentValue }}</span>
+                      </li>
+                      <li>
+                        报警时间: <span>{{ item.regdate }}</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div></el-col
+              >
+              <el-col :span="8"
+                ><div class="grid-content bg-purple">
+                  <div class="imgWapper">
+                    <el-row>
+                      <el-col :span="8">
+                        <div style="height: 90px">
+                          <img
+                            src="../../../assets/images/dianya.png"
+                            width="35px"
+                            height="35px"
+                          />
+                          <p>{{ shengyu_loudian.oneVolatage }}V</p>
+                          <p>{{ shengyu_loudian.oneDianYa }}V</p>
+                        </div>
+                      </el-col>
+                      <el-col :span="8">
+                        <div style="height: 90px">
+                          <img
+                            src="../../../assets/images/dianya.png"
+                            width="35px"
+                            height="35px"
+                          />
+                          <p>{{ shengyu_loudian.twoVolatage }}V</p>
+                          <p>{{ shengyu_loudian.twoDianYa }}V</p>
+                        </div>
+                      </el-col>
+                      <el-col :span="8">
+                        <div style="height: 90px">
+                          <img
+                            src="../../../assets/images/dianya.png"
+                            width="35px"
+                            height="35px"
+                          />
+                          <p>{{ shengyu_loudian.threeVolatage }}V</p>
+                          <p>{{ shengyu_loudian.threeDianYa }}V</p>
+                        </div>
+                      </el-col>
+                    </el-row>
+                    <ul>
+                      <li>报警状态:无</li>
+                      <li>报警值:无</li>
+                      <li>报警时间:无</li>
+                    </ul>
+                  </div>
+                </div></el-col
+              >
+              <el-col :span="8"
+                ><div class="grid-content bg-purple">
+                  <div class="imgWapper">
+                    <el-row>
+                      <el-col :span="6">
+                        <div style="height: 90px">
+                          <img
+                            src="../../../assets/images/wenduji.png"
+                            width="16px"
+                            height="35px"
+                          />
+                          <p>{{ shengyu_loudian.oneTempera }}℃</p>
+                          <p>{{ shengyu_loudian.oneWenDu }}℃</p>
+                        </div>
+                      </el-col>
+                      <el-col :span="6">
+                        <div style="height: 90px">
+                          <img
+                            src="../../../assets/images/wenduji.png"
+                            width="16px"
+                            height="35px"
+                          />
+                          <p>{{ shengyu_loudian.twoTempera }}℃</p>
+                          <p>{{ shengyu_loudian.twoWenDu }}℃</p>
+                        </div>
+                      </el-col>
+                      <el-col :span="6">
+                        <div style="height: 90px">
+                          <img
+                            src="../../../assets/images/wenduji.png"
+                            width="16px"
+                            height="35px"
+                          />
+                          <p>{{ shengyu_loudian.threeTempera }}℃</p>
+                          <p>{{ shengyu_loudian.threeWenDu }}℃</p>
+                        </div>
+                      </el-col>
+                      <el-col :span="6">
+                        <div style="height: 90px">
+                          <img
+                            src="../../../assets/images/wenduji.png"
+                            width="16px"
+                            height="35px"
+                          />
+                          <p>{{ shengyu_loudian.fourTempera }}℃</p>
+                          <p>{{ shengyu_loudian.fourWenDu }}℃</p>
+                        </div>
+                      </el-col>
+                    </el-row>
+                    <ul>
+                      <li>报警状态:无</li>
+                      <li>报警值:无</li>
+                      <li>报警时间:无</li>
+                    </ul>
+                  </div>
+                </div>
+              </el-col>
+            </el-row>
+          </template>
+          <template v-else>
             <el-row
               :gutter="20"
               v-for="(item, index) in getDeviceByDevIdList.mess5"
@@ -576,8 +782,8 @@
                               width="35px"
                               height="35px"
                             />
-                            <p>{{ shengyu_loudian.twoVolatage }}V</p>
-                            <p>{{ shengyu_loudian.twoDianYa }}V</p>
+                            <p>{{ shengyu_loudian.threeVolatage }}V</p>
+                            <p>{{ shengyu_loudian.threeDianYa }}V</p>
                           </div>
                         </el-col>
                       </el-row>
@@ -1266,119 +1472,6 @@
               </template>
             </el-row>
           </template>
-          <template v-else>
-            <el-row
-              :gutter="20"
-              v-for="(item, index) in getDeviceByDevIdList.mess2"
-              :key="index"
-            >
-              <el-col :span="8"
-                ><div class="grid-content bg-purple">
-                  <div class="imgWapper">
-                    <el-row>
-                      <el-col :span="6">
-                        <div style="height: 90px">
-                          <img
-                            src="../../../assets/images/dianliu.png"
-                            width="35px"
-                            height="35px"
-                          />
-                        </div>
-                      </el-col>
-                      <el-col :span="6">
-                        <div style="height: 90px">
-                          <img
-                            src="../../../assets/images/dianliu.png"
-                            width="35px"
-                            height="35px"
-                          />
-                        </div>
-                      </el-col>
-                      <el-col :span="6">
-                        <div style="height: 90px">
-                          <img
-                            src="../../../assets/images/dianliu.png"
-                            width="35px"
-                            height="35px"
-                          />
-                        </div>
-                      </el-col>
-                      <el-col :span="6">
-                        <div style="height: 90px">
-                          <img
-                            src="../../../assets/images/dianliu.png"
-                            width="35px"
-                            height="35px"
-                          />
-                        </div>
-                      </el-col>
-                    </el-row>
-                    <ul>
-                      <li>
-                        报警状态: <span>{{ item.type }}</span>
-                      </li>
-                      <li>
-                        报警值: <span>{{ item.leakageAlarmCurrentValue }}</span>
-                      </li>
-                      <li>
-                        报警时间: <span>{{ item.regdate }}</span>
-                      </li>
-                    </ul>
-                  </div>
-                </div></el-col
-              >
-              <el-col :span="8"
-                ><div class="grid-content bg-purple">
-                  <div class="imgWapper">
-                    <el-row>
-                      <el-col :span="8">
-                        <div style="height: 90px">
-                          <img
-                            src="../../../assets/images/dianya.png"
-                            width="35px"
-                            height="35px"
-                          />
-                        </div>
-                      </el-col>
-                      <el-col :span="8">
-                        <div style="height: 90px">
-                          <img
-                            src="../../../assets/images/dianya.png"
-                            width="35px"
-                            height="35px"
-                          />
-                        </div>
-                      </el-col>
-                      <el-col :span="8">
-                        <div style="height: 90px">
-                          <img
-                            src="../../../assets/images/dianya.png"
-                            width="35px"
-                            height="35px"
-                          />
-                        </div>
-                      </el-col>
-                    </el-row>
-                    <ul>
-                      <li>报警状态:1</li>
-                      <li>报警值:1</li>
-                      <li>报警时间:1</li>
-                    </ul>
-                  </div>
-                </div></el-col
-              >
-              <el-col :span="8"
-                ><div class="grid-content bg-purple">
-                  <div class="imgWapper"></div>
-                  <ul>
-                    <li>报警状态:1</li>
-                    <li>报警值:1</li>
-                    <li>报警时间:1</li>
-                  </ul>
-                </div></el-col
-              >
-            </el-row>
-          </template>
 
           <div
             class="one_echarts"
@@ -1820,6 +1913,7 @@ import {
   getHistoryFault,
 } from "@/api/index.js";
 export default {
+  props: ["name"],
   data() {
     return {
       DeviceHistory: "",
@@ -2300,14 +2394,22 @@ export default {
         case "/FireInternetOfThings/Panorama":
           this.btnInfo = "设备定位全景图";
           type = "3";
+        case "/FireManagement":
+          this.btnInfo = "电气火灾隐患";
+          type = "3";
           break;
       }
 
       DeviceNum(this.utils.userName, type, 1).then((res) => {
         this.DeviceNumList = res.data;
         // console.log(this.DeviceNumList);
+
         let subNum = "000000" + this.DeviceNumList.deviceNum;
         this.deviceNum = subNum.substring(subNum.length - 6);
+        // console.log( this.deviceNum,6564);
+        if (this.deviceNum == "efined") {
+          this.deviceNum = "000000";
+        }
       });
     },
 
@@ -2337,7 +2439,7 @@ export default {
     // 查看echart图片函数
     see(devId) {
       this.innerVisible = true;
-      this.callPoliceList_loading = true;
+      // this.callPoliceList_loading = true;
       //清空处置情况
       this.managementInput = "";
       const time = new Date();
@@ -2347,7 +2449,17 @@ export default {
       const now = year + "-" + month + "-" + day;
 
       getDeviceByDevId(devId).then((res) => {
+        if (res.data == null || res.data == undefined) {
+          return this.$message.error("请稍后重试或联系管理员");
+        }
         // console.log(res, "sssqqq");
+
+        if (
+          res.data.list[0].mess5 == [null] &&
+          res.data.list[0].mess2 == "[]"
+        ) {
+          return this.$message.error("请稍后重试或联系管理员");
+        }
         this.getDeviceByDevIdList = res.data.list[0];
       });
 
@@ -2367,6 +2479,7 @@ export default {
         }
 
         this.ElecDataList_typeName = res.data.DevData[0].typeName;
+        console.log(this.ElecDataList_typeName, "状态");
         ReadParameterApi(res.data.DevData[0].productNumber).then((res) => {
           // console.log(res, "ldjakjdla");
           // this.getDeviceByDevIdList.row = res.data.row;

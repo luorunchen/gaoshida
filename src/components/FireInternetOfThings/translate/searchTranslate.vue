@@ -12,23 +12,60 @@
             </el-form-item>
 
             <el-form-item>
-              <el-button type="primary">查询</el-button>
+              <el-button type="primary" @click="selectDeviceByNumberFun"
+                >查询</el-button
+              >
             </el-form-item>
             <!-- <el-form-item> 12312 </el-form-item> -->
           </el-form>
         </div>
         <template>
           <div class="scroll_wapper">
-            <div class="right_info">
+            <div
+              class="right_info"
+              v-if="this.SElec_DetailElecDevice_List_Copy == ''"
+            >
               <ul
                 class="olList"
                 v-for="(item, index) in SElec_DetailElecDevice_List"
                 :key="index"
                 @click="echart_wapper(item.BH)"
               >
-                <li>{{ index + 1 }}.{{ item.text }}</li>
+                <li>
+                  <span v-if="item.value != null || item.value != undefined"
+                    >{{ index + 1 }}.</span
+                  >
+                  <span v-else>设备号:</span> {{ item.text }}
+                </li>
+
+                <li v-if="item.value != null || item.value != undefined">
+                  报警次数:{{ item.value }}
+                </li>
+                <li v-else>设备名称:{{ item.device_name }}</li>
+
                 <li>地址:{{ item.MC }}</li>
-                <li>报警次数:{{ item.value }}</li>
+              </ul>
+            </div>
+            <div class="right_info" v-else>
+              <ul
+                class="olList"
+                v-for="(item, index) in SElec_DetailElecDevice_List_Copy"
+                :key="index"
+                @click="see(item.BH)"
+              >
+                <li>
+                  <span v-if="item.value != null || item.value != undefined"
+                    >{{ index + 1 }}.</span
+                  >
+                  <span v-else>设备号:</span> {{ item.text }}
+                </li>
+
+                <li v-if="item.value != null || item.value != undefined">
+                  报警次数:{{ item.value }}
+                </li>
+                <li v-else>设备名称:{{ item.device_name }}</li>
+
+                <li>地址:{{ item.MC }}</li>
               </ul>
             </div>
           </div>
@@ -57,13 +94,14 @@ import {
   insertClouddog,
   updateShutdown,
   UpdateDevicePush,
+  selectDeviceByNumber,
 } from "@/api/index.js";
 export default {
-  props: ["SElec_DetailElecDevice_List", "pagetype"],
+  props: ["SElec_DetailElecDevice_List", "pagetype", "DeviceProjectNewData"],
   data() {
     return {
       DeviceHistory: "",
-
+      SElec_DetailElecDevice_List_Copy: "",
       fazhishezhi: {
         SYDL: "",
         AXDL: "",
@@ -127,6 +165,11 @@ export default {
   mounted() {
     // console.log(this.SElec_DetailElecDevice_List, 4564565);
     // undefined;
+  },
+  watch: {
+    SElec_DetailElecDevice_List(val) {
+      this.SElec_DetailElecDevice_List_Copy = "";
+    },
   },
   components: {
     PublicPopUps,
@@ -392,394 +435,317 @@ export default {
     },
     // 外部弹窗echart
     echart_wapper(data) {
-      // this.loading = true;
-      // console.log(data)
       this.$refs.publicPopUps.initOff();
       this.$refs.publicPopUps.echart_wapper(data);
-      // // const type = 2;
-      // this.devicepidData = data;
-      // GetMapData(data, 2, this.utils.userName).then((res) => {
-      //   // console.log(res);
-      //   this.GetMapDataList = res.data;
-      //   this.GetMapDataListName.name = this.GetMapDataList.Company[0].MC;
-      //   this.GetMapDataListName.callPolice = this.GetMapDataList.devMess[0];
-      //   this.GetMapDataListName.onLine = this.GetMapDataList.devMess[1];
-      //   this.GetMapDataListName.offLine = this.GetMapDataList.devMess[2];
-      //   // this.loading = false;
-      //   // console.log(res.data, "wwww");
-      //   let name = [];
-      //   let data = [];
-      //   // console.log(res.data.Diagram, 333);
-      //   res.data.Diagram.forEach((element) => {
-      //     name.push(element.date);
-      //     data.push(element.num);
-      //   });
-      //   this.$nextTick(() => {
-      //     let one_echart_left = this.$echarts.init(
-      //       document.querySelector(".echart_wapper")
-      //     );
-      //     one_echart_left.setOption({
-      //       xAxis: {
-      //         type: "category",
-      //         data: name,
-      //         axisLabel: {
-      //           show: true,
-      //           textStyle: {
-      //             color: "#fff",
-      //           },
-      //         },
-      //       },
-      //       grid: {
-      //         left: "3%",
-      //         right: "4%",
-      //         bottom: "3%",
-      //         containLabel: true,
-      //       },
-      //       tooltip: {
-      //         trigger: "axis",
-      //         axisPointer: {
-      //           type: "cross",
-      //           label: {
-      //             backgroundColor: "#6a7985",
-      //           },
-      //         },
-      //       },
-      //       yAxis: {
-      //         type: "value",
-      //         axisLabel: {
-      //           show: true,
-      //           textStyle: {
-      //             color: "#fff",
-      //           },
-      //         },
-      //       },
-      //       series: [
-      //         {
-      //           data: data,
-      //           type: "line",
-      //           smooth: true,
-      //           itemStyle: {
-      //             normal: {
-      //               lineStyle: {
-      //                 color: "red",
-      //               },
-      //             },
-      //           },
-      //         },
-      //       ],
-      //     });
-      //   });
-      // });
-      // getDeviceByPid(data, 1, 2, this.utils.userName).then((res) => {
-      //   console.log(res.data, 3121);
-      //   this.getDeviceByPidList = res.data;
-      // });
+    },
+    see(data) {
+      this.$refs.publicPopUps.see(data);
     },
     // 查看echart图片函数
-    see(devId) {
-      getDeviceByDevId(devId).then((res) => {
-        // console.log(res, "sssqqq");
-        this.getDeviceByDevIdList = res.data.list[0];
-      });
-      // 设备详情接口
-      ElecData(devId, now).then((res) => {
-        //重置照片
-        this.ElecDataList_images = [];
-        this.ElecDataList = res.data;
+    // see(devId) {
+    //   getDeviceByDevId(devId).then((res) => {
+    //     // console.log(res, "sssqqq");
+    //     this.getDeviceByDevIdList = res.data.list[0];
+    //   });
+    //   // 设备详情接口
+    //   ElecData(devId, now).then((res) => {
+    //     //重置照片
+    //     this.ElecDataList_images = [];
+    //     this.ElecDataList = res.data;
 
-        if (res.data.DevData[0].image != "") {
-          const list = res.data.DevData[0].image.split(",");
-          list.forEach((Element) => {
-            // Element =
-            let a = "http://edog-online.com/ctx/devPic/" + Element;
-            this.ElecDataList_images.push(a);
-          });
-        }
+    //     if (res.data.DevData[0].image != "") {
+    //       const list = res.data.DevData[0].image.split(",");
+    //       list.forEach((Element) => {
+    //         // Element =
+    //         let a = "http://edog-online.com/ctx/devPic/" + Element;
+    //         this.ElecDataList_images.push(a);
+    //       });
+    //     }
 
-        this.ElecDataList_typeName = res.data.DevData[0].typeName;
-        console.log(this.ElecDataList_typeName);
-        ReadParameterApi(res.data.DevData[0].productNumber).then((res) => {
-          // console.log(res, "ldjakjdla");
-          // this.getDeviceByDevIdList.row = res.data.row;
-          // console.log(this.getDeviceByDevIdList, 7899987978);
-          this.shengyu_loudian = {
-            oneAlarm: this.getDeviceByDevIdList.mess2[0]
-              .noLeakageAlarmACurrentValue,
-            twoAlarm: this.getDeviceByDevIdList.mess2[0]
-              .noLeakageAlarmBCurrentValue,
-            threeAlarm: this.getDeviceByDevIdList.mess2[0]
-              .noLeakageAlarmCCurrentValue,
-            fourAlarm: this.getDeviceByDevIdList.mess2[0]
-              .leakageAlarmCurrentValue,
-            oneDianLiu: res.data.row.ADianLiu,
-            twoDianLiu: res.data.row.BDianLiu,
-            threeDianLiu: res.data.row.CDianLiu,
-            fourDianLiu: res.data.row.SYdianliu,
-            oneVolatage: this.getDeviceByDevIdList.mess2[0]
-              .noVoltageAlarmAValue,
-            twoVolatage: this.getDeviceByDevIdList.mess2[0]
-              .noVoltageAlarmBValue,
-            threeVolatage: this.getDeviceByDevIdList.mess2[0]
-              .noVoltageAlarmCValue,
-            oneDianYa: res.data.row.ADianYa,
-            twoDianYa: res.data.row.BDianYa,
-            threeDianYa: res.data.row.CDianYa,
-            oneTempera: this.getDeviceByDevIdList.mess2[0]
-              .noAlarmATemperatureValue,
-            twoTempera: this.getDeviceByDevIdList.mess2[0]
-              .noAlarmBTemperatureValue,
-            threeTempera: this.getDeviceByDevIdList.mess2[0]
-              .noAlarmCTemperatureValue,
-            fourTempera: this.getDeviceByDevIdList.mess2[0]
-              .noAlarmNTemperatureValue,
-            oneWenDu: res.data.row.AWenDu,
-            twoWenDu: res.data.row.BWenDu,
-            threeWenDu: res.data.row.CWenDu,
-            fourWenDu: res.data.row.NWenDu,
-          };
-          console.log(this.shengyu_loudian);
-        });
-      });
-      const time = new Date();
-      const year = time.getFullYear();
-      const month = time.getMonth() + 1;
-      const day = time.getDate();
-      const now = year + "-" + month + "-" + day;
+    //     this.ElecDataList_typeName = res.data.DevData[0].typeName;
+    //     console.log(this.ElecDataList_typeName);
+    //     ReadParameterApi(res.data.DevData[0].productNumber).then((res) => {
+    //       // console.log(res, "ldjakjdla");
+    //       // this.getDeviceByDevIdList.row = res.data.row;
+    //       // console.log(this.getDeviceByDevIdList, 7899987978);
+    //       this.shengyu_loudian = {
+    //         oneAlarm: this.getDeviceByDevIdList.mess2[0]
+    //           .noLeakageAlarmACurrentValue,
+    //         twoAlarm: this.getDeviceByDevIdList.mess2[0]
+    //           .noLeakageAlarmBCurrentValue,
+    //         threeAlarm: this.getDeviceByDevIdList.mess2[0]
+    //           .noLeakageAlarmCCurrentValue,
+    //         fourAlarm: this.getDeviceByDevIdList.mess2[0]
+    //           .leakageAlarmCurrentValue,
+    //         oneDianLiu: res.data.row.ADianLiu,
+    //         twoDianLiu: res.data.row.BDianLiu,
+    //         threeDianLiu: res.data.row.CDianLiu,
+    //         fourDianLiu: res.data.row.SYdianliu,
+    //         oneVolatage: this.getDeviceByDevIdList.mess2[0]
+    //           .noVoltageAlarmAValue,
+    //         twoVolatage: this.getDeviceByDevIdList.mess2[0]
+    //           .noVoltageAlarmBValue,
+    //         threeVolatage: this.getDeviceByDevIdList.mess2[0]
+    //           .noVoltageAlarmCValue,
+    //         oneDianYa: res.data.row.ADianYa,
+    //         twoDianYa: res.data.row.BDianYa,
+    //         threeDianYa: res.data.row.CDianYa,
+    //         oneTempera: this.getDeviceByDevIdList.mess2[0]
+    //           .noAlarmATemperatureValue,
+    //         twoTempera: this.getDeviceByDevIdList.mess2[0]
+    //           .noAlarmBTemperatureValue,
+    //         threeTempera: this.getDeviceByDevIdList.mess2[0]
+    //           .noAlarmCTemperatureValue,
+    //         fourTempera: this.getDeviceByDevIdList.mess2[0]
+    //           .noAlarmNTemperatureValue,
+    //         oneWenDu: res.data.row.AWenDu,
+    //         twoWenDu: res.data.row.BWenDu,
+    //         threeWenDu: res.data.row.CWenDu,
+    //         fourWenDu: res.data.row.NWenDu,
+    //       };
+    //       console.log(this.shengyu_loudian);
+    //     });
+    //   });
+    //   const time = new Date();
+    //   const year = time.getFullYear();
+    //   const month = time.getMonth() + 1;
+    //   const day = time.getDate();
+    //   const now = year + "-" + month + "-" + day;
 
-      ElectricDeviceDate(devId, now).then((res) => {
-        let dianLiuUa = [];
-        let dianLiuUb = [];
-        let dianLiuUc = [];
-        let dianLiuUd = [];
-        let dianYaA = [];
-        let dianYaB = [];
-        let dianYaC = [];
-        let wenduA = [];
-        let wenduB = [];
-        let wenduC = [];
-        let wenduN = [];
-        let name = [];
+    //   ElectricDeviceDate(devId, now).then((res) => {
+    //     let dianLiuUa = [];
+    //     let dianLiuUb = [];
+    //     let dianLiuUc = [];
+    //     let dianLiuUd = [];
+    //     let dianYaA = [];
+    //     let dianYaB = [];
+    //     let dianYaC = [];
+    //     let wenduA = [];
+    //     let wenduB = [];
+    //     let wenduC = [];
+    //     let wenduN = [];
+    //     let name = [];
 
-        //图标数据赋值
-        res.data.Data.forEach((element) => {
-          dianLiuUa.push(element.ia);
-          dianLiuUb.push(element.ib);
-          dianLiuUc.push(element.ic);
-          dianLiuUd.push(element.ld);
-          wenduA.push(element.ta);
-          wenduB.push(element.tb);
-          wenduC.push(element.tc);
-          wenduN.push(element.tn);
-          dianYaA.push(element.ua);
-          dianYaB.push(element.ub);
-          dianYaC.push(element.uc);
-          name.push(element.happenedTime);
-        });
-        var one_echart_left;
-        var two_echart_left;
-        var three_echart_left;
-        //重置图表
-        console.log(
-          one_echart_left != null &&
-            one_echart_left != undefined &&
-            one_echart_left != ""
-        );
-        // this.$nextTick(() => {
-        //   if (
-        //     one_echart_left != null ||
-        //     one_echart_left != undefined ||
-        //     one_echart_left != ""
-        //   ) {
-        //     one_echart_left.dispose();
-        //   }
-        //   if (
-        //     two_echart_left != null ||
-        //     two_echart_left != undefined ||
-        //     two_echart_left != ""
-        //   ) {
-        //     two_echart_left.dispose();
-        //   }
-        //   if (
-        //     three_echart_left != null ||
-        //     three_echart_left != undefined ||
-        //     two_echart_left != ""
-        //   ) {
-        //     three_echart_left.dispose();
-        //   }
-        // });
+    //     //图标数据赋值
+    //     res.data.Data.forEach((element) => {
+    //       dianLiuUa.push(element.ia);
+    //       dianLiuUb.push(element.ib);
+    //       dianLiuUc.push(element.ic);
+    //       dianLiuUd.push(element.ld);
+    //       wenduA.push(element.ta);
+    //       wenduB.push(element.tb);
+    //       wenduC.push(element.tc);
+    //       wenduN.push(element.tn);
+    //       dianYaA.push(element.ua);
+    //       dianYaB.push(element.ub);
+    //       dianYaC.push(element.uc);
+    //       name.push(element.happenedTime);
+    //     });
+    //     var one_echart_left;
+    //     var two_echart_left;
+    //     var three_echart_left;
+    //     //重置图表
+    //     console.log(
+    //       one_echart_left != null &&
+    //         one_echart_left != undefined &&
+    //         one_echart_left != ""
+    //     );
+    //     // this.$nextTick(() => {
+    //     //   if (
+    //     //     one_echart_left != null ||
+    //     //     one_echart_left != undefined ||
+    //     //     one_echart_left != ""
+    //     //   ) {
+    //     //     one_echart_left.dispose();
+    //     //   }
+    //     //   if (
+    //     //     two_echart_left != null ||
+    //     //     two_echart_left != undefined ||
+    //     //     two_echart_left != ""
+    //     //   ) {
+    //     //     two_echart_left.dispose();
+    //     //   }
+    //     //   if (
+    //     //     three_echart_left != null ||
+    //     //     three_echart_left != undefined ||
+    //     //     two_echart_left != ""
+    //     //   ) {
+    //     //     three_echart_left.dispose();
+    //     //   }
+    //     // });
 
-        this.$nextTick(() => {
-          one_echart_left = this.$echarts.init(
-            document.querySelector(".echarts_wapper_one_search")
-          );
+    //     this.$nextTick(() => {
+    //       one_echart_left = this.$echarts.init(
+    //         document.querySelector(".echarts_wapper_one_search")
+    //       );
 
-          // 电流统计图
-          one_echart_left.setOption({
-            tooltip: {
-              trigger: "axis",
-            },
-            legend: {
-              data: ["A电流(mA)", "B电流(mA)", "C电流(mA)", "剩余电流(mA)"],
-            },
-            grid: {
-              left: "3%",
-              right: "4%",
-              bottom: "3%",
-              containLabel: true,
-            },
-            toolbox: {
-              feature: {
-                saveAsImage: {},
-              },
-            },
-            xAxis: {
-              type: "category",
-              boundaryGap: false,
-              data: name.reverse(),
-            },
-            yAxis: {
-              type: "value",
-            },
-            series: [
-              {
-                name: "A电流(mA)",
-                type: "line",
+    //       // 电流统计图
+    //       one_echart_left.setOption({
+    //         tooltip: {
+    //           trigger: "axis",
+    //         },
+    //         legend: {
+    //           data: ["A电流(mA)", "B电流(mA)", "C电流(mA)", "剩余电流(mA)"],
+    //         },
+    //         grid: {
+    //           left: "3%",
+    //           right: "4%",
+    //           bottom: "3%",
+    //           containLabel: true,
+    //         },
+    //         toolbox: {
+    //           feature: {
+    //             saveAsImage: {},
+    //           },
+    //         },
+    //         xAxis: {
+    //           type: "category",
+    //           boundaryGap: false,
+    //           data: name.reverse(),
+    //         },
+    //         yAxis: {
+    //           type: "value",
+    //         },
+    //         series: [
+    //           {
+    //             name: "A电流(mA)",
+    //             type: "line",
 
-                data: dianLiuUa.reverse(),
-              },
-              {
-                name: "B电流(mA)",
-                type: "line",
+    //             data: dianLiuUa.reverse(),
+    //           },
+    //           {
+    //             name: "B电流(mA)",
+    //             type: "line",
 
-                data: dianLiuUb.reverse(),
-              },
-              {
-                name: "C电流(mA)",
-                type: "line",
+    //             data: dianLiuUb.reverse(),
+    //           },
+    //           {
+    //             name: "C电流(mA)",
+    //             type: "line",
 
-                data: dianLiuUc.reverse(),
-              },
-              {
-                name: "剩余电流(mA)",
-                type: "line",
+    //             data: dianLiuUc.reverse(),
+    //           },
+    //           {
+    //             name: "剩余电流(mA)",
+    //             type: "line",
 
-                data: dianLiuUd.reverse(),
-              },
-            ],
-          });
+    //             data: dianLiuUd.reverse(),
+    //           },
+    //         ],
+    //       });
 
-          // 第二个图表
-          two_echart_left = this.$echarts.init(
-            document.querySelector(".echarts_wapper_two_search")
-          );
-          //第三个图表
-          two_echart_left.setOption({
-            tooltip: {
-              trigger: "axis",
-            },
-            legend: {
-              data: ["A温度(℃)", "B温度(℃)", "C温度(℃)", "N温度(℃)"],
-            },
-            grid: {
-              left: "3%",
-              right: "4%",
-              bottom: "3%",
-              containLabel: true,
-            },
-            toolbox: {
-              feature: {
-                saveAsImage: {},
-              },
-            },
-            xAxis: {
-              type: "category",
-              boundaryGap: false,
-              data: name.reverse(),
-            },
-            yAxis: {
-              type: "value",
-            },
-            series: [
-              {
-                name: "A温度(℃)",
-                type: "line",
+    //       // 第二个图表
+    //       two_echart_left = this.$echarts.init(
+    //         document.querySelector(".echarts_wapper_two_search")
+    //       );
+    //       //第三个图表
+    //       two_echart_left.setOption({
+    //         tooltip: {
+    //           trigger: "axis",
+    //         },
+    //         legend: {
+    //           data: ["A温度(℃)", "B温度(℃)", "C温度(℃)", "N温度(℃)"],
+    //         },
+    //         grid: {
+    //           left: "3%",
+    //           right: "4%",
+    //           bottom: "3%",
+    //           containLabel: true,
+    //         },
+    //         toolbox: {
+    //           feature: {
+    //             saveAsImage: {},
+    //           },
+    //         },
+    //         xAxis: {
+    //           type: "category",
+    //           boundaryGap: false,
+    //           data: name.reverse(),
+    //         },
+    //         yAxis: {
+    //           type: "value",
+    //         },
+    //         series: [
+    //           {
+    //             name: "A温度(℃)",
+    //             type: "line",
 
-                data: wenduA.reverse(),
-              },
-              {
-                name: "B温度(℃)",
-                type: "line",
+    //             data: wenduA.reverse(),
+    //           },
+    //           {
+    //             name: "B温度(℃)",
+    //             type: "line",
 
-                data: wenduB.reverse(),
-              },
-              {
-                name: "C温度(℃)",
-                type: "line",
+    //             data: wenduB.reverse(),
+    //           },
+    //           {
+    //             name: "C温度(℃)",
+    //             type: "line",
 
-                data: wenduC.reverse(),
-              },
-              {
-                name: "N温度(℃)",
-                type: "line",
+    //             data: wenduC.reverse(),
+    //           },
+    //           {
+    //             name: "N温度(℃)",
+    //             type: "line",
 
-                data: wenduN.reverse(),
-              },
-            ],
-          });
+    //             data: wenduN.reverse(),
+    //           },
+    //         ],
+    //       });
 
-          three_echart_left = this.$echarts.init(
-            document.querySelector(".echarts_wapper_three_search")
-          );
-          three_echart_left.setOption({
-            tooltip: {
-              trigger: "axis",
-            },
-            legend: {
-              data: ["A电压(A)", "B电压(A)", "C电压(A)"],
-            },
-            grid: {
-              left: "3%",
-              right: "4%",
-              bottom: "3%",
-              containLabel: true,
-            },
-            toolbox: {
-              feature: {
-                saveAsImage: {},
-              },
-            },
-            xAxis: {
-              type: "category",
-              boundaryGap: false,
-              data: name.reverse(),
-            },
-            yAxis: {
-              type: "value",
-            },
-            series: [
-              {
-                name: "A电压(A)",
-                type: "line",
-                // stack: "总量",
-                data: dianYaA.reverse(),
-              },
-              {
-                name: "B电压(A)",
-                type: "line",
-                // stack: "总量",
-                data: dianYaB.reverse(),
-              },
-              {
-                name: "C电压(A)",
-                type: "line",
-                // stack: "总量",
-                data: dianYaC.reverse(),
-              },
-            ],
-          });
-        });
-      });
-    },
+    //       three_echart_left = this.$echarts.init(
+    //         document.querySelector(".echarts_wapper_three_search")
+    //       );
+    //       three_echart_left.setOption({
+    //         tooltip: {
+    //           trigger: "axis",
+    //         },
+    //         legend: {
+    //           data: ["A电压(A)", "B电压(A)", "C电压(A)"],
+    //         },
+    //         grid: {
+    //           left: "3%",
+    //           right: "4%",
+    //           bottom: "3%",
+    //           containLabel: true,
+    //         },
+    //         toolbox: {
+    //           feature: {
+    //             saveAsImage: {},
+    //           },
+    //         },
+    //         xAxis: {
+    //           type: "category",
+    //           boundaryGap: false,
+    //           data: name.reverse(),
+    //         },
+    //         yAxis: {
+    //           type: "value",
+    //         },
+    //         series: [
+    //           {
+    //             name: "A电压(A)",
+    //             type: "line",
+    //             // stack: "总量",
+    //             data: dianYaA.reverse(),
+    //           },
+    //           {
+    //             name: "B电压(A)",
+    //             type: "line",
+    //             // stack: "总量",
+    //             data: dianYaB.reverse(),
+    //           },
+    //           {
+    //             name: "C电压(A)",
+    //             type: "line",
+    //             // stack: "总量",
+    //             data: dianYaC.reverse(),
+    //           },
+    //         ],
+    //       });
+    //     });
+    //   });
+    // },
 
     //设备设置按钮
     shebeiBtn(num) {
@@ -996,10 +962,24 @@ export default {
     handleClick(tab, event) {
       console.log(tab, event);
     },
+    selectDeviceByNumberFun() {
+      console.log(123);
+
+      selectDeviceByNumber(this.formInline.user).then((res) => {
+        res.data.forEach((el, index) => {
+          el.text = el.productNumber;
+          el.MC = el.installLocation;
+          el.BH = el.devId;
+        });
+        this.SElec_DetailElecDevice_List_Copy = res.data;
+      });
+    },
   },
   updated() {
-    console.log(123);
     if (this.SElec_DetailElecDevice_List.length > 0) {
+      this.$refs.right_one.style.height = "450" + "px";
+    }
+    if (this.SElec_DetailElecDevice_List_Copy.length > 0) {
       this.$refs.right_one.style.height = "450" + "px";
     }
   },
@@ -1599,8 +1579,8 @@ export default {
   .right_one {
     // background-image: ("../../../assets/images/zhengchangbili.png");
     height: 90px;
-    background-size: 100% 100%;
-    background-image: url("../../../assets/images/juxing5.png");
+    background-size: 100% 450px;
+    background-image: url("../../../assets/images/sousuo.png");
     .chaxun {
       padding-top: 20px;
       padding-left: 20px;

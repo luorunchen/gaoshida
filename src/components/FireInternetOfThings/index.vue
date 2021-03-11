@@ -19,6 +19,7 @@
       </div>
       <div class="fenbuInfo">
         <div
+          style="display: none"
           :class="
             btnInfo == '隐患整改进度' ? 'infoBtn infoBtnClick' : 'infoBtn'
           "
@@ -28,6 +29,7 @@
           </router-link>
         </div>
         <div
+          style="display: none"
           :class="
             btnInfo == '电气火灾隐患' ? 'infoBtn infoBtnClick' : 'infoBtn'
           "
@@ -97,6 +99,7 @@
           </router-link>
         </div>
         <div
+          style="display: none"
           :class="
             btnInfo == '电力检测系统' ? 'infoBtn infoBtnClick' : 'infoBtn'
           "
@@ -106,6 +109,7 @@
           </router-link>
         </div>
         <div
+          style="display: none"
           :class="
             btnInfo == '设备定位全景图' ? 'infoBtn infoBtnClick' : 'infoBtn'
           "
@@ -191,7 +195,7 @@ export default {
       numTwo: "0",
       loading_map: false,
       numOne: "0",
-      btnInfo: "隐患整改进度",
+      btnInfo: "消防水系统",
       getIndexReportList: "",
     };
   },

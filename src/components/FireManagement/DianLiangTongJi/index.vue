@@ -31,10 +31,8 @@
       <el-table :data="tableData" style="width: 100%" height="650px" border>
         <el-table-column type="index" width="50"> </el-table-column>
         <el-table-column prop="name" label="项目名称"> </el-table-column>
-        <el-table-column prop="installLocation" label="项目位置">
-        </el-table-column>
-        <el-table-column prop="productNumber" label="月用电量">
-        </el-table-column>
+        <el-table-column prop="location" label="项目位置"> </el-table-column>
+        <el-table-column prop="policy" label="月用电量"> </el-table-column>
         <!-- <el-table-column prop="address" label="事件详情"> </el-table-column> -->
         <el-table-column prop="heartbeatTime" label="计量时间">
         </el-table-column>

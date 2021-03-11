@@ -248,6 +248,12 @@ export default {
       // text-align: center;
     }
   }
+  .caozuo {
+    span {
+      color: blue;
+      cursor: pointer;
+    }
+  }
   .danwei_right {
     .one {
       width: 20px;

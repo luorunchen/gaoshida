@@ -2,12 +2,13 @@
 module.exports = {
 
   devServer: {
-    proxy: 'http://124.71.11.195'
+    proxy: 'http://124.71.11.195',
+    // proxy: 'http://psy119.cn'
     // port: 8080, // 端口号配置
     // host: '127.0.0.1',
     // proxy: {
     //   '/api': {
-    //     target: 'http://edog-online.com/earlyWarn',// 要跨域的域名
+    //     target: 'http://124.71.11.195',// 要跨域的域名
     //     changeOrigin: true, // 是否开启跨域
     //     pathRewrite: {
     //       '^/api': '' // 在请求的时候 凡是/api开头的地址都可以跨域

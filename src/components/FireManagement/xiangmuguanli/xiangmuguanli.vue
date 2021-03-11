@@ -411,6 +411,7 @@ export default {
         wangGeYuanPhone: "",
         jieDao: "",
         jieDaoPhone: "",
+        newType: "",
       },
       options: [],
       shebeiListValue: "",
@@ -484,6 +485,7 @@ export default {
           label: "19",
         },
       ],
+      newType: "",
     };
   },
   mounted() {
@@ -512,7 +514,9 @@ export default {
     },
     // 添加项目函数
     addProjectFun() {
-      if (this.mapInfo.newType == "新增") {
+      console.log(this.newType);
+
+      if (this.newType == "新增") {
         addProject(
           this.utils.userName,
           this.mapInfo.name, //项目名称
@@ -574,7 +578,9 @@ export default {
     //添加人员打开弹窗
     addNewOpenFun(type) {
       //判断新增还是编辑
-      this.mapInfo.newType = type;
+      console.log(type);
+      this.newType = type;
+      // console.log(this.mapInfo.newType);
       this.dialogVisible = true;
       this.mapInfo = [];
       this.mapFun();

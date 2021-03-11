@@ -7,11 +7,21 @@
         </div>
       </div>
       <div class="xiaofangInfo">
-        <p>消防管理</p>
+        <p>智慧安全用电系统</p>
 
         <p>-{{ btnInfo }}</p>
       </div>
       <div class="fenbuInfo">
+        <div
+          :class="
+            btnInfo == '电气火灾隐患' ? 'infoBtn infoBtnClick' : 'infoBtn'
+          "
+          @click="getInfo('电气火灾隐患')"
+        >
+          <!-- <router-link to="/FireInternetOfThings/electricalFire"> -->
+          <p>电气火灾隐患</p>
+          <!-- </router-link> -->
+        </div>
         <div
           :class="btnInfo == '项目管理' ? 'infoBtn infoBtnClick' : 'infoBtn'"
           @click="getInfo('项目管理')"
@@ -31,11 +41,17 @@
           <p>单位管理</p>
         </div>
         <div
+          :class="btnInfo == '系统管理' ? 'infoBtn infoBtnClick' : 'infoBtn'"
+          @click="getInfo('系统管理')"
+        >
+          <router-link to="/SystemSettings"> <p>系统管理</p></router-link>
+        </div>
+        <!-- <div
           :class="btnInfo == '系统设置' ? 'infoBtn infoBtnClick' : 'infoBtn'"
           @click="getInfo('系统设置')"
         >
           <p>系统设置</p>
-        </div>
+        </div> -->
         <div
           :class="btnInfo == '报警故障' ? 'infoBtn infoBtnClick' : 'infoBtn'"
           @click="getInfo('报警故障')"
@@ -90,7 +106,17 @@
         </div>
       </div>
     </div>
-    <div class="content_wapper">
+    <div
+      id="content_wapperCopy"
+      :class="
+        this.btnInfo != '电气火灾隐患' ? 'content_wapper' : 'content_wapperCopy'
+      "
+    >
+      <template v-if="this.btnInfo == '电气火灾隐患'">
+        <div id="content_wapper"><DianQiHuoZhai /></div>
+
+        <!-- <router-view></router-view> -->
+      </template>
       <template v-if="this.btnInfo == '项目管理'">
         <XiangMuGuanLi />
       </template>
@@ -104,6 +130,7 @@
       <template v-if="this.btnInfo == '用电规划'">
         <YongDianGuiHua />
       </template>
+
       <template v-if="this.btnInfo == '功率管理'">
         <GongLvGuanLi />
       </template>
@@ -139,6 +166,7 @@ import DianLiangTongJi from "./DianLiangTongJi";
 import YanWuHuoZaiYuJing from "./YanWuHuoZaiYuJing";
 import DuanLvYuJing from "./DuanLvYuJing";
 import LouDianYuJing from "./LouDianYuJing";
+import DianQiHuoZhai from "./DianQiHuoZhai";
 export default {
   data() {
     return {
@@ -147,7 +175,7 @@ export default {
 
       currentPage4: 4,
 
-      btnInfo: "项目管理",
+      btnInfo: "电气火灾隐患",
     };
   },
   methods: {
@@ -157,6 +185,15 @@ export default {
     getInfo(data) {
       this.btnInfo = data;
       window.name = data;
+      // if (data == "电气火灾隐患") {
+      //   this.map = new AMap.Map("content_wapperCopy", {
+      //     center: [116.397428, 39.90923],
+      //     resizeEnable: true,
+      //     zoom: 10,
+      //     mapStyle: "amap://styles/dcb78e5f043e25116ab6bdeaa6813234",
+      //   });
+      //   this.map.setZoomAndCenter(4, [116.205467, 39.907761]);
+      // }
     },
     onSubmit() {
       console.log("submit!");
@@ -181,15 +218,24 @@ export default {
     YanWuHuoZaiYuJing,
     DuanLvYuJing,
     LouDianYuJing,
+    DianQiHuoZhai,
   },
   mounted() {
     if (window.name == "") {
-      this.btnInfo = "项目管理";
+      this.btnInfo = "电气火灾隐患";
     } else if (window.name != "") {
       this.btnInfo = window.name;
     }
+    // this.map = new AMap.Map("content_wapper", {
+    //   center: [116.397428, 39.90923],
+    //   resizeEnable: true,
+    //   zoom: 10,
+    //   mapStyle: "amap://styles/dcb78e5f043e25116ab6bdeaa6813234",
+    // });
+    // this.map.setZoomAndCenter(4, [116.205467, 39.907761]);
     this.stop();
   },
+
   destroyed() {
     window.name = "";
   },
@@ -553,7 +599,7 @@ export default {
         font-weight: bold;
         text-align: center;
         &:nth-child(1) {
-          font-size: 46px;
+          font-size: 38px;
         }
         &:nth-child(2) {
           font-size: 26px;
@@ -593,6 +639,20 @@ export default {
     margin: 0 30px;
     height: 800px;
     background: #fff;
+  }
+  #content_wapper {
+    // box-sizing: border-box;
+    // padding: 20px 20px 0 20px;
+    // margin: 0 30px;
+    height: 830px;
+    // background: #fff;
+  }
+  .content_wapperCopy {
+    // box-sizing: border-box;
+    // padding: 20px 20px 0 20px;
+    // margin: 0 30px;
+    height: 800px;
+    // background: #fff;
   }
   .tabs {
     .caozuo {

@@ -31,8 +31,7 @@
       <el-table :data="tableData" style="width: 100%" height="650px" border>
         <el-table-column type="index" width="50"> </el-table-column>
         <el-table-column prop="name" label="项目名称"> </el-table-column>
-        <el-table-column prop="installLocation" label="项目位置">
-        </el-table-column>
+        <el-table-column prop="location" label="项目位置"> </el-table-column>
         <el-table-column prop="productNumber" label="设备编号">
         </el-table-column>
         <!-- <el-table-column prop="address" label="事件详情"> </el-table-column> -->
@@ -41,7 +40,7 @@
         <el-table-column prop="address" label="操作">
           <template slot-scope="scope">
             <div class="caozuo">
-              <span @click="set">设置</span>
+              <span @click="set(scope.row.devId)">设置</span>
             </div>
           </template>
         </el-table-column>
@@ -134,28 +133,7 @@ export default {
       checkList: [],
       timeValue: "",
       dialogVisible: false,
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-        },
-      ],
+      tableData: [],
       current: 10,
       size: 1,
       totals: 1,
@@ -167,6 +145,7 @@ export default {
   methods: {
     onSubmit() {
       console.log("submit!");
+      this.getDeviceStatusFun();
     },
     handleSizeChange(val) {
       this.current = val;
@@ -184,7 +163,7 @@ export default {
         this.size,
         "",
         this.current,
-        "",
+        this.formInline.imei || this.formInline.proName,
         3,
         this.utils.userName,
         1 //在线:1 离线:0

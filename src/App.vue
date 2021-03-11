@@ -1,5 +1,25 @@
 <template>
-  <div>
+  <div id="baoj">
+    <div class="weiyi">
+      <el-dialog
+        title="报警信息"
+        :visible.sync="dialogVisible"
+        width="20%"
+        :modal="false"
+      >
+        <p>项目名称:{{ arlme.name }}</p>
+        <p>报警内容: {{ arlme.type }}</p>
+        <p>报警地址:{{ arlme.address }}</p>
+        <p>设备号:{{ arlme.imei }}</p>
+        <!-- <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="dialogVisible = false"
+            >确 定</el-button
+          >
+        </span> -->
+      </el-dialog>
+    </div>
+
     <!-- <p @click="www">12321</p> -->
     <router-view></router-view>
   </div>
@@ -8,8 +28,68 @@
 <script>
 import Home from "@/components/FireInternetOfThings";
 export default {
+  data() {
+    return {
+      dialogVisible: false,
+
+      arlme: { name: "", type: "", address: "", imei: "" },
+    };
+  },
   components: {
     Home,
+  },
+  mounted() {
+    // this.dialogVisible = true;
+    let goEasy = GoEasy.getInstance({
+      host: "hangzhou.goeasy.io", //应用所在的区域地址: 【hangzhou.goeasy.io |singapore.goeasy.io】
+      appkey: "BC-e7642099b1ac4eedbabd867f4eff1330", //替换为您的应用appkey
+    });
+
+    goEasy.connect({
+      onSuccess: function () {
+        //连接成功
+        console.log("GoEasy connect successfully."); //连接成功
+      },
+      onFailed: function (error) {
+        //连接失败
+        console.log(
+          "Failed to connect GoEasy, code:" +
+            error.code +
+            ",error:" +
+            error.content
+        );
+      },
+      onProgress: function (attempts) {
+        //连接或自动重连中
+        console.log("GoEasy is connecting", attempts);
+      },
+    });
+    const _that = this;
+    goEasy.subscribe({
+      channel: this.utils.userName, //替换为您自己的channel
+      onMessage: function (message) {
+        const res = message.content;
+        const arr = res.split(",");
+
+        _that.arlme.name = arr[0];
+        _that.arlme.imei = arr[1];
+        _that.arlme.type = arr[2];
+        _that.arlme.address = arr[3];
+        _that.dialogVisible = true;
+      },
+      onSuccess: function (message) {
+        console.log("Channel订阅成功。");
+        this.dialogVisible = true;
+      },
+      onFailed: function (error) {
+        console.log(
+          "Channel订阅失败, 错误编码：" +
+            error.code +
+            " 错误信息：" +
+            error.content
+        );
+      },
+    });
   },
 };
 </script>
@@ -17,6 +97,32 @@ export default {
 * {
   padding: 0;
   margin: 0;
+}
+#baoj {
+  .weiyi {
+    /deep/.el-dialog__header {
+      padding: 0;
+      background: #4c0e25;
+    }
+    /deep/.el-dialog__body {
+      background: #4c0e25;
+      color: #fff;
+      padding: 10px 20px;
+      p {
+        margin-bottom: 10px;
+      }
+    }
+    /deep/.el-dialog__title {
+      width: 255px;
+      height: 30px;
+      background: linear-gradient(90deg, #812145, #4c0e25);
+      color: #fff;
+      margin: 15px 0 0 15px;
+      display: inline-block;
+      padding-left: 10px;
+      line-height: 30px;
+    }
+  }
 }
 /*去除a标签下划线*/
 a {

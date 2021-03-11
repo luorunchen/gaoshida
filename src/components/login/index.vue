@@ -4,14 +4,24 @@
       <img class="titleIMG" src="../../assets/images/juxing4.png" alt="" />
     </div>
     <div class="titleFZ">智慧安全系统平台</div>
-    <div class="loginIMGLeft">
-      <img
-        src="@/assets/images/fengmian.png"
-        width="100%"
-        height="100%"
-        alt=""
-      />
-    </div>
+
+    <el-upload
+      ref="upload"
+      class="upload-demo"
+      action="/earlyWarn/upload.action?user_name=13076920054"
+      list-type="picture"
+    >
+      <div class="loginIMGLeft">
+        <img
+          src="@/assets/images/fengmian.png"
+          width="100%"
+          height="100%"
+          alt=""
+        />
+      </div>
+      <!-- <el-button size="small" type="primary">点击上传</el-button>
+      <div slot="tip" class="el-upload__tip">只能上传jpg/png文件</div> -->
+    </el-upload>
     <div class="loginImg">
       <img
         src="@/assets/images/juxing5.png"
@@ -86,6 +96,18 @@ export default {
         checkPass: "",
         age: "",
       },
+      fileList: [
+        {
+          name: "food.jpeg",
+          url:
+            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
+        },
+        {
+          name: "food2.jpeg",
+          url:
+            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
+        },
+      ],
       rules: {
         pass: [{ validator: validatePass, trigger: "blur" }],
         checkPass: [{ validator: validatePass2, trigger: "blur" }],
@@ -130,6 +152,22 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(
+        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+          files.length + fileList.length
+        } 个文件`
+      );
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
     },
   },
   // mounted() {

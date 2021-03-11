@@ -2,8 +2,8 @@
   <div id="app">
     <div class="title">
       <div class="titleFZ">
-        <span>123</span>
-        <span>2020-08-05</span>
+        <span>{{ utils.userName }}</span>
+        <span>08-05</span>
         <span>周五</span>
       </div>
       <div class="titleLeft">
@@ -11,19 +11,36 @@
         <div class="btnLeft">
           <div class="btnLeftOne"><span>首页</span></div>
           <div class="btnLeftTwo" @click="FireInternetOfThings">
-            <span>智慧用电</span>
+            <span>消防物联网</span>
           </div>
         </div>
       </div>
-      <div class="titleIMG">
-        <p class="titleName">智慧安全系统平台</p>
-        <img src="../../assets/images/juxing4.png" alt="" />
-      </div>
+      <el-upload
+        ref="upload"
+        class="upload-demo"
+        action="/earlyWarn/upload.action?user_name=13076920054"
+        list-type="picture"
+        :on-success="handlePreview"
+        :show-file-list="false"
+      >
+        <div class="titleIMG">
+          <p class="titleName">智慧安全系统平台</p>
+          <img
+            v-if="this.images_wapper == ''"
+            width="478px"
+            height="100%"
+            src="../../assets/images/juxing4.png"
+            alt=""
+          />
+          <img v-else width="478px" height="100%" :src="images_wapper" alt="" />
+        </div>
+      </el-upload>
+
       <div class="titleRight">
         <img src="../../assets/images/juxing3.png" alt="" />
         <div class="btnRight">
           <div class="btnRightOne" @click="FireManagement">
-            <span>智慧消防</span>
+            <span>智慧用电</span>
           </div>
           <div class="btnRightTwo" @click="SystemSettings">
             <span>系统设置</span>
@@ -247,7 +264,6 @@
 
 <script>
 import {
-  sy_map,
   push_AlarmData,
   push_AlarmInfo,
   push_DeviceData,
@@ -257,6 +273,7 @@ import {
   push_ProjectRegion,
   AlarmInforMore,
   DeviceProjectNew,
+  getLogo,
 } from "@/api/index.js";
 // import AMap from "AMap";
 export default {
@@ -272,6 +289,7 @@ export default {
         FaultNo: "",
         FaultYes: "",
       },
+      images_wapper: "",
       dialogVisible: false,
       numberValidateForm: {
         age: "",
@@ -282,8 +300,24 @@ export default {
     this.init();
     this.drawLine();
     this.push_AlarmData_info("d");
+    getLogo(this.utils.userName).then((res) => {
+      // this.images = res.data[0];
+      // console.log(this.images);
+      console.log(res);
+      this.images_wapper = `http://${res.data}`;
+    });
   },
   methods: {
+    //上传图片
+    handlePreview(response, file, fileList) {
+      this.images_wapper = `http://${response.data[0]}`;
+      console.log(this.images_wapper);
+      if (this.images != "") {
+        return this.$message.success("替换成功");
+      } else {
+        return this.$message.error("替换失败");
+      }
+    },
     //年月日信息获取
     push_AlarmData_info(data) {
       // console.log(this.utils);
@@ -665,9 +699,32 @@ export default {
 
       push_AlarmAndFault(this.utils.userName, "0").then((res) => {
         console.log(res, 7777);
+
         let tiem = [];
         let data = [];
         let fault = [];
+        if (res.data.Alarm.length <= 0) {
+          res.data.Alarm = [
+            { num: 287, date: "03-03" },
+            { num: 362, date: "03-04" },
+            { num: 357, date: "03-05" },
+            { num: 385, date: "03-06" },
+            { num: 291, date: "03-07" },
+            { num: 350, date: "03-08" },
+            { num: 207, date: "03-09" },
+          ];
+        }
+        if (res.data.Fault.length <= 0) {
+          res.data.Fault = [
+            { num: 3, date: "03-03" },
+            { num: 3, date: "03-04" },
+            { num: 1, date: "03-05" },
+            { num: 4, date: "03-06" },
+            { num: 2, date: "03-07" },
+            { num: 1, date: "03-08" },
+            { num: 3, date: "03-09" },
+          ];
+        }
         res.data.Alarm.forEach((element) => {
           tiem.push(element.date);
           data.push(element.num);
@@ -992,21 +1049,25 @@ export default {
       padding-top: 15px;
       // width: 240px;
       height: 68px;
+
       // transform: translateX(-30%);
-      // text-align: center;
+      text-align: center;
       // margin: 0 auto;
       .titleName {
         font-size: 35px;
         position: absolute;
         z-index: 999;
-        left: 50%;
+        // left: 50%;
         // top: 50%;
-        transform: translateX(-50%);
+        width: 478px;
+        // transform: translateX(-50%);
         line-height: 60px;
+        // background-image: url(../../assets/images/juxing4.png);
+        background-size: 100% 100%;
       }
     }
     .titleRight {
-      width: 500px;
+      width: 460px;
       height: 48px;
       .btnRight {
         // float: right;

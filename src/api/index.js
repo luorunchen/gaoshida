@@ -150,7 +150,7 @@ export function DeviceNum(username, type, region) {
   })
 }
 //接入设备报警查看接口
-export function getAlarmDevice(username, PageNo, alarm, PageSize, object) {
+export function getAlarmDevice(username, PageNo, alarm, PageSize, object, typeName) {
   return service({
     url: `/WebProject/getAlarmDevice.action`,
     method: 'GET',
@@ -159,7 +159,8 @@ export function getAlarmDevice(username, PageNo, alarm, PageSize, object) {
       PageNo,
       alarm,
       PageSize,
-      object
+      object,
+      typeName
     }
   })
 }
@@ -589,6 +590,142 @@ export function setPower(maxPower, minPower, devSignature) {
     method: 'GET',
     params: {
       maxPower, minPower, devSignature
+    }
+  })
+}
+//系统设置---------------------------------------------------------------------
+export function gridSource(username, pageNo, pageSize, object) {
+  return service({
+    url: `/admin/device/gridSource.action`,
+    method: 'GET',
+    params: {
+      username, pageNo, pageSize, object
+    }
+  })
+}
+//权限获取
+export function getPowerOther(username, role, powerOther) {
+  return service({
+    url: `/power/getPowerOther.action`,
+    method: 'GET',
+    params: {
+      username, role, powerOther
+    }
+  })
+}
+//用户编辑
+export function updateUser(user_name, realName, address, phone, company_phone, company, mobile, power, powerOther) {
+  return service({
+    url: `/admin/device/updateUser.action`,
+    method: 'GET',
+    params: {
+      user_name, realName, address, phone, company_phone, company, mobile, power, powerOther
+    }
+  })
+}
+//添加用户
+export function addUserRole(user_name, password, realName, phone, address, company_phone, company, mobile, role, power, powerOther) {
+  return service({
+    url: `admin/device/addUserRole.action`,
+    method: 'GET',
+    params: {
+      user_name, password, realName, address, phone, company_phone, company, mobile, role, power, powerOther
+    }
+  })
+}
+//添加用户
+export function pushRole_infos(username, r_name, pno, pageSize) {
+  return service({
+    url: `/power/pushRole_infos.action`,
+    method: 'GET',
+    params: {
+      username, r_name, pno, pageSize
+    }
+  })
+}
+//区域选择
+export function getRegon(username, code, type) {
+  return service({
+    url: `/power/getRegon.action`,
+    method: 'GET',
+    params: {
+      username, code, type
+    }
+  })
+}
+//权限管理 新增
+export function givePowerRole(role_name, username, p_id, region) {
+  return service({
+    url: `/power/givePowerRole.action`,
+    method: 'GET',
+    params: {
+      role_name, username, p_id, region
+    }
+  })
+}
+
+//权限管理 删除
+export function delPower(username, r_id, type) {
+  return service({
+    url: `/power/delPower.action`,
+    method: 'GET',
+    params: {
+      username, r_id, type
+    }
+  })
+}
+
+//权限管理 删除
+export function editPower(id, role_name, p_id, username, region) {
+  return service({
+    url: `/power/editPower.action`,
+    method: 'GET',
+    params: {
+      id, role_name, p_id, username, region
+    }
+  })
+}
+
+//在线情况
+export function RegisterOnline(my_username) {
+  return service({
+    url: `/WebProject/RegisterOnline.action`,
+    method: 'GET',
+    params: {
+      my_username
+    }
+  })
+}
+//系统日志
+export function getSyslog(my_username) {
+  return service({
+    url: `/WebProject/getSyslog`,
+    method: 'GET',
+    params: {
+      my_username
+    }
+  })
+}
+
+
+//设备号搜索
+export function selectDeviceByNumber(number) {
+  return service({
+    url: `/WebProject/selectDeviceByNumber.action`,
+    method: 'GET',
+    params: {
+      number
+    }
+  })
+}
+
+//获取图片
+export function getLogo(user_name) {
+  return service({
+    url: `/getLogo.action`,
+    method: 'GET',
+    params: {
+      user_name
     }
   })
 }

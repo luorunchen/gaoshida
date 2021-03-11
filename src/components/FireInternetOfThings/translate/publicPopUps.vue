@@ -2542,7 +2542,7 @@ export default {
     // 外部弹窗echart
     echart_wapper(data) {
       this.loading = true;
-      this.innerVisible = true;
+      // this.innerVisible = true;
       // console.log(data)
       // const type = 2;
       this.equipmentColor = "onLine";
@@ -2550,6 +2550,12 @@ export default {
       GetMapData(data, this.pagetype, this.utils.userName).then((res) => {
         // console.log(res);
         this.GetMapDataList = res.data;
+        const map = [
+          res.data.Company[0].MLat * 1,
+          res.data.Company[0].MLng * 1,
+        ];
+        console.log(map, "我是,ap");
+        this.$store.commit("set_map", map);
         //重点部位模块不需要Echart图表
         if (this.$route.path == "/FireInternetOfThings/KeyParts") {
           // this.GetMapDataList = res.data;
@@ -2639,10 +2645,21 @@ export default {
     },
     // 查看echart图片函数
     see(devId) {
+      this.innerVisible  = true
       getDeviceByDevId(devId).then((res) => {
+        if (res.data == null || res.data == undefined) {
+          return this.$message.error("请稍后重试或联系管理员");
+        }
+        if (
+          res.data.list[0].mess5[0] == null &&
+          res.data.list[0].mess2 == "[]"
+        ) {
+          return this.$message.error("请稍后重试或联系管理员");
+        }
         // console.log(res, "sssqqq");
         this.getDeviceByDevIdList = res.data.list[0];
       });
+
       // 设备详情接口
       ElecData(devId, now).then((res) => {
         //重置照片
