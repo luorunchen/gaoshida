@@ -40,7 +40,12 @@
     </div>
     <div class="content_wapper">
       <template v-if="this.btnInfo == '用户管理'">
-        <YongHuGuanLi @total="total" ref="YongHuGuanLis" />
+        <YongHuGuanLi
+          @total="total"
+          ref="YongHuGuanLis"
+          :size="size"
+          :current="current"
+        />
       </template>
       <template v-if="this.btnInfo == '权限管理'">
         <QuanXianGuanLi @total="total" ref="YongHuGuanLis" />
@@ -193,6 +198,7 @@ export default {
       color: #fff;
     }
   }
+
   color: #fff;
   width: 100%;
   height: calc(100vh);

@@ -638,6 +638,7 @@ export default {
     padding: 20px 20px 0 20px;
     margin: 0 30px;
     height: 800px;
+    position: relative;
     background: #fff;
   }
   #content_wapper {
@@ -648,6 +649,7 @@ export default {
     // background: #fff;
   }
   .content_wapperCopy {
+    position: relative;
     // box-sizing: border-box;
     // padding: 20px 20px 0 20px;
     // margin: 0 30px;

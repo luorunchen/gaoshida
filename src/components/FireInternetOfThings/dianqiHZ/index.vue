@@ -120,7 +120,7 @@ export default {
         // width: 200px;
         // padding-bottom: 10px;
         height: 32px;
-
+        font-size: 16px;
         li {
           width: 32px;
           margin-right: 10px;

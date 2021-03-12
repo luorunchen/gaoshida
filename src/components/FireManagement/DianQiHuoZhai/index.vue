@@ -60,7 +60,7 @@ export default {
   },
   watch: {
     contractFile(val, lav) {
-      console.log(val, lav);
+      console.log(val);
       // let map;
       // if (lav == null || lav == undefined) {
       //   map = val.split(",");
@@ -69,7 +69,7 @@ export default {
       // }
 
       // console.log(map.reverse());
-      this.map.setZoomAndCenter(10, lav);
+      this.map.setZoomAndCenter(7, val);
     },
   },
   computed: {
@@ -147,7 +147,7 @@ export default {
           var _that = this;
           //绑定事件模块
           this.mass.on("click", function (e) {
-            // console.log(e);
+            console.log("asdasd");
 
             // this.$refs.publicPopUps.initOff();
 
@@ -235,7 +235,7 @@ export default {
         // width: 200px;
         // padding-bottom: 10px;
         height: 32px;
-
+        font-size: 16px;
         li {
           width: 32px;
           margin-right: 10px;

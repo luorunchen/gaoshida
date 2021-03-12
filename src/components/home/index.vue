@@ -7,7 +7,12 @@
         <span>周五</span>
       </div>
       <div class="titleLeft">
-        <img src="../../assets/images/juxing2.png" alt="" />
+        <img
+          src="../../assets/images/juxing2.png"
+          alt=""
+          width="100%"
+          height="100%"
+        />
         <div class="btnLeft">
           <div class="btnLeftOne"><span>首页</span></div>
           <div class="btnLeftTwo" @click="FireInternetOfThings">
@@ -16,9 +21,10 @@
         </div>
       </div>
       <el-upload
+        :data="{ user_name: this.utils.userName }"
         ref="upload"
         class="upload-demo"
-        action="/earlyWarn/upload.action?user_name=13076920054"
+        action="/earlyWarn/upload.action"
         list-type="picture"
         :on-success="handlePreview"
         :show-file-list="false"
@@ -27,8 +33,6 @@
           <p class="titleName">智慧安全系统平台</p>
           <img
             v-if="this.images_wapper == ''"
-            width="478px"
-            height="100%"
             src="../../assets/images/juxing4.png"
             alt=""
           />
@@ -37,7 +41,12 @@
       </el-upload>
 
       <div class="titleRight">
-        <img src="../../assets/images/juxing3.png" alt="" />
+        <img
+          src="../../assets/images/juxing3.png"
+          alt=""
+          width="100%"
+          height="100%"
+        />
         <div class="btnRight">
           <div class="btnRightOne" @click="FireManagement">
             <span>智慧用电</span>
@@ -51,13 +60,8 @@
         </div>
       </div>
       <div class="titlePassword">
-        <span style="margin-right: 58px">
-          <img
-            src="../../assets//images/mima.png"
-            width="18px"
-            height="15px"
-            alt=""
-          />
+        <span>
+          <img src="../../assets//images/mima.png" alt="" />
           <el-button type="text" @click="dialogVisible = true"
             >更改密码</el-button
           >
@@ -128,12 +132,7 @@
           </el-dialog>
         </span>
         <span @click="out">
-          <img
-            src="../../assets//images/tuichu.png"
-            width="18px"
-            height="15px"
-            alt=""
-          />退出</span
+          <img src="../../assets//images/tuichu.png" alt="" />退出</span
         >
       </div>
     </div>
@@ -160,13 +159,13 @@
         <div class="infoYMR">
           <div class="infoYMRLi">
             <div class="infoYMRLi_item"></div>
-            <p style="color: #f830af; font-size: 24px">
+            <p style="color: #f830af">
               {{ this.AlarmData.AlarmNo }}
             </p>
-            <p style="color: #9bdef0; font-size: 14px">未处理报警</p>
+            <p style="color: #9bdef0">未处理报警</p>
           </div>
           <div class="infoYMRLi">
-            <p style="color: #00c0ff; font-size: 24px">
+            <p style="color: #00c0ff">
               {{ this.AlarmData.AlarmYes }}
             </p>
 
@@ -178,17 +177,17 @@
         <div class="infoYMR">
           <div class="infoYMRLi">
             <div class="infoYMRLi_item"></div>
-            <p style="color: #f830af; font-size: 24px">
+            <p style="color: #f830af">
               {{ this.AlarmData.FaultNo }}
             </p>
-            <p style="color: #9bdef0; font-size: 14px">未处理故障数</p>
+            <p style="color: #9bdef0">未处理故障数</p>
           </div>
           <div class="infoYMRLi">
             <div class="infoYMRLi_item"></div>
-            <p style="color: #00c0ff; font-size: 24px">
+            <p style="color: #00c0ff">
               {{ this.AlarmData.FaultYes }}
             </p>
-            <p style="color: #9bdef0; font-size: 14px">已处理故障数</p>
+            <p style="color: #9bdef0">已处理故障数</p>
           </div>
           <!-- <div class="infoYMRLi"></div>
           <div class="infoYMRLi"></div> -->
@@ -216,7 +215,7 @@
     <div class="infoRight">
       <div class="one">
         <p>报警信息</p>
-        <div class="scroll_wapper">
+        <div class="scroll_wapper" v-if="this.AlarmInfo.length > 0">
           <div
             class="oneEchartWapper"
             v-for="(item, index) in AlarmInfo"
@@ -248,6 +247,7 @@
             加载更多....
           </p>
         </div>
+        <div class="no_alarm" v-else>暂无报警</div>
       </div>
       <div class="two">
         <p>本周故障数及报警数</p>
@@ -258,6 +258,7 @@
         <div class="threeEchart_right"></div>
       </div>
     </div>
+    <PublicPopUps ref="publicPopUps" :pagetype="pagetype" />
   </div>
 </template>
 
@@ -275,10 +276,12 @@ import {
   DeviceProjectNew,
   getLogo,
 } from "@/api/index.js";
+import PublicPopUps from "../FireInternetOfThings/translate/publicPopUps";
 // import AMap from "AMap";
 export default {
   data() {
     return {
+      pagetype: 2,
       fullscreenLoading: false,
       pageSize: 1,
       AlarmInfo: "",
@@ -390,12 +393,12 @@ export default {
           {
             url: "https://a.amap.com/jsapi_demos/static/images/mass2.png",
             anchor: new AMap.Pixel(4, 4),
-            size: new AMap.Size(11, 11),
+            size: new AMap.Size(20, 20),
           },
           {
             url: "https://a.amap.com/jsapi_demos/static/images/mass0.png",
             anchor: new AMap.Pixel(6, 6),
-            size: new AMap.Size(11, 11),
+            size: new AMap.Size(23, 23),
           },
         ];
         let a = [];
@@ -417,11 +420,16 @@ export default {
         const marker = new AMap.Marker({ content: " ", map: this.map });
         mass.setMap(this.map);
 
+        var _that = this;
         //绑定事件模块
-        // mass.on("mouseover", function (e) {
-        //   marker.setPosition(e.data.lnglat);
-        //   marker.setLabel({ content: e.data.name });
-        // });
+        mass.on("click", function (e) {
+          console.log("asdasd");
+
+          // this.$refs.publicPopUps.initOff();
+
+          _that.$refs.publicPopUps.initOff();
+          _that.$refs.publicPopUps.echart_wapper(e.data.pid);
+        });
       });
     },
     submitForm(formName) {
@@ -977,6 +985,9 @@ export default {
       this.$router.push("/login");
     },
   },
+  components: {
+    PublicPopUps,
+  },
 };
 </script>
 <style lang='less' scoped>
@@ -1008,6 +1019,7 @@ export default {
       width: 500px;
       height: 48px;
       .btnLeft {
+        font-size: 16px;
         float: right;
         display: flex;
         margin-top: -44px;
@@ -1053,6 +1065,10 @@ export default {
       // transform: translateX(-30%);
       text-align: center;
       // margin: 0 auto;
+      img {
+        width: 478px;
+        height: 100%;
+      }
       .titleName {
         font-size: 35px;
         position: absolute;
@@ -1070,6 +1086,7 @@ export default {
       width: 460px;
       height: 48px;
       .btnRight {
+        font-size: 16px;
         // float: right;
         display: flex;
         margin-top: -44px;
@@ -1119,6 +1136,15 @@ export default {
         text-align: center;
         line-height: 40px;
         font-size: 18px;
+      }
+      img {
+        width: 18px;
+        height: 15px;
+      }
+      span {
+        &:nth-child(1) {
+          margin-right: 58px;
+        }
       }
       /deep/.el-dialog {
         background: none;
@@ -1204,6 +1230,20 @@ export default {
           height: 50px;
           background: rgb(15, 60, 118);
           position: relative;
+          p {
+            &:nth-child(1) {
+              font-size: 24px;
+            }
+            &:nth-child(2) {
+              font-size: 24px;
+            }
+            &:nth-child(3) {
+              font-size: 14px;
+            }
+            &:nth-child(4) {
+              font-size: 214px;
+            }
+          }
           .infoYMRLi_item {
             position: absolute;
             bottom: 0;
@@ -1303,7 +1343,7 @@ export default {
   }
   .center {
     position: absolute;
-    z-index: 9999999999;
+    z-index: 999;
     left: 400px;
     width: 58%;
     bottom: 30px;
@@ -1320,6 +1360,12 @@ export default {
     .gaoshidaEchart {
       height: 200px;
     }
+  }
+  .no_alarm {
+    text-align: center;
+    line-height: 200px;
+    font-size: 40px;
+    color: #999;
   }
   .infoRight {
     color: #fff;

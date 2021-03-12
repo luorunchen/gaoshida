@@ -16,9 +16,33 @@ module.exports = {
     //   },
     // }
   },
+  chainWebpack: (config) => {
+    config.module
+      .rule('vue')
+      .test(/\.vue$/)
+      .use('style-vw-loader')
+      .loader('style-vw-loader')
+      .options({
+        viewportWidth: 1920,//传参
+      })
+  },
+
   configureWebpack: {
     externals: {
       'AMap': 'AMap' // 高德地图配置
+    }
+  },
+  css: {
+    loaderOptions: {
+      css: {},
+      postcss: {
+        plugins: [
+          require('postcss-px2rem')({
+            remUnit: 192//列如设计稿尺寸为320
+          })
+        ],
+
+      }
     }
   },
 

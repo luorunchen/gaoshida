@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import ElementUI from 'element-ui';
+import "lib-flexible"
 import 'element-ui/lib/theme-chalk/index.css';
 // 引入echarts
 import * as echarts from 'echarts';
@@ -10,6 +11,10 @@ import * as echarts from 'echarts';
 import axios from 'axios'
 
 import utils from './utils/utils.js'
+
+import moment from 'moment'//导入文件 
+
+Vue.prototype.$moment = moment;//赋值使用
 
 Vue.prototype.axios = axios;
 Vue.prototype.utils = utils;

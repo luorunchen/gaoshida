@@ -53,7 +53,7 @@
                 :key="index"
                 @click="see(item.BH)"
               >
-                <li>
+                <li v-if="item.text != null || item.text != undefined">
                   <span v-if="item.value != null || item.value != undefined"
                     >{{ index + 1 }}.</span
                   >
@@ -441,514 +441,7 @@ export default {
     see(data) {
       this.$refs.publicPopUps.see(data);
     },
-    // 查看echart图片函数
-    // see(devId) {
-    //   getDeviceByDevId(devId).then((res) => {
-    //     // console.log(res, "sssqqq");
-    //     this.getDeviceByDevIdList = res.data.list[0];
-    //   });
-    //   // 设备详情接口
-    //   ElecData(devId, now).then((res) => {
-    //     //重置照片
-    //     this.ElecDataList_images = [];
-    //     this.ElecDataList = res.data;
 
-    //     if (res.data.DevData[0].image != "") {
-    //       const list = res.data.DevData[0].image.split(",");
-    //       list.forEach((Element) => {
-    //         // Element =
-    //         let a = "http://edog-online.com/ctx/devPic/" + Element;
-    //         this.ElecDataList_images.push(a);
-    //       });
-    //     }
-
-    //     this.ElecDataList_typeName = res.data.DevData[0].typeName;
-    //     console.log(this.ElecDataList_typeName);
-    //     ReadParameterApi(res.data.DevData[0].productNumber).then((res) => {
-    //       // console.log(res, "ldjakjdla");
-    //       // this.getDeviceByDevIdList.row = res.data.row;
-    //       // console.log(this.getDeviceByDevIdList, 7899987978);
-    //       this.shengyu_loudian = {
-    //         oneAlarm: this.getDeviceByDevIdList.mess2[0]
-    //           .noLeakageAlarmACurrentValue,
-    //         twoAlarm: this.getDeviceByDevIdList.mess2[0]
-    //           .noLeakageAlarmBCurrentValue,
-    //         threeAlarm: this.getDeviceByDevIdList.mess2[0]
-    //           .noLeakageAlarmCCurrentValue,
-    //         fourAlarm: this.getDeviceByDevIdList.mess2[0]
-    //           .leakageAlarmCurrentValue,
-    //         oneDianLiu: res.data.row.ADianLiu,
-    //         twoDianLiu: res.data.row.BDianLiu,
-    //         threeDianLiu: res.data.row.CDianLiu,
-    //         fourDianLiu: res.data.row.SYdianliu,
-    //         oneVolatage: this.getDeviceByDevIdList.mess2[0]
-    //           .noVoltageAlarmAValue,
-    //         twoVolatage: this.getDeviceByDevIdList.mess2[0]
-    //           .noVoltageAlarmBValue,
-    //         threeVolatage: this.getDeviceByDevIdList.mess2[0]
-    //           .noVoltageAlarmCValue,
-    //         oneDianYa: res.data.row.ADianYa,
-    //         twoDianYa: res.data.row.BDianYa,
-    //         threeDianYa: res.data.row.CDianYa,
-    //         oneTempera: this.getDeviceByDevIdList.mess2[0]
-    //           .noAlarmATemperatureValue,
-    //         twoTempera: this.getDeviceByDevIdList.mess2[0]
-    //           .noAlarmBTemperatureValue,
-    //         threeTempera: this.getDeviceByDevIdList.mess2[0]
-    //           .noAlarmCTemperatureValue,
-    //         fourTempera: this.getDeviceByDevIdList.mess2[0]
-    //           .noAlarmNTemperatureValue,
-    //         oneWenDu: res.data.row.AWenDu,
-    //         twoWenDu: res.data.row.BWenDu,
-    //         threeWenDu: res.data.row.CWenDu,
-    //         fourWenDu: res.data.row.NWenDu,
-    //       };
-    //       console.log(this.shengyu_loudian);
-    //     });
-    //   });
-    //   const time = new Date();
-    //   const year = time.getFullYear();
-    //   const month = time.getMonth() + 1;
-    //   const day = time.getDate();
-    //   const now = year + "-" + month + "-" + day;
-
-    //   ElectricDeviceDate(devId, now).then((res) => {
-    //     let dianLiuUa = [];
-    //     let dianLiuUb = [];
-    //     let dianLiuUc = [];
-    //     let dianLiuUd = [];
-    //     let dianYaA = [];
-    //     let dianYaB = [];
-    //     let dianYaC = [];
-    //     let wenduA = [];
-    //     let wenduB = [];
-    //     let wenduC = [];
-    //     let wenduN = [];
-    //     let name = [];
-
-    //     //图标数据赋值
-    //     res.data.Data.forEach((element) => {
-    //       dianLiuUa.push(element.ia);
-    //       dianLiuUb.push(element.ib);
-    //       dianLiuUc.push(element.ic);
-    //       dianLiuUd.push(element.ld);
-    //       wenduA.push(element.ta);
-    //       wenduB.push(element.tb);
-    //       wenduC.push(element.tc);
-    //       wenduN.push(element.tn);
-    //       dianYaA.push(element.ua);
-    //       dianYaB.push(element.ub);
-    //       dianYaC.push(element.uc);
-    //       name.push(element.happenedTime);
-    //     });
-    //     var one_echart_left;
-    //     var two_echart_left;
-    //     var three_echart_left;
-    //     //重置图表
-    //     console.log(
-    //       one_echart_left != null &&
-    //         one_echart_left != undefined &&
-    //         one_echart_left != ""
-    //     );
-    //     // this.$nextTick(() => {
-    //     //   if (
-    //     //     one_echart_left != null ||
-    //     //     one_echart_left != undefined ||
-    //     //     one_echart_left != ""
-    //     //   ) {
-    //     //     one_echart_left.dispose();
-    //     //   }
-    //     //   if (
-    //     //     two_echart_left != null ||
-    //     //     two_echart_left != undefined ||
-    //     //     two_echart_left != ""
-    //     //   ) {
-    //     //     two_echart_left.dispose();
-    //     //   }
-    //     //   if (
-    //     //     three_echart_left != null ||
-    //     //     three_echart_left != undefined ||
-    //     //     two_echart_left != ""
-    //     //   ) {
-    //     //     three_echart_left.dispose();
-    //     //   }
-    //     // });
-
-    //     this.$nextTick(() => {
-    //       one_echart_left = this.$echarts.init(
-    //         document.querySelector(".echarts_wapper_one_search")
-    //       );
-
-    //       // 电流统计图
-    //       one_echart_left.setOption({
-    //         tooltip: {
-    //           trigger: "axis",
-    //         },
-    //         legend: {
-    //           data: ["A电流(mA)", "B电流(mA)", "C电流(mA)", "剩余电流(mA)"],
-    //         },
-    //         grid: {
-    //           left: "3%",
-    //           right: "4%",
-    //           bottom: "3%",
-    //           containLabel: true,
-    //         },
-    //         toolbox: {
-    //           feature: {
-    //             saveAsImage: {},
-    //           },
-    //         },
-    //         xAxis: {
-    //           type: "category",
-    //           boundaryGap: false,
-    //           data: name.reverse(),
-    //         },
-    //         yAxis: {
-    //           type: "value",
-    //         },
-    //         series: [
-    //           {
-    //             name: "A电流(mA)",
-    //             type: "line",
-
-    //             data: dianLiuUa.reverse(),
-    //           },
-    //           {
-    //             name: "B电流(mA)",
-    //             type: "line",
-
-    //             data: dianLiuUb.reverse(),
-    //           },
-    //           {
-    //             name: "C电流(mA)",
-    //             type: "line",
-
-    //             data: dianLiuUc.reverse(),
-    //           },
-    //           {
-    //             name: "剩余电流(mA)",
-    //             type: "line",
-
-    //             data: dianLiuUd.reverse(),
-    //           },
-    //         ],
-    //       });
-
-    //       // 第二个图表
-    //       two_echart_left = this.$echarts.init(
-    //         document.querySelector(".echarts_wapper_two_search")
-    //       );
-    //       //第三个图表
-    //       two_echart_left.setOption({
-    //         tooltip: {
-    //           trigger: "axis",
-    //         },
-    //         legend: {
-    //           data: ["A温度(℃)", "B温度(℃)", "C温度(℃)", "N温度(℃)"],
-    //         },
-    //         grid: {
-    //           left: "3%",
-    //           right: "4%",
-    //           bottom: "3%",
-    //           containLabel: true,
-    //         },
-    //         toolbox: {
-    //           feature: {
-    //             saveAsImage: {},
-    //           },
-    //         },
-    //         xAxis: {
-    //           type: "category",
-    //           boundaryGap: false,
-    //           data: name.reverse(),
-    //         },
-    //         yAxis: {
-    //           type: "value",
-    //         },
-    //         series: [
-    //           {
-    //             name: "A温度(℃)",
-    //             type: "line",
-
-    //             data: wenduA.reverse(),
-    //           },
-    //           {
-    //             name: "B温度(℃)",
-    //             type: "line",
-
-    //             data: wenduB.reverse(),
-    //           },
-    //           {
-    //             name: "C温度(℃)",
-    //             type: "line",
-
-    //             data: wenduC.reverse(),
-    //           },
-    //           {
-    //             name: "N温度(℃)",
-    //             type: "line",
-
-    //             data: wenduN.reverse(),
-    //           },
-    //         ],
-    //       });
-
-    //       three_echart_left = this.$echarts.init(
-    //         document.querySelector(".echarts_wapper_three_search")
-    //       );
-    //       three_echart_left.setOption({
-    //         tooltip: {
-    //           trigger: "axis",
-    //         },
-    //         legend: {
-    //           data: ["A电压(A)", "B电压(A)", "C电压(A)"],
-    //         },
-    //         grid: {
-    //           left: "3%",
-    //           right: "4%",
-    //           bottom: "3%",
-    //           containLabel: true,
-    //         },
-    //         toolbox: {
-    //           feature: {
-    //             saveAsImage: {},
-    //           },
-    //         },
-    //         xAxis: {
-    //           type: "category",
-    //           boundaryGap: false,
-    //           data: name.reverse(),
-    //         },
-    //         yAxis: {
-    //           type: "value",
-    //         },
-    //         series: [
-    //           {
-    //             name: "A电压(A)",
-    //             type: "line",
-    //             // stack: "总量",
-    //             data: dianYaA.reverse(),
-    //           },
-    //           {
-    //             name: "B电压(A)",
-    //             type: "line",
-    //             // stack: "总量",
-    //             data: dianYaB.reverse(),
-    //           },
-    //           {
-    //             name: "C电压(A)",
-    //             type: "line",
-    //             // stack: "总量",
-    //             data: dianYaC.reverse(),
-    //           },
-    //         ],
-    //       });
-    //     });
-    //   });
-    // },
-
-    //设备设置按钮
-    shebeiBtn(num) {
-      const role = sessionStorage.getItem("role");
-      const power = sessionStorage.getItem("power");
-      switch (num) {
-        //远程断电
-        case "1":
-          if (role == "1000" || power.indexOf("10003003") != -1) {
-            resetclose(this.ElecDataList.DevData[0].productNumber, 0).then(
-              (res) => {
-                if (res.message == "请求成功") {
-                  this.$message.success(res.message);
-                } else {
-                  this.$message.error(res.message);
-                }
-              }
-            );
-          } else {
-            this.$message.error("暂无权限");
-          }
-
-          break;
-
-        //远程开机
-        case "2":
-          if (role == "1000" || power.indexOf("10003004") != -1) {
-            putMessToDeviceOn(
-              this.ElecDataList.DevData[0].productNumber,
-              "shutdown"
-            ).then((res) => {
-              if (res.message == "请求成功") {
-                alert("远程开机成功");
-              } else {
-                alert("请稍后重试");
-              }
-            });
-            break;
-          } else {
-            this.$message.error("暂无权限");
-          }
-        //远程关机
-        case "3":
-          if (role == "1000" || power.indexOf("10003004") != -1) {
-            putMessToDeviceOn(
-              this.ElecDataList.DevData[0].productNumber,
-              "startup"
-            ).then((res) => {
-              if (res.message == "请求成功") {
-                alert("远程开机成功");
-              } else {
-                alert("请稍后重试");
-              }
-            });
-            break;
-          } else {
-            this.message.error("暂无权限");
-          }
-          break;
-        //开启蜂鸣器
-        case "4":
-          if (role == "1000" || power.indexOf("10003004") != -1) {
-            putMessToDeviceOn(
-              this.ElecDataList.DevData[0].productNumber,
-              "voiceon"
-            ).then((res) => {
-              if (res.message == "请求成功") {
-                alert("开启蜂鸣器成功");
-              } else {
-                alert("请稍后重试");
-              }
-            });
-            break;
-          } else {
-            this.$message.error("暂无权限");
-          }
-          break;
-        //关闭蜂鸣器
-        case "5":
-          if (role == "1000" || power.indexOf("10003004") != -1) {
-            putMessToDeviceOn(
-              this.ElecDataList.DevData[0].productNumber,
-              "voiceoff"
-            ).then((res) => {
-              if (res.message == "请求成功") {
-                alert("开启蜂鸣器成功");
-              } else {
-                alert("请稍后重试");
-              }
-            });
-            break;
-          } else {
-            this.message.error("暂无权限");
-          }
-          break;
-        //远程消音
-        case "6":
-          if (role == "1000" || power.indexOf("10003001") != -1) {
-            resetclose(this.ElecDataList.DevData[0].productNumber, 2).then(
-              (res) => {
-                if (res.message == "请求成功") {
-                  alert("远程消音成功");
-                } else {
-                  alert("远程消音失败");
-                }
-              }
-            );
-          } else {
-            this.$message.error("暂无权限");
-          }
-
-          break;
-        //开启流量
-        case "7":
-          if (role == "1000" || power.indexOf("10003004") != -1) {
-            putMessToDeviceOn(
-              this.ElecDataList.DevData[0].productNumber,
-              "openflow"
-            ).then((res) => {
-              if (res.message == "请求成功") {
-                alert("开启流量成功");
-              } else {
-                alert("请稍后重试");
-              }
-            });
-            break;
-          } else {
-            this.$message.error("暂无权限");
-          }
-          break;
-        //远程复位
-        case "8":
-          if (role == "1000" || power.indexOf("10003003") != -1) {
-            resetclosefuwei(this.ElecDataList.DevData[0].productNumber, 2).then(
-              (res) => {
-                if (res.status == "1") {
-                  this.$message.success(res.message);
-                } else {
-                  this.$message.error(res.message);
-                }
-              }
-            );
-          } else {
-            this.$message.error("暂无权限");
-          }
-          break;
-        //授权
-        case "9":
-          if (role == "1000" || power.indexOf("10003004") != -1) {
-            insertClouddog(this.ElecDataList.DevData[0].productNumber).then(
-              (res) => {
-                if (res.list[0].status == "true") {
-                  this.$message.success(
-                    "授权成功.工作日一天后将授权生效,非工作日将延期"
-                  );
-                } else {
-                  this.$message.error("授权失败");
-                }
-              }
-            );
-          }
-          break;
-        //开启屏蔽器
-        case "10":
-          if (role == "1000" || power.indexOf("10003013") != -1) {
-            updateShutdown(
-              this.ElecDataList.DevData[0].productNumber,
-              this.utils,
-              userName
-            ).then((res) => {
-              if (res.status == "true") {
-                layer.open({
-                  content: res.mess,
-                });
-                this.$message.success(res.mess);
-              } else {
-                this.$message.error(res.mess);
-              }
-            });
-          }
-          break;
-        //下发保险单
-        case "11":
-          // console.log(6554654);
-          // console.log(this.ElecDataList.DevData[0].productNumber, 789789);
-          if (role == "1000" || power.indexOf("10003004") != -1) {
-            putMessToDevice(
-              this.ElecDataList.DevData[0].productNumber,
-              this.baoxiandanhao
-            ).then((res) => {
-              if (res.message == "请求成功") {
-                alert("下发保险单号成功");
-              } else {
-                this.$message.error("请稍后重试");
-              }
-            });
-          }
-          // var res = JSON.parse(result);
-          // console.log(res);
-
-          break;
-      }
-    },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
     },
@@ -963,24 +456,45 @@ export default {
       console.log(tab, event);
     },
     selectDeviceByNumberFun() {
-      console.log(123);
-
-      selectDeviceByNumber(this.formInline.user).then((res) => {
-        res.data.forEach((el, index) => {
-          el.text = el.productNumber;
-          el.MC = el.installLocation;
-          el.BH = el.devId;
+      var reg = new RegExp("^[0-9]*$");
+      let dataInfo = [];
+      if (reg.test(this.formInline.user)) {
+        selectDeviceByNumber(this.formInline.user).then((res) => {
+          res.data.forEach((el, index) => {
+            el.text = el.productNumber;
+            el.MC = el.installLocation;
+            el.BH = el.devId;
+          });
+          this.SElec_DetailElecDevice_List_Copy = res.data;
         });
-        this.SElec_DetailElecDevice_List_Copy = res.data;
-      });
+      } else {
+        for (let i = 0; i < this.DeviceProjectNewData.length; i++) {
+          if (
+            this.DeviceProjectNewData[i].address.indexOf(
+              this.formInline.user
+            ) >= 0
+          ) {
+            // console.log(data[i].address, 99999)
+            this.DeviceProjectNewData[
+              i
+            ].device_name = this.DeviceProjectNewData[i].name;
+            this.DeviceProjectNewData[i].MC = this.DeviceProjectNewData[
+              i
+            ].address;
+            dataInfo.push(this.DeviceProjectNewData[i]);
+          }
+        }
+
+        this.SElec_DetailElecDevice_List_Copy = dataInfo;
+      }
     },
   },
   updated() {
     if (this.SElec_DetailElecDevice_List.length > 0) {
-      this.$refs.right_one.style.height = "450" + "px";
+      this.$refs.right_one.style.height = "2.34" + "rem";
     }
     if (this.SElec_DetailElecDevice_List_Copy.length > 0) {
-      this.$refs.right_one.style.height = "450" + "px";
+      this.$refs.right_one.style.height = "2.34" + "rem";
     }
   },
 };
@@ -1380,6 +894,7 @@ export default {
       width: 100%;
     }
   }
+
   .right_two {
     margin-top: 20px;
     margin-left: 20px;
@@ -1579,6 +1094,57 @@ export default {
   .right_one {
     // background-image: ("../../../assets/images/zhengchangbili.png");
     height: 90px;
+    background-size: 100% 450px;
+    background-image: url("../../../assets/images/sousuo.png");
+    .chaxun {
+      padding-top: 20px;
+      padding-left: 20px;
+      /deep/.el-input__inner {
+        background: #021019;
+        color: #fff;
+        border: 1px solid #3094d5;
+      }
+    }
+    .scroll_wapper {
+      // padding-left: px;
+      // margin-top: 15px;
+      // position: relative;
+
+      overflow-y: auto;
+      // height: 290px; //高度根据需求自行设定
+      max-height: 350px;
+      overflow-x: hidden;
+      padding-bottom: -10px;
+      .right_info {
+        padding-left: 1px;
+        // margin-top: 5px;
+        margin-left: 3px;
+        // padding: none;
+        width: 99%;
+        // height: 100px;
+        border-top: 1px solid #3486da;
+        box-sizing: border-box;
+        .olList {
+          padding-left: 18px;
+          font-size: 14px;
+
+          background: linear-gradient(-87deg, #3053af, #14295a);
+          border-top: 1px solid #3486da;
+
+          // height: 93px;
+          &:nth-child(1) {
+            border-top: none;
+          }
+          li {
+            padding-bottom: 5px;
+          }
+        }
+      }
+    }
+  }
+  .right_one_copy {
+    // background-image: ("../../../assets/images/zhengchangbili.png");
+    height: 450px;
     background-size: 100% 450px;
     background-image: url("../../../assets/images/sousuo.png");
     .chaxun {

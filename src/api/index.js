@@ -731,3 +731,45 @@ export function getLogo(user_name) {
 }
 
 
+//用电规划
+export function getDevTime(startTime, endTime, imei, week, state, content, username) {
+  return service({
+    url: `/getDevTime.action`,
+    method: 'GET',
+    params: {
+      startTime, endTime, imei, week, state, content, username
+    }
+  })
+}
+//分享项目
+export function addRegisterProject(pid, username) {
+  return service({
+    url: `/admin/project/addRegisterProject.action`,
+    method: 'GET',
+    params: {
+      pid, username
+    }
+  })
+}
+//分配项目
+export function addRegisterDevice(pid, username, ower) {
+  return service({
+    url: `/admin/device/addRegisterDevice.action`,
+    method: 'GET',
+    params: {
+      pid, username, ower
+    }
+  })
+}
+//历史报警
+export function getHistDeviceAlarm(productNumber, date) {
+  return service({
+    url: `/admin/deviceAlarm/getHistDeviceAlarm.action`,
+    method: 'GET',
+    params: {
+      productNumber, date
+    }
+  })
+}
+
+

@@ -80,7 +80,7 @@
                 >编辑</span
               >
               <span @click="open(scope.row.name, scope.row.devId)">删除</span>
-              <span>分配</span>
+              <span @click="fenPei(scope.row.pid)">分配</span>
               <span
                 @click="
                   (dialogVisible_set = true), set(scope.row.productNumber)
@@ -468,6 +468,7 @@ import {
   resetclosefuwei,
   UpdateDevicePush,
   SetParameterApi,
+  addRegisterDevice,
 } from "@/api/index.js";
 export default {
   data() {
@@ -598,6 +599,35 @@ export default {
     // this.bj_map();
   },
   methods: {
+    fenPei(pid) {
+      this.$prompt("请输入分配的账号", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+        // inputErrorMessage: "邮箱格式不正确",
+      })
+        .then(({ value }) => {
+          addRegisterDevice(pid, this.utils.userName, value).then(
+            (res) => {
+              if (res.data.list[0].status == "true") {
+                this.$message.success(res.data.list[0].mess);
+              } else {
+                this.$message.error(res.data.list[0].mess);
+              }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
+            }
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$message({
+            type: "info",
+            message: "取消输入",
+          });
+        });
+    },
     trueON() {
       updateDeviceSim(
         this.devID,

@@ -40,14 +40,15 @@
         <el-table-column prop="address" label="操作">
           <template slot-scope="scope">
             <div class="caozuo">
-              <span @click="set(scope.row.devId)">设置</span>
+              <span @click="set(scope.row.devId, scope.row.productNumber)"
+                >设置</span
+              >
             </div>
           </template>
         </el-table-column>
       </el-table>
     </template>
     <div class="block">
-      <span class="demonstration">完整功能</span>
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -68,6 +69,7 @@
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
+          value-format="yyyy-MM-dd HH:mm:ss"
         >
         </el-date-picker>
       </div>
@@ -75,32 +77,32 @@
       <el-checkbox-group v-model="checkList">
         <el-row>
           <el-col :span="6">
-            <el-checkbox label="星期一" border></el-checkbox
-          ></el-col>
+            <el-checkbox label="1" border>星期一</el-checkbox></el-col
+          >
           <el-col :span="6"
-            ><el-checkbox label="星期二" border></el-checkbox
-          ></el-col>
+            ><el-checkbox label="2" border>星期二</el-checkbox></el-col
+          >
         </el-row>
         <el-row>
           <el-col :span="6">
-            <el-checkbox label="星期三" border></el-checkbox
-          ></el-col>
+            <el-checkbox label="3" border>星期三</el-checkbox></el-col
+          >
           <el-col :span="6"
-            ><el-checkbox label="星期四" border></el-checkbox
-          ></el-col>
+            ><el-checkbox label="4" border>星期四</el-checkbox></el-col
+          >
         </el-row>
         <el-row>
           <el-col :span="6">
-            <el-checkbox label="星期五" border></el-checkbox
-          ></el-col>
+            <el-checkbox label="5" border>星期五</el-checkbox></el-col
+          >
           <el-col :span="6"
-            ><el-checkbox label="星期六" border></el-checkbox
-          ></el-col>
+            ><el-checkbox label="6" border>星期六</el-checkbox></el-col
+          >
         </el-row>
         <el-row>
           <el-col :span="6">
-            <el-checkbox label="星期日" border></el-checkbox
-          ></el-col>
+            <el-checkbox label="7" border>星期日</el-checkbox></el-col
+          >
         </el-row>
 
         <!-- <el-checkbox label="星期三" border></el-checkbox>
@@ -112,7 +114,7 @@
 
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false"
+        <el-button type="primary" @click="(dialogVisible = false), setTrue()"
           >确 定</el-button
         >
       </span>
@@ -121,7 +123,7 @@
 </template>
 
 <script>
-import { getDeviceStatus } from "@/api/index.js";
+import { getDeviceStatus, getDevTime } from "@/api/index.js";
 export default {
   data() {
     return {
@@ -143,6 +145,45 @@ export default {
     this.getDeviceStatusFun();
   },
   methods: {
+    setTrue() {
+      // console.log(this.timeValue);
+      console.log(this.checkList);
+      var start = this.$moment(this.timeValue[0]).day();
+      console.log(start);
+      var end = this.$moment(this.timeValue[1]).day();
+      console.log(end);
+
+      let time = this.$moment(this.timeValue[1]).diff(
+        this.$moment(this.timeValue[0]),
+        "days"
+      );
+
+      if (time < 7 && this.checkList.length >= 7) {
+        return this.$message.error("shibai");
+      }
+      console.log(time);
+
+      getDevTime(
+        this.timeValue[0],
+        this.timeValue[1],
+        this.productNumber,
+        this.checkList.toString(),
+        "0",
+        "default",
+        this.utils.userName
+      ).then(
+        (res) => {
+          if (res.data.status == "true") {
+            this.$message.success("设置成功");
+          } else {
+            this.$message.error("设置失败");
+          }
+        },
+        () => {
+          this.$message.error("请稍后重试或联系管理员");
+        }
+      );
+    },
     onSubmit() {
       console.log("submit!");
       this.getDeviceStatusFun();
@@ -172,8 +213,9 @@ export default {
         this.totals = res.data.total * 1;
       });
     },
-    set() {
+    set(dev, num) {
       this.dialogVisible = true;
+      this.productNumber = num;
     },
   },
 };

@@ -71,6 +71,7 @@
               >
               <span @click="open(scope.row.pid, scope.row.name)">删除</span>
               <span @click="newClick">新增设备</span>
+              <span @click="fenxiangClick(scope.row.pid)">分享</span>
             </div></template
           >
         </el-table-column>
@@ -386,6 +387,7 @@ import {
   deletegalFireMan,
   addDevice,
   newUpdateProjectSim,
+  addRegisterProject,
 } from "@/api/index.js";
 export default {
   data() {
@@ -492,6 +494,38 @@ export default {
     this.getAllProjecForStateFun(10, 1);
   },
   methods: {
+    //分享按钮
+    fenxiangClick(pid) {
+      this.$prompt("请输入分享的账号", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+        // inputErrorMessage: "邮箱格式不正确",
+      })
+        .then(({ value }) => {
+          addRegisterProject(pid, this.utils.userName).then(
+            (res) => {
+              if (res.data.list[0].status == "true") {
+                this.$message({
+                  type: "success",
+                  message: "分享成功,您分享的账号是: " + value,
+                });
+              } else {
+                this.$message.error("分享失败");
+              }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
+            }
+          );
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "取消输入",
+          });
+        });
+    },
     //删除防火员和责任人
     deletegalFireManFun() {
       deletegalFireMan(this.mapInfo.delet).then(

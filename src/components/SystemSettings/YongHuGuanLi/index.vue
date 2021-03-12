@@ -205,6 +205,7 @@ import {
   addUserRole,
 } from "@/api/index.js";
 export default {
+  props: ["size", "current"],
   data() {
     return {
       formInline: {
@@ -258,7 +259,7 @@ export default {
         return this.$message.error("密码不能为空");
       }
 
-      console.log(this.addPrope.name, "我是log");
+      // console.log(this.addPrope.name, "我是log");
       if (this.addPrope.name == "") {
         this.addPrope.name = this.addPrope.username;
       }
@@ -291,13 +292,14 @@ export default {
         this.addPrope.type_down
       ).then(
         (res) => {
-          if (res.data.list[0].status == "true") {
+          if (res.data.list[0].status == true) {
             this.$message.success("新增成功");
           } else {
             this.$message.error(res.data.list[0].mess);
           }
         },
-        () => {
+        (err) => {
+          console.log(err);
           this.$message.error("请稍后重试或联系管理员");
         }
       );
@@ -329,6 +331,7 @@ export default {
           // console.log(res.data.list[0].status);
           if (res.data.list[0].status == true) {
             this.$message.success("编辑成功");
+            this.action(this.current, this.size);
           } else {
             this.$message.error("编辑失败");
           }
