@@ -55,7 +55,7 @@
             <span>系统设置</span>
           </div>
           <div class="btnRightThree">
-            <span>报警声音(开)</span>
+            <span @click="audioON">报警声音({{ onOFF }})</span>
           </div>
         </div>
       </div>
@@ -80,40 +80,37 @@
             >
               <!-- 原密码 -->
               <el-form-item
-                prop="age"
+                prop="Odd_Password"
                 :rules="[{ required: true, message: '原密码不能为空' }]"
               >
                 <el-input
                   prefix-icon="el-icon-goods"
                   placeholder="原密码"
-                  type="age"
-                  v-model.number="numberValidateForm.age"
+                  v-model="numberValidateForm.Odd_Password"
                   autocomplete="off"
                 ></el-input>
               </el-form-item>
               <!-- 新密码 -->
               <el-form-item
-                prop="age"
+                prop="New_Password"
                 :rules="[{ required: true, message: '新密码不能为空' }]"
               >
                 <el-input
                   prefix-icon="el-icon-goods"
                   placeholder="新密码"
-                  type="age"
-                  v-model.number="numberValidateForm.age"
+                  v-model="numberValidateForm.New_Password"
                   autocomplete="off"
                 ></el-input>
               </el-form-item>
               <!-- 确认密码 -->
               <el-form-item
-                prop="age"
+                prop="True_Password"
                 :rules="[{ required: true, message: '确认不能为空' }]"
               >
                 <el-input
                   placeholder="确认密码"
                   prefix-icon="el-icon-goods"
-                  type="age"
-                  v-model.number="numberValidateForm.age"
+                  v-model="numberValidateForm.True_Password"
                   autocomplete="off"
                 ></el-input>
               </el-form-item>
@@ -132,7 +129,7 @@
           </el-dialog>
         </span>
         <span @click="out">
-          <img src="../../assets//images/tuichu.png" alt="" />退出</span
+          <img src="../../assets/images/tuichu.png" alt="" />退出</span
         >
       </div>
     </div>
@@ -215,39 +212,46 @@
     <div class="infoRight">
       <div class="one">
         <p>报警信息</p>
-        <div class="scroll_wapper" v-if="this.AlarmInfo.length > 0">
-          <div
-            class="oneEchartWapper"
-            v-for="(item, index) in AlarmInfo"
-            :key="index"
-          >
-            <div class="oneEchart">
-              <div style="display: flex">
-                <div class="circular"></div>
-                <template>{{ item.isTrafficname }}</template>
-              </div>
+        <vueSeamlessScroll
+          :data="AlarmInfo"
+          class="scroll_wapper"
+          :class-option="classOption"
+        >
+          <div class="scroll_wapper" v-if="this.AlarmInfo.length > 0">
+            <div
+              class="oneEchartWapper"
+              v-for="(item, index) in AlarmInfo"
+              :key="index"
+            >
+              <div class="oneEchart">
+                <div style="display: flex">
+                  <div class="circular"></div>
+                  <template>{{ item.isTrafficname }}</template>
+                </div>
 
-              <template>
-                {{ item.creationtime }}
-              </template>
-              >
-            </div>
-            <div style="margin-left: 14px; color: #00e4ff">
-              <div>设备:{{ item.deviceno_name }}</div>
-              <div>地址:{{ item.address }}</div>
+                <template>
+                  {{ item.creationtime }}
+                </template>
+                >
+              </div>
+              <div style="margin-left: 14px; color: #00e4ff">
+                <div>设备:{{ item.deviceno_name }}</div>
+                <div>地址:{{ item.address }}</div>
+              </div>
             </div>
           </div>
-          <p
-            v-if="this.AlarmInfo != ''"
-            @click="loadMore"
-            v-loading.lock="fullscreenLoading"
-            element-loading-spinner="el-icon-loading"
-            element-loading-background="rgba(12, 33, 77, 0.8)"
-          >
-            加载更多....
-          </p>
-        </div>
-        <div class="no_alarm" v-else>暂无报警</div>
+          <div class="no_alarm" v-else>暂无报警</div>
+        </vueSeamlessScroll>
+        <p
+          class="sc_p"
+          v-if="this.AlarmInfo != ''"
+          @click="loadMore"
+          v-loading.lock="fullscreenLoading"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="rgba(12, 33, 77, 0.8)"
+        >
+          加载更多....
+        </p>
       </div>
       <div class="two">
         <p>本周故障数及报警数</p>
@@ -275,7 +279,10 @@ import {
   AlarmInforMore,
   DeviceProjectNew,
   getLogo,
+  updateuserpassword,
 } from "@/api/index.js";
+import vueSeamlessScroll from "vue-seamless-scroll";
+import md5 from "js-md5";
 import PublicPopUps from "../FireInternetOfThings/translate/publicPopUps";
 // import AMap from "AMap";
 export default {
@@ -284,7 +291,7 @@ export default {
       pagetype: 2,
       fullscreenLoading: false,
       pageSize: 1,
-      AlarmInfo: "",
+      AlarmInfo: [],
       btnColor: "d",
       AlarmData: {
         AlarmNo: "",
@@ -295,8 +302,11 @@ export default {
       images_wapper: "",
       dialogVisible: false,
       numberValidateForm: {
-        age: "",
+        Odd_Password: "",
+        New_Password: "",
+        True_Password: "",
       },
+      onOFF: "关",
     };
   },
   mounted() {
@@ -311,6 +321,18 @@ export default {
     });
   },
   methods: {
+    // 声音开关
+    audioON() {
+      // console.log(123);
+      if (this.onOFF == "开") {
+        this.$store.commit("SoundSwitchFun", "关");
+        return (this.onOFF = "关");
+      }
+      if (this.onOFF == "关") {
+        this.onOFF = "开";
+        this.$store.commit("SoundSwitchFun", "开");
+      }
+    },
     //上传图片
     handlePreview(response, file, fileList) {
       this.images_wapper = `http://${response.data[0]}`;
@@ -433,9 +455,25 @@ export default {
       });
     },
     submitForm(formName) {
+      let odd = this.numberValidateForm.Odd_Password;
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert("submit!");
+          updateuserpassword(
+            this.numberValidateForm.New_Password,
+            md5(odd),
+            this.utils.userName
+          ).then(
+            (res) => {
+              if (res.data.list[0].status == true) {
+                this.$message.success("修改成功");
+              } else {
+                this.$message.error(res.data.list[0].err_msg);
+              }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员 ");
+            }
+          );
         } else {
           console.log("error submit!!");
           return false;
@@ -985,8 +1023,24 @@ export default {
       this.$router.push("/login");
     },
   },
+
+  computed: {
+    classOption() {
+      return {
+        step: 0.5, // 数值越大速度滚动越快
+        limitMoveNum: 3, // 开始无缝滚动的数据量 this.dataList.length
+        hoverStop: true, // 是否开启鼠标悬停stop
+        direction: 1, // 0向下 1向上 2向左 3向右
+        openWatch: true, // 开启数据实时监控刷新dom
+        singleHeight: 0, // 单步运动停止的高度(默认值0是无缝不停止的滚动) direction => 0/1
+        singleWidth: 0, // 单步运动停止的宽度(默认值0是无缝不停止的滚动) direction => 2/3
+        waitTime: 1000, // 单步运动停止的时间(默认值1000ms)
+      };
+    },
+  },
   components: {
     PublicPopUps,
+    vueSeamlessScroll,
   },
 };
 </script>
@@ -1386,9 +1440,17 @@ export default {
         line-height: 60px;
         font-size: 18px;
       }
+
+      .sc_p {
+        text-align: center;
+        line-height: 30px;
+        color: #999;
+        font-size: 14px;
+        cursor: pointer;
+      }
       .scroll_wapper {
-        overflow-y: auto;
-        height: 77%; //高度根据需求自行设定
+        // overflow-y: auto;
+        height: 65%; //高度根据需求自行设定
         overflow-x: hidden;
         .oneEchartWapper {
           width: 332px;
@@ -1408,13 +1470,6 @@ export default {
               margin-right: 5px;
             }
           }
-        }
-        p {
-          text-align: center;
-          line-height: 30px;
-          color: #999;
-          font-size: 14px;
-          cursor: pointer;
         }
       }
     }

@@ -185,6 +185,10 @@ export default {
     transform: translateX(-50%);
     margin: 0 auto;
     width: 240px;
+    .titleIMG {
+      width: 478px;
+      height: 68px;
+    }
     // height: 34px;
   }
   .titleFZ {

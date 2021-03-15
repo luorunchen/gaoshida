@@ -532,6 +532,7 @@
               this.$route.path != '/FireInternetOfThings/PowerDetection'
             "
           >
+            {{ this.ElecDataList_typeName }}
             <el-row
               :gutter="20"
               v-for="(item, index) in getDeviceByDevIdList.mess5"
@@ -1171,6 +1172,7 @@
               this.$route.path != '/FireInternetOfThings/PowerDetection'
             "
           >
+            <!-- {{ this.getDeviceByDevIdList.mess2 }}123 -->
             <el-row
               :gutter="20"
               v-for="(item, index) in getDeviceByDevIdList.mess2"
@@ -2365,6 +2367,9 @@ export default {
           res.data.list[0].mess5[0] == null &&
           res.data.list[0].mess2 == "[]"
         ) {
+          return this.$message.error("请稍后重试或联系管理员");
+        }
+        if (res.data.list[0].mess5 == "[]" && res.data.list[0].mess2 == "[]") {
           return this.$message.error("请稍后重试或联系管理员");
         }
         this.getDeviceByDevIdList = res.data.list[0];

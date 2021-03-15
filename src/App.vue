@@ -1,7 +1,9 @@
 <template>
   <div id="baoj">
+    <audio src="./assets/6709.mp3" id="audio" loop></audio>
     <div class="weiyi">
       <el-dialog
+        :before-close="handleClose"
         title="报警信息"
         :visible.sync="dialogVisible"
         width="20%"
@@ -38,8 +40,46 @@ export default {
   components: {
     Home,
   },
+  watch: {
+    // listData(val) {
+    //   console.log(val, 654654654);
+    //   if (val == "关") {
+    //     this.audo.pause();
+    //   } else {
+    //     this.audo.play();
+    //   }
+    // },
+    dialogVisible(val) {
+      // console.log(val, "playState");
+      // console.log(this.listData, "playState");
+      if (val == true && this.listData == "开") {
+        this.$nextTick(() => {
+          this.audo = document.getElementById("audio");
+          // console.log(this.audo);
+          this.audo.play();
+        });
+      }
+    },
+  },
+  computed: {
+    listData() {
+      return this.$store.state.SoundSwitch;
+    },
+  },
+  methods: {
+    handleClose(done) {
+      if (this.listData == "开") {
+        this.audo.pause();
+      }
+
+      done();
+    },
+  },
   mounted() {
-    // this.dialogVisible = true;
+    // setInterval(() => {
+    //   this.dialogVisible = true;
+    // }, 5000);
+
     let goEasy = GoEasy.getInstance({
       host: "hangzhou.goeasy.io", //应用所在的区域地址: 【hangzhou.goeasy.io |singapore.goeasy.io】
       appkey: "BC-e7642099b1ac4eedbabd867f4eff1330", //替换为您的应用appkey
@@ -79,7 +119,7 @@ export default {
       },
       onSuccess: function (message) {
         console.log("Channel订阅成功。");
-        this.dialogVisible = true;
+        // this.dialogVisible = true;
       },
       onFailed: function (error) {
         console.log(

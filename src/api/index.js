@@ -771,5 +771,15 @@ export function getHistDeviceAlarm(productNumber, date) {
     }
   })
 }
+//修改密码
+export function updateuserpassword(passwordencrypt, password, user_name) {
+  return service({
+    url: `/updateuserpassword.action`,
+    method: 'GET',
+    params: {
+      passwordencrypt, password, user_name
+    }
+  })
+}
 
 

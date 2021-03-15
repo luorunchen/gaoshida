@@ -2577,6 +2577,9 @@ export default {
         ) {
           return this.$message.error("请稍后重试或联系管理员");
         }
+        if (res.data.list[0].mess5 == "[]" && res.data.list[0].mess2 == "[]") {
+          return this.$message.error("请稍后重试或联系管理员");
+        }
         // console.log(res, "sssqqq");
         this.getDeviceByDevIdList = res.data.list[0];
       });
