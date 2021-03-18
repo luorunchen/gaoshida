@@ -29,6 +29,7 @@
     "less": "^3.0.4",
     "less-loader": "^5.0.0",
     "px2rem-loader": "^0.1.9",
+    "terser-webpack-plugin": "^5.1.1",
     "vue-template-compiler": "^2.6.11"
   }
 }

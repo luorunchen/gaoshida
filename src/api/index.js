@@ -782,4 +782,39 @@ export function updateuserpassword(passwordencrypt, password, user_name) {
   })
 }
 
+//获取街道
+export function regionList(code) {
+  return service({
+    url: `/region/regionList.action`,
+    method: 'GET',
+    params: {
+      code
+    }
+  })
+}
+
+
+//获取操作记录
+export function getUserInfo(my_username, pname, deviceId, oldDate, newDate) {
+  return service({
+    url: `/WebProject/getUserInfo.action`,
+    method: 'GET',
+    params: {
+      my_username, pname, deviceId, oldDate, newDate
+    }
+  })
+}
+
+
+//获取操作记录
+export function getDeviceByDeploy(my_username, pageSize, type) {
+  return service({
+    url: `getDeviceByDeploy.action`,
+    method: 'GET',
+    params: {
+      my_username, pageSize, type
+    }
+  })
+}
+
 

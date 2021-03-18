@@ -111,9 +111,9 @@ export default {
         const res = message.content;
         const arr = res.split(",");
 
-        _that.arlme.name = arr[0];
-        _that.arlme.imei = arr[1];
-        _that.arlme.type = arr[2];
+        _that.arlme.name = arr[2];
+        _that.arlme.imei = arr[0];
+        _that.arlme.type = arr[4];
         _that.arlme.address = arr[3];
         _that.dialogVisible = true;
       },
@@ -143,11 +143,15 @@ export default {
     /deep/.el-dialog__header {
       padding: 0;
       background: #4c0e25;
+      border: #b81c7f 1px solid;
+      border-bottom: none;
     }
     /deep/.el-dialog__body {
       background: #4c0e25;
       color: #fff;
       padding: 10px 20px;
+      border: #b81c7f 1px solid;
+      border-top: none;
       p {
         margin-bottom: 10px;
       }

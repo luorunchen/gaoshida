@@ -43,7 +43,7 @@
                 </li>
                 <li v-else>设备名称:{{ item.device_name }}</li>
 
-                <li>地址:{{ item.MC }}</li>
+                <li>地址:{{ item.MC || "暂无" }}</li>
               </ul>
             </div>
             <div class="right_info" v-else>
@@ -65,7 +65,7 @@
                 </li>
                 <li v-else>设备名称:{{ item.device_name }}</li>
 
-                <li>地址:{{ item.MC }}</li>
+                <li>地址:{{ item.MC || "暂无" }}</li>
               </ul>
             </div>
           </div>
@@ -439,7 +439,8 @@ export default {
       this.$refs.publicPopUps.echart_wapper(data);
     },
     see(data) {
-      this.$refs.publicPopUps.see(data);
+      this.$refs.publicPopUps.initOff();
+      this.$refs.publicPopUps.echart_wapper(data);
     },
 
     handleSizeChange(val) {
@@ -465,6 +466,10 @@ export default {
             el.MC = el.installLocation;
             el.BH = el.devId;
           });
+          // console.log(res.data);
+          if (res.data.length <= 0) {
+            return this.$message.error("关键词未查询到相关信息");
+          }
           this.SElec_DetailElecDevice_List_Copy = res.data;
         });
       } else {
@@ -481,8 +486,13 @@ export default {
             this.DeviceProjectNewData[i].MC = this.DeviceProjectNewData[
               i
             ].address;
+            this.DeviceProjectNewData[i].BH = this.DeviceProjectNewData[i].pid;
             dataInfo.push(this.DeviceProjectNewData[i]);
           }
+        }
+        // console.log(dataInfo);
+        if (dataInfo.length <= 0) {
+          return this.$message.error("关键词未查询到相关信息");
         }
 
         this.SElec_DetailElecDevice_List_Copy = dataInfo;
@@ -1100,6 +1110,7 @@ export default {
       padding-top: 20px;
       padding-left: 20px;
       /deep/.el-input__inner {
+        width: 200px;
         background: #021019;
         color: #fff;
         border: 1px solid #3094d5;

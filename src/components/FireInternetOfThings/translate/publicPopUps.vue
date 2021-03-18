@@ -466,7 +466,7 @@
               </li>
               <li>
                 开启流量:
-                <span>{{ item.flow == "0" ? "否" : "item.flow" }}</span>
+                <span>{{ item.flow == "0" ? "否" : item.flow }}</span>
               </li>
             </ul>
           </div>
@@ -1305,15 +1305,33 @@
           <template v-else>
             <div class="one_echarts">
               <p class="titleP">电流统计图</p>
-              <div class="echarts_wapper_one_search"></div>
+              <div
+                class="echarts_wapper_one_search"
+                v-loading="echarts_loading"
+                element-loading-text="拼命加载中"
+                element-loading-spinner="el-icon-loading"
+                element-loading-background="rgba(255,255,255)"
+              ></div>
             </div>
             <div class="two_echarts">
               <p class="titleP">温度统计图</p>
-              <div class="echarts_wapper_two_search"></div>
+              <div
+                class="echarts_wapper_two_search"
+                v-loading="echarts_loading"
+                element-loading-text="拼命加载中"
+                element-loading-spinner="el-icon-loading"
+                element-loading-background="rgba(255,255,255)"
+              ></div>
             </div>
             <div class="three_echarts">
               <p class="titleP">电压统计图</p>
-              <div class="echarts_wapper_three_search"></div>
+              <div
+                class="echarts_wapper_three_search"
+                v-loading="echarts_loading"
+                element-loading-text="拼命加载中"
+                element-loading-spinner="el-icon-loading"
+                element-loading-background="rgba(255,255,255)"
+              ></div>
             </div>
             <div class="four_echarts">
               <p class="titleP">图片</p>
@@ -1347,7 +1365,7 @@
               </li>
               <li>
                 开启流量:
-                <span>{{ item.flow == "0" ? "否" : "item.flow" }}</span>
+                <span>{{ item.flow == "0" ? "否" : item.flow }}</span>
               </li>
               <li>是否授权: <span>否</span></li>
             </ul>
@@ -1560,7 +1578,11 @@
                       <el-checkbox label="短信">短信</el-checkbox>
                       <el-checkbox label="电话">电话</el-checkbox>
                     </el-checkbox-group>
-                    <el-row type="flex" justify="center">
+                    <el-row
+                      type="flex"
+                      justify="center"
+                      style="margin-top: 30px"
+                    >
                       <el-col :span="4"
                         ><el-button size="mini">取消</el-button></el-col
                       >
@@ -1619,18 +1641,16 @@
                       class="demo-form-inline"
                     >
                       <el-form-item label="日期:">
-                        <div class="block">
-                          <el-date-picker
-                            v-model="DeviceHistory"
-                            type="datetimerange"
-                            range-separator="至"
-                            start-placeholder="开始日期"
-                            end-placeholder="结束日期"
-                            value-format="yyyy-MM-dd HH:mm:ss"
-                            format="yyyy-MM-dd HH:mm:ss"
-                          >
-                          </el-date-picker>
-                        </div>
+                        <el-date-picker
+                          v-model="DeviceHistory"
+                          type="datetimerange"
+                          range-separator="至"
+                          start-placeholder="开始日期"
+                          end-placeholder="结束日期"
+                          value-format="yyyy-MM-dd HH:mm:ss"
+                          format="yyyy-MM-dd HH:mm:ss"
+                        >
+                        </el-date-picker>
                       </el-form-item>
 
                       <el-form-item>
@@ -1640,12 +1660,14 @@
                       </el-form-item>
                     </el-form>
                     <template>
-                      <el-table :data="tableData" style="width: 100%">
-                        <el-table-column prop="date" label="日期" width="180">
+                      <el-table :data="caozuojilv" style="width: 100%">
+                        <el-table-column type="index" width="50">
                         </el-table-column>
-                        <el-table-column prop="name" label="姓名" width="180">
+                        <el-table-column prop="user_name" label="用户账号">
                         </el-table-column>
-                        <el-table-column prop="address" label="地址">
+                        <el-table-column prop="date" label="操作时间">
+                        </el-table-column>
+                        <el-table-column prop="info" label="操作内容">
                         </el-table-column>
                       </el-table>
                     </template>
@@ -2019,6 +2041,7 @@ import {
   getHisDeviceData,
   fracture,
   getHistDeviceAlarm,
+  getUserInfo,
 } from "@/api/index.js";
 
 import EZUIKit from "ezuikit-js";
@@ -2026,6 +2049,7 @@ export default {
   props: ["pagetype"],
   data() {
     return {
+      caozuojilv: [],
       DeviceHistory: "",
       echarts_loading: false,
       ElecDataList_type_List: "",
@@ -2160,12 +2184,16 @@ export default {
     },
     //设备历史
     deviceHistory() {
-      console.log(this.DeviceHistory);
+      // console.log(this.DeviceHistory);
       getHistoryFault(
         this.ElecDataList.DevData[0].productNumber,
         this.DeviceHistory[0],
         this.DeviceHistory[1]
-      ).then((res) => {});
+      ).then((res) => {
+        if (res.data.length <= 0) {
+          return this.$message.error("暂无历史数据");
+        }
+      });
     },
     //报警推送
     baojingtuisong() {
@@ -2456,10 +2484,12 @@ export default {
       GetMapData(data, this.pagetype, this.utils.userName).then((res) => {
         // console.log(res);
         this.GetMapDataList = res.data;
-        const map = [
-          res.data.Company[0].MLat * 1,
-          res.data.Company[0].MLng * 1,
-        ];
+        let map;
+        if (res.data.Company[0].MLng > 60) {
+          map = [res.data.Company[0].MLng * 1, res.data.Company[0].MLat * 1];
+        } else {
+          map = [res.data.Company[0].MLat * 1, res.data.Company[0].MLng * 1];
+        }
         console.log(map, "我是,ap");
         this.$store.commit("set_map", map);
         //重点部位模块不需要Echart图表
@@ -2567,22 +2597,30 @@ export default {
       this.innerVisible = true;
       this.productNumber = productNumber;
       this.echarts_loading = true;
-      await getDeviceByDevId(devId).then((res) => {
-        if (res.data == null || res.data == undefined) {
+      await getDeviceByDevId(devId).then(
+        (res) => {
+          if (res.data == null || res.data == undefined) {
+            return this.$message.error("请稍后重试或联系管理员");
+          }
+          if (
+            res.data.list[0].mess5[0] == null &&
+            res.data.list[0].mess2 == "[]"
+          ) {
+            return this.$message.error("请稍后重试或联系管理员");
+          }
+          if (
+            res.data.list[0].mess5 == "[]" &&
+            res.data.list[0].mess2 == "[]"
+          ) {
+            return this.$message.error("请稍后重试或联系管理员");
+          }
+          // console.log(res, "sssqqq");
+          this.getDeviceByDevIdList = res.data.list[0];
+        },
+        () => {
           return this.$message.error("请稍后重试或联系管理员");
         }
-        if (
-          res.data.list[0].mess5[0] == null &&
-          res.data.list[0].mess2 == "[]"
-        ) {
-          return this.$message.error("请稍后重试或联系管理员");
-        }
-        if (res.data.list[0].mess5 == "[]" && res.data.list[0].mess2 == "[]") {
-          return this.$message.error("请稍后重试或联系管理员");
-        }
-        // console.log(res, "sssqqq");
-        this.getDeviceByDevIdList = res.data.list[0];
-      });
+      );
       if (this.getDeviceByDevIdList == "") {
         return "";
       }
@@ -2590,21 +2628,23 @@ export default {
       // 设备详情接口
       ElecData(devId, now).then((res) => {
         //重置照片
-        this.echarts_loading = false;
+
         this.ElecDataList_images = [];
         this.ElecDataList = res.data;
 
-        if (res.data.DevData[0].image != "") {
-          const list = res.data.DevData[0].image.split(",");
-          list.forEach((Element) => {
-            // Element =
-            let a = "http://edog-online.com/ctx/devPic/" + Element;
-            this.ElecDataList_images.push(a);
-          });
+        if (res.data.DevData.length > 0) {
+          if (res.data.DevData[0].image != "") {
+            const list = res.data.DevData[0].image.split(",");
+            list.forEach((Element) => {
+              // Element =
+              let a = "http://edog-online.com/ctx/devPic/" + Element;
+              this.ElecDataList_images.push(a);
+            });
+          }
         }
 
         this.ElecDataList_typeName = res.data.DevData[0].typeName;
-        console.log(this.ElecDataList_typeName);
+        // console.log(this.ElecDataList_typeName);
         if (this.$route.path != "/FireInternetOfThings/PowerDetection") {
           ReadParameterApi(res.data.DevData[0].productNumber).then((res) => {
             // console.log(res, "ldjakjdla");
@@ -2661,7 +2701,7 @@ export default {
             let one_echart_left = this.$echarts.init(
               document.querySelector(".echarts_wapper_one_search")
             );
-
+            this.echarts_loading = false;
             let temp = [];
             let hum = [];
             let time = [];
@@ -2760,7 +2800,7 @@ export default {
           let wenduC = [];
           let wenduN = [];
           let name = [];
-
+          this.echarts_loading = false;
           //图标数据赋值
           res.data.Data.forEach((element) => {
             dianLiuUa.push(element.ia);
@@ -3215,7 +3255,32 @@ export default {
     },
     // TabS 切换函数
     handleClick(tab, event) {
-      console.log(tab, event);
+      // console.log(tab, event);
+      if (tab.label === "阀值设置") {
+        ReadParameterApi(this.ElecDataList.DevData[0].productNumber).then(
+          (res) => {
+            console.log(res.data.row);
+            const row = res.data.row;
+            this.fazhishezhi.AXWD = row.AWenDu;
+            this.fazhishezhi.BXWD = row.BWenDu;
+            this.fazhishezhi.CXWD = row.CWenDu;
+            this.fazhishezhi.NXWD = row.NWenDu;
+            this.fazhishezhi.SYDL = row.SYdianliu;
+            this.fazhishezhi.AXDL = row.ADianLiu;
+            this.fazhishezhi.BXDL = row.BDianLiu;
+            this.fazhishezhi.CXDL = row.CDianLiu;
+            this.fazhishezhi.AXDY = row.ADianYa;
+            this.fazhishezhi.BXDY = row.BDianYa;
+            this.fazhishezhi.CXDY = row.CDianYa;
+          }
+        );
+      }
+      if (tab.label === "设置操作记录") {
+        // console.log(123);
+        getUserInfo("", "", this.productNumber, "", "").then((res) => {
+          this.caozuojilv = res.data;
+        });
+      }
     },
 
     //火灾报警

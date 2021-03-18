@@ -69,7 +69,7 @@ export default {
       // }
 
       // console.log(map.reverse());
-      this.map.setZoomAndCenter(7, val);
+      this.map.setZoomAndCenter(20, val);
     },
   },
   computed: {

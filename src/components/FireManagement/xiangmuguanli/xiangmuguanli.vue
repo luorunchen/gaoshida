@@ -17,9 +17,13 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="getAllProjecForStateFun(10,1)">查询</el-button>
+        <el-button type="primary" @click="getAllProjecForStateFun(10, 1)"
+          >查询</el-button
+        >
 
-        <el-button type="primary" @click="addNewOpenFun('新增')">新增项目 </el-button>
+        <el-button type="primary" @click="addNewOpenFun('新增')"
+          >新增项目
+        </el-button>
         <el-button type="primary" @click="deletFun"
           >删除责任人和防火员</el-button
         >
@@ -107,7 +111,7 @@
             v-model="mapInfo.huilu"
             filterable
             placeholder="请选择"
-            @change="setq($event,'防火员')"
+            @change="setq($event, '防火员')"
             :filter-method="filter_method"
           >
             <el-option
@@ -138,7 +142,7 @@
             filterable
             placeholder="请选择"
             :loading="loading"
-            @change="setq($event,'责任人')"
+            @change="setq($event, '责任人')"
             :filter-method="filter_method"
           >
             <el-option
@@ -167,11 +171,12 @@
             <el-button slot="append">新增</el-button>
           </el-input> -->
           <el-select
+            :loading="loading"
             @focus="inputClick('街道')"
             v-model="mapInfo.xintiao"
             filterable
             placeholder="请选择"
-            @change="setq($event,'街道')"
+            @change="setq($event, '街道')"
             :filter-method="filter_method"
           >
             <el-option
@@ -204,8 +209,9 @@
             @focus="inputClick('网格员')"
             v-model="mapInfo.zhuche"
             filterable
+            :loading="loading"
             placeholder="请选择"
-            @change="setq($event,'网格员')"
+            @change="setq($event, '网格员')"
             :filter-method="filter_method"
           >
             <el-option
@@ -223,6 +229,41 @@
         </el-form-item>
       </el-form>
       <el-form label-width="100px" :inline="true" class="demo-form-inline">
+        <el-form-item label="所在街道">
+          <el-select
+            v-model="mapInfo.where"
+            @change="regionList_change"
+            placeholder="填写项目位置后选择"
+          >
+            <el-option
+              v-for="(item, index) in regionList_list"
+              :key="index"
+              :label="item.ad_Region"
+              :value="item.ad_Code"
+            >
+            </el-option>
+          </el-select>
+          <!-- <el-input v-model="mapInfo.where"></el-input> -->
+        </el-form-item>
+        <el-form-item label="所在社区">
+          <el-select
+            v-model="mapInfo.code"
+            @change="regionList_code_change"
+            placeholder="填写所在街道后选择"
+          >
+            <el-option
+              v-for="(item, index) in regionList_code"
+              :key="index"
+              :label="item.ad_Region"
+              :value="item.ad_Code"
+            >
+            </el-option>
+          </el-select>
+          <!-- <el-input v-model="mapInfo.code"></el-input> -->
+        </el-form-item>
+      </el-form>
+
+      <el-form label-width="100px" :inline="true" class="demo-form-inline">
         <el-form-item label="项目位置">
           <el-tooltip
             class="item"
@@ -235,6 +276,7 @@
         </el-form-item>
         <div id="container"></div>
       </el-form>
+
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button
@@ -294,35 +336,29 @@
         <el-form-item label="设备编号">
           <el-input
             v-model="mapInfo.bianhao"
-           
             placeholder="请填写备注"
           ></el-input>
         </el-form-item>
         <el-form-item label="设备类型">
-         <el-select v-model="shebeiListValue" placeholder="请选择">
-          <el-option
-            v-for="item in shebeiList"
-            :key="item.value"
-            :label="item.value"
-            :value="item.label"
-          >
-          </el-option>
-        </el-select>
+          <el-select v-model="shebeiListValue" placeholder="请选择">
+            <el-option
+              v-for="item in shebeiList"
+              :key="item.value"
+              :label="item.value"
+              :value="item.label"
+            >
+            </el-option>
           </el-select>
+          <!-- </el-select> -->
         </el-form-item>
       </el-form>
       <el-form label-width="100px" :inline="true" class="demo-form-inline">
         <el-form-item label="设备名称">
-          <el-input
-            v-model="mapInfo.name"
-           
-            placeholder="请填写备注"
-          ></el-input>
+          <el-input v-model="mapInfo.name" placeholder="请填写备注"></el-input>
         </el-form-item>
         <el-form-item label="经纬度">
           <el-input
             v-model="mapInfo.lnglat"
-          
             placeholder="请填写备注"
           ></el-input>
         </el-form-item>
@@ -331,15 +367,13 @@
         <el-form-item label="应用场所">
           <el-input
             v-model="mapInfo.changsuo"
-         
             placeholder="请填写备注"
           ></el-input>
         </el-form-item>
         <el-form-item label="短信推送">
-          
-              <el-radio v-model="mapInfo.duanxin" label="0">开启</el-radio>
-              <el-radio v-model="mapInfo.duanxin" label="1">关闭</el-radio>
-         
+          <el-radio v-model="mapInfo.duanxin" label="0">开启</el-radio>
+          <el-radio v-model="mapInfo.duanxin" label="1">关闭</el-radio>
+
           <!-- <el-input
             v-model="mapInfo.duanxin"
           
@@ -361,7 +395,6 @@
         <el-form-item label="备注">
           <el-input
             v-model="mapInfo.reamrk"
-          
             placeholder="请填写备注"
           ></el-input>
         </el-form-item>
@@ -369,7 +402,9 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addNewSheBeiVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addNewSheBeiVisible = false,addNewSheBeiTrue()"
+        <el-button
+          type="primary"
+          @click="(addNewSheBeiVisible = false), addNewSheBeiTrue()"
           >确 定</el-button
         >
       </span>
@@ -388,10 +423,13 @@ import {
   addDevice,
   newUpdateProjectSim,
   addRegisterProject,
+  regionList,
 } from "@/api/index.js";
 export default {
   data() {
     return {
+      regionList_list: [],
+      regionList_code: [],
       addNewSheBeiVisible: false,
       outerVisible: false,
       getAllProjecForState_list: [],
@@ -414,6 +452,8 @@ export default {
         jieDao: "",
         jieDaoPhone: "",
         newType: "",
+        code: "",
+        where: "",
       },
       options: [],
       shebeiListValue: "",
@@ -494,6 +534,18 @@ export default {
     this.getAllProjecForStateFun(10, 1);
   },
   methods: {
+    regionList_change(val) {
+      // console.log(val.substring(0, 9));
+      // console.log(val);
+      regionList(val.substring(0, 9)).then((res) => {
+        console.log(res);
+        this.regionList_code = res.data.mess;
+      });
+    },
+    regionList_code_change(val) {
+      // console.log(val, 987);
+      this.mapInfo.code = val;
+    },
     //分享按钮
     fenxiangClick(pid) {
       this.$prompt("请输入分享的账号", {
@@ -548,8 +600,10 @@ export default {
     },
     // 添加项目函数
     addProjectFun() {
-      console.log(this.newType);
-
+      // console.log(this.newType);
+      if (this.mapInfo.code == "") {
+        return this.$message.error("请选择街道");
+      }
       if (this.newType == "新增") {
         addProject(
           this.utils.userName,
@@ -560,7 +614,7 @@ export default {
           this.mapInfo.remak, //备注
           this.lanlat,
           this.mapInfo.type, //应用场所
-          this.mapInfo.xintiao, //街道
+          this.mapInfo.code, //街道
           this.mapInfo.zhuche, //网格员
           this.mapInfo.xintiao
         ).then(
@@ -612,7 +666,7 @@ export default {
     //添加人员打开弹窗
     addNewOpenFun(type) {
       //判断新增还是编辑
-      console.log(type);
+      // console.log(type);
       this.newType = type;
       // console.log(this.mapInfo.newType);
       this.dialogVisible = true;
@@ -658,6 +712,7 @@ export default {
     //搜索功能
     filter_method(val) {
       // console.log(val, "wwwwww");
+      // this.loading = true;
       let arr = [];
       if (val) {
         this.loading = true;
@@ -670,12 +725,12 @@ export default {
             item.phone.indexOf(val) > -1
           ) {
             arr.push(item);
-            this.loading = false;
+            // this.loading = false;
             return item;
           } else {
             //val为空时，还原数组
             this.options = this.optionsCopy.slice(0, 250);
-            this.loading = false;
+            // this.loading = false;
           }
         });
       }
@@ -844,6 +899,11 @@ export default {
       this.mapInfo.lnglat = this.lanlat;
       this.mapInfo.address =
         e.poi.district + "" + e.poi.address + "" + e.poi.name;
+
+      regionList(e.poi.adcode).then((res) => {
+        console.log(res);
+        this.regionList_list = res.data.mess;
+      });
     },
     //分页器函数
     handleSizeChange(val) {

@@ -503,7 +503,7 @@
               </li>
               <li>
                 开启流量:
-                <span>{{ item.flow == "0" ? "否" : "item.flow" }}</span>
+                <span>{{ item.flow == "0" ? "否" : item.flow }}</span>
               </li>
             </ul>
           </div>
@@ -532,7 +532,6 @@
               this.$route.path != '/FireInternetOfThings/PowerDetection'
             "
           >
-            {{ this.ElecDataList_typeName }}
             <el-row
               :gutter="20"
               v-for="(item, index) in getDeviceByDevIdList.mess5"
@@ -1369,7 +1368,7 @@
               </li>
               <li>
                 开启流量:
-                <span>{{ item.flow == "0" ? "否" : "item.flow" }}</span>
+                <span>{{ item.flow == "0" ? "否" : item.flow }}</span>
               </li>
               <li>是否授权: <span>否</span></li>
             </ul>
@@ -1582,7 +1581,11 @@
                       <el-checkbox label="短信">短信</el-checkbox>
                       <el-checkbox label="电话">电话</el-checkbox>
                     </el-checkbox-group>
-                    <el-row type="flex" justify="center">
+                    <el-row
+                      type="flex"
+                      justify="center"
+                      style="margin-top: 30px"
+                    >
                       <el-col :span="4"
                         ><el-button size="mini">取消</el-button></el-col
                       >
@@ -1641,18 +1644,16 @@
                       class="demo-form-inline"
                     >
                       <el-form-item label="日期:">
-                        <div class="block">
-                          <el-date-picker
-                            v-model="DeviceHistory"
-                            type="datetimerange"
-                            range-separator="至"
-                            start-placeholder="开始日期"
-                            end-placeholder="结束日期"
-                            value-format="yyyy-MM-dd HH:mm:ss"
-                            format="yyyy-MM-dd HH:mm:ss"
-                          >
-                          </el-date-picker>
-                        </div>
+                        <el-date-picker
+                          v-model="DeviceHistory"
+                          type="datetimerange"
+                          range-separator="至"
+                          start-placeholder="开始日期"
+                          end-placeholder="结束日期"
+                          value-format="yyyy-MM-dd HH:mm:ss"
+                          format="yyyy-MM-dd HH:mm:ss"
+                        >
+                        </el-date-picker>
                       </el-form-item>
 
                       <el-form-item>
@@ -1662,12 +1663,18 @@
                       </el-form-item>
                     </el-form>
                     <template>
-                      <el-table :data="tableData" style="width: 100%">
-                        <el-table-column prop="date" label="日期" width="180">
+                      <el-table
+                        :data="caozuojilv"
+                        height="300px"
+                        style="width: 100%"
+                      >
+                        <el-table-column type="index" width="50">
                         </el-table-column>
-                        <el-table-column prop="name" label="姓名" width="180">
+                        <el-table-column prop="user_name" label="用户账号">
                         </el-table-column>
-                        <el-table-column prop="address" label="地址">
+                        <el-table-column prop="date" label="操作时间">
+                        </el-table-column>
+                        <el-table-column prop="info" label="操作内容">
                         </el-table-column>
                       </el-table>
                     </template>
@@ -1755,11 +1762,14 @@ import {
   UpdateDevicePush,
   getHistoryFault,
   getHistDeviceAlarm,
+  getDeviceByDeploy,
+  getUserInfo,
 } from "@/api/index.js";
 export default {
   props: ["name"],
   data() {
     return {
+      caozuojilv: [],
       Historical_alarm_list_loading: false,
       Historical_alarm_list: [],
       DeviceHistory: "",
@@ -1865,7 +1875,11 @@ export default {
         this.ElecDataList.DevData[0].productNumber,
         this.DeviceHistory[0],
         this.DeviceHistory[1]
-      ).then((res) => {});
+      ).then((res) => {
+        if (res.data.length <= 0) {
+          return this.$message.error("暂无历史数据");
+        }
+      });
     },
     //报警推送
     baojingtuisong() {
@@ -2318,6 +2332,35 @@ export default {
           this.deviceNum = "000000";
         }
       });
+
+      getDeviceByDeploy(this.utils.userName, 1000, "d").then((res) => {
+        let result = res.data.data;
+        let online = [];
+        let offline = [];
+        result.forEach((element, index) => {
+          if (element.isOnLine == 1) {
+            online.push(element.pid);
+          } else {
+            offline.push(element.pid);
+          }
+        });
+        this.DeviceNumList.offlinePid = offline;
+        this.DeviceNumList.online = online.length;
+        this.DeviceNumList.offline = offline.length;
+        this.DeviceNumList.onlinePid = online;
+        this.DeviceNumList.alarmPid = res.data.alarmDate[0].alarmPid;
+        this.DeviceNumList.alarm = res.data.alarmDate[0].alarmPid.length;
+
+        let deviceNum = online.length + offline.length;
+        console.log(deviceNum);
+
+        let subNum = "000000" + deviceNum;
+        this.deviceNum = subNum.substring(subNum.length - 6);
+        // console.log( this.deviceNum,6564);
+        if (this.deviceNum == "efined") {
+          this.deviceNum = "000000";
+        }
+      });
     },
 
     // TabS 切换函数
@@ -2342,12 +2385,20 @@ export default {
           }
         );
       }
+      if (tab.label === "设置操作记录") {
+        // console.log(123);
+        getUserInfo("", "", this.productNumber, "", "").then((res) => {
+          this.caozuojilv = res.data;
+        });
+      }
     },
     // 查看echart图片函数
     async see(devId, productNumber) {
       //获取设备号
       this.productNumber = productNumber;
       this.innerVisible = true;
+
+      this.echarts_loading = true;
       // this.callPoliceList_loading = true;
       //清空处置情况
       this.managementInput = "";
@@ -2357,23 +2408,31 @@ export default {
       const day = time.getDate();
       const now = year + "-" + month + "-" + day;
 
-      await getDeviceByDevId(devId).then((res) => {
-        if (res.data == null || res.data == undefined) {
-          return this.$message.error("请稍后重试或联系管理员");
-        }
-        // console.log(res, "sssqqq");
+      await getDeviceByDevId(devId).then(
+        (res) => {
+          if (res.data == null || res.data == undefined) {
+            return this.$message.error("请稍后重试或联系管理员");
+          }
+          // console.log(res, "sssqqq");
 
-        if (
-          res.data.list[0].mess5[0] == null &&
-          res.data.list[0].mess2 == "[]"
-        ) {
+          if (
+            res.data.list[0].mess5[0] == null &&
+            res.data.list[0].mess2 == "[]"
+          ) {
+            return this.$message.error("请稍后重试或联系管理员");
+          }
+          if (
+            res.data.list[0].mess5 == "[]" &&
+            res.data.list[0].mess2 == "[]"
+          ) {
+            return this.$message.error("请稍后重试或联系管理员");
+          }
+          this.getDeviceByDevIdList = res.data.list[0];
+        },
+        () => {
           return this.$message.error("请稍后重试或联系管理员");
         }
-        if (res.data.list[0].mess5 == "[]" && res.data.list[0].mess2 == "[]") {
-          return this.$message.error("请稍后重试或联系管理员");
-        }
-        this.getDeviceByDevIdList = res.data.list[0];
-      });
+      );
       if (this.getDeviceByDevIdList == "") {
         return "";
       }
@@ -2395,15 +2454,15 @@ export default {
         this.ElecDataList_images = [];
         this.ElecDataList = res.data;
 
-        this.echarts_loading = true;
-
-        if (res.data.DevData[0].image != "") {
-          const list = res.data.DevData[0].image.split(",");
-          list.forEach((Element) => {
-            // Element =
-            let a = "http://edog-online.com/ctx/devPic/" + Element;
-            this.ElecDataList_images.push(a);
-          });
+        if (res.data.DevData.length > 0) {
+          if (res.data.DevData[0].image != "") {
+            const list = res.data.DevData[0].image.split(",");
+            list.forEach((Element) => {
+              // Element =
+              let a = "http://edog-online.com/ctx/devPic/" + Element;
+              this.ElecDataList_images.push(a);
+            });
+          }
         }
 
         this.ElecDataList_typeName = res.data.DevData[0].typeName;
@@ -2808,6 +2867,7 @@ export default {
       }
       .tabs_one {
         /deep/.el-input__inner {
+          width: 200px;
           margin-bottom: 20px;
         }
       }

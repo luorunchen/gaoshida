@@ -41,8 +41,9 @@
         </el-table-column>
         <el-table-column prop="installLocation" label="项目位置">
           <template slot-scope="scope">
-            <p v-if="scope.row.dSName == '智能重合闸'">智能重合闸</p>
-            <p v-else>{{ scope.row.installLocation }}</p>
+            <!-- <p v-if="scope.row.dSName == '智能重合闸'">智能重合闸</p>
+            <p v-else>{{ scope.row.installLocation }}</p> -->
+            <p>{{ scope.row.installLocation }}</p>
           </template>
         </el-table-column>
         <el-table-column prop="dSName" label="设备类型"> </el-table-column>
@@ -419,12 +420,13 @@
                 </el-form-item>
               </el-form>
               <template>
-                <el-table :data="tableData" style="width: 100%">
-                  <el-table-column prop="date" label="日期" width="180">
+                <el-table :data="caozuojilv" style="width: 100%">
+                  <el-table-column type="index" width="50"> </el-table-column>
+                  <el-table-column prop="user_name" label="用户账号">
                   </el-table-column>
-                  <el-table-column prop="name" label="姓名" width="180">
+                  <el-table-column prop="date" label="操作时间">
                   </el-table-column>
-                  <el-table-column prop="address" label="地址">
+                  <el-table-column prop="info" label="操作内容">
                   </el-table-column>
                 </el-table>
               </template>
@@ -469,10 +471,12 @@ import {
   UpdateDevicePush,
   SetParameterApi,
   addRegisterDevice,
+  getUserInfo,
 } from "@/api/index.js";
 export default {
   data() {
     return {
+      caozuojilv: [],
       handleSizeChangeValue: 10,
       activeName: "second",
       DeviceHistory: "",
@@ -483,28 +487,7 @@ export default {
         user: "",
         region: "",
       },
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-        },
-      ],
+      tableData: [],
       options: [
         {
           value: "",
@@ -952,7 +935,11 @@ export default {
         this.setValue,
         this.DeviceHistory[0],
         this.DeviceHistory[1]
-      ).then((res) => {});
+      ).then((res) => {
+        if (res.data.length <= 0) {
+          return this.$message.error("暂无历史数据");
+        }
+      });
     },
 
     select(e) {
@@ -978,8 +965,12 @@ export default {
 
     handleClick(tab, event) {
       // console.log(tab.label);
-      // if (tab.label === "阀值设置") {
-      // }
+      if (tab.label === "设置操作记录") {
+        // console.log(123);
+        getUserInfo("", "", this.setValue, "", "").then((res) => {
+          this.caozuojilv = res.data;
+        });
+      }
     },
 
     //展示数据方法接口

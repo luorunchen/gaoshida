@@ -3,8 +3,8 @@
     <div class="title">
       <div class="titleFZ">
         <span>{{ utils.userName }}</span>
-        <span>08-05</span>
-        <span>周五</span>
+        <span>{{ day }}</span>
+        <span>{{ date }}</span>
       </div>
       <div class="titleLeft">
         <img
@@ -61,7 +61,7 @@
       </div>
       <div class="titlePassword">
         <span>
-          <img src="../../assets//images/mima.png" alt="" />
+          <img src="../../assets/images/mima.png" alt="" />
           <el-button type="text" @click="dialogVisible = true"
             >更改密码</el-button
           >
@@ -234,7 +234,10 @@
                 </template>
                 >
               </div>
-              <div style="margin-left: 14px; color: #00e4ff">
+              <div
+                style="margin-left: 14px; color: #00e4ff"
+                @click="alarmInfoClick(item.did, item.devicenoid)"
+              >
                 <div>设备:{{ item.deviceno_name }}</div>
                 <div>地址:{{ item.address }}</div>
               </div>
@@ -288,6 +291,8 @@ import PublicPopUps from "../FireInternetOfThings/translate/publicPopUps";
 export default {
   data() {
     return {
+      date: "",
+      day: "",
       pagetype: 2,
       fullscreenLoading: false,
       pageSize: 1,
@@ -313,6 +318,36 @@ export default {
     this.init();
     this.drawLine();
     this.push_AlarmData_info("d");
+
+    this.day = this.$moment().format("MM-DD");
+    // console.log(day);
+    const date = this.$moment().isoWeekday();
+    console.log(date);
+    switch (date) {
+      case 1:
+        this.date = "周一";
+        break;
+
+      case 2:
+        this.date = "周二";
+        break;
+      case 3:
+        this.date = "周三";
+        break;
+      case 4:
+        this.date = "周四";
+        break;
+      case 5:
+        this.date = "周五";
+        break;
+      case 6:
+        this.date = "周六";
+        break;
+      case 7:
+        this.date = "周日";
+        break;
+    }
+
     getLogo(this.utils.userName).then((res) => {
       // this.images = res.data[0];
       // console.log(this.images);
@@ -321,6 +356,9 @@ export default {
     });
   },
   methods: {
+    alarmInfoClick(devId, p_num) {
+      this.$refs.publicPopUps.see(devId, p_num);
+    },
     // 声音开关
     audioON() {
       // console.log(123);
@@ -622,7 +660,7 @@ export default {
               name: "访问来源",
               type: "pie",
               radius: "70%",
-              center: ["50%", "50%"],
+              center: ["60%", "50%"],
               avoidLabelOverlap: false,
               label: {
                 show: false,
@@ -1488,11 +1526,11 @@ export default {
     }
     .three {
       height: 250px;
-      background-image: url("../../assets//images/juxing7.png");
+      background-image: url("../../assets/images/juxing7.png");
       background-size: 100% 100%;
       p {
         text-align: center;
-        line-height: 40px;
+        line-height: 50px;
         font-size: 18px;
       }
       .threeEchart_right {

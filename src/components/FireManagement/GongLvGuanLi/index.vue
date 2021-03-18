@@ -130,7 +130,9 @@ export default {
   },
   methods: {
     setPowerFun() {
-      setPower(this.maxPower, this.minPower, this.devID).then((res) => {});
+      setPower(this.maxPower, this.minPower, this.devID).then((res) => {
+        this.$message.success("设置成功");
+      });
     },
     onSubmit() {
       console.log("submit!");

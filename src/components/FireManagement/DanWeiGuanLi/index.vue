@@ -255,6 +255,7 @@ export default {
     }
   }
   .danwei_right {
+    position: relative;
     .one {
       width: 20px;
       height: calc(86vh);
