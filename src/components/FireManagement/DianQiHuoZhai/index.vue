@@ -97,8 +97,14 @@ export default {
         zoom: 10,
         mapStyle: "amap://styles/dcb78e5f043e25116ab6bdeaa6813234",
       });
+      this.map.addControl(
+        new AMap.MapType({
+          defaultType: 0, //0代表默认，1代表卫星
+        })
+      );
       this.map.setZoomAndCenter(4, [116.397428, 39.90923]);
-      DeviceProjectNew(this.utils.userName, 3, 1).then((res) => {
+      const region = sessionStorage.getItem("region");
+      DeviceProjectNew(this.utils.userName, "3", region).then((res) => {
         // this.DeviceProjectNewData = res.data.Company;
 
         if (res.data == [] || res.data == "") {
@@ -116,6 +122,9 @@ export default {
         }
 
         this.DeviceProjectNewData = [...a, ...b];
+        // [...new Set(this.DeviceProjectNewData)];
+        // console.log(this.DeviceProjectNewData);
+
         // console.log(c, "我是aa,b");
         this.$nextTick(() => {
           const style = [
@@ -157,6 +166,7 @@ export default {
         });
       });
     },
+
     callPolice(pid) {
       SElec_DetailElecDevice(pid).then((res) => {
         this.SElec_DetailElecDevice_List = res.data;
@@ -164,7 +174,8 @@ export default {
     },
 
     DeviceAlarm() {
-      DeviceAlarm(this.utils.userName, 3, 1).then((res) => {
+      const region = sessionStorage.getItem("region");
+      DeviceAlarm(this.utils.userName, 3, region).then((res) => {
         this.DeviceAlarmList = res.data;
         let num = 0;
         // console.log(res.data, 99);
@@ -194,6 +205,11 @@ export default {
 </script>
 <style lang='less' scoped>
 #dianqiHZ {
+  /deep/ .amap-maptypecontrol {
+    right: 0px;
+    top: 30px;
+    position: absolute;
+  }
   height: 800px;
   .title2 {
     position: relative;

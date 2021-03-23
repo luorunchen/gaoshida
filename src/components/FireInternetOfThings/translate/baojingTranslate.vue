@@ -1620,7 +1620,7 @@
                       </el-form-item>
 
                       <el-form-item>
-                        <el-button type="primary" @click="deviceHistory"
+                        <el-button type="primary" @click="deviceHistory('故障')"
                           >查询</el-button
                         >
                       </el-form-item>
@@ -1657,7 +1657,7 @@
                       </el-form-item>
 
                       <el-form-item>
-                        <el-button type="primary" @click="deviceHistory"
+                        <el-button type="primary" @click="deviceHistory('操作')"
                           >查询</el-button
                         >
                       </el-form-item>
@@ -1764,6 +1764,7 @@ import {
   getHistDeviceAlarm,
   getDeviceByDeploy,
   getUserInfo,
+ 
 } from "@/api/index.js";
 export default {
   props: ["name"],
@@ -1868,18 +1869,38 @@ export default {
       // console.log(data.join(","));
       this.$parent.callPolice(data.join(","));
     },
-    //设备历史
-    deviceHistory() {
-      console.log(this.DeviceHistory);
-      getHistoryFault(
-        this.ElecDataList.DevData[0].productNumber,
-        this.DeviceHistory[0],
-        this.DeviceHistory[1]
-      ).then((res) => {
-        if (res.data.length <= 0) {
-          return this.$message.error("暂无历史数据");
-        }
-      });
+     //设备历史
+    deviceHistory(type) {
+      if (type == "故障") {
+        getHistoryFault(
+          this.ElecDataList.DevData[0].productNumber,
+          this.DeviceHistory[0],
+          this.DeviceHistory[1]
+        ).then((res) => {
+          if (res.data.length <= 0) {
+            return this.$message.error("暂无历史数据");
+          }
+        });
+      } else {
+        getUserInfo(
+          "",
+          "",
+          this.productNumber,
+          this.DeviceHistory[0],
+          this.DeviceHistory[1]
+        ).then(
+          (res) => {
+            this.caozuojilv = res.data;
+            if (res.data.length == 0) {
+              return this.$message.error("暂无历史数据");
+            }
+          },
+          () => {
+            this.$message.error("请稍后重试或联系管理员");
+          }
+        );
+      }
+      //console.log(this.DeviceHistory);
     },
     //报警推送
     baojingtuisong() {
@@ -2320,8 +2341,8 @@ export default {
           type = "3";
           break;
       }
-
-      DeviceNum(this.utils.userName, type, 1).then((res) => {
+      const region = sessionStorage.getItem("region");
+      DeviceNum(this.utils.userName, type, region).then((res) => {
         this.DeviceNumList = res.data;
         // console.log(this.DeviceNumList);
 
@@ -2365,7 +2386,7 @@ export default {
 
     // TabS 切换函数
     handleClick(tab, event) {
-      console.log(tab.label);
+      // console.log(tab.label);
       if (tab.label === "阀值设置") {
         ReadParameterApi(this.ElecDataList.DevData[0].productNumber).then(
           (res) => {
@@ -2385,11 +2406,36 @@ export default {
           }
         );
       }
+      if (tab.label === "设备历史故障") {
+        getHistoryFault(
+          this.ElecDataList.DevData[0].productNumber,
+          this.DeviceHistory[0],
+          this.DeviceHistory[1]
+        ).then(
+          (res) => {
+            if (res.data.length <= 0) {
+              return this.$message.error("暂无历史数据");
+            }
+            // this.DeviceHistory_LIST = res.data.DevData;
+          },
+          () => {
+            this.$message.error("请稍后重试或联系管理员");
+          }
+        );
+      }
       if (tab.label === "设置操作记录") {
         // console.log(123);
-        getUserInfo("", "", this.productNumber, "", "").then((res) => {
-          this.caozuojilv = res.data;
-        });
+        getUserInfo("", "", this.productNumber, "", "").then(
+          (res) => {
+            if (res.data.length <= 0) {
+              return this.$message.warning("暂无历史数据");
+            }
+            this.caozuojilv = res.data;
+          },
+          () => {
+            this.$message.error("请稍后重试或联系管理员");
+          }
+        );
       }
     },
     // 查看echart图片函数

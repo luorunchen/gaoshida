@@ -1023,6 +1023,8 @@ export default {
       );
     },
     open(name, devID) {
+      const powerId = sessionStorage.getItem("new_role");
+      const rid = sessionStorage.getItem("power");
       this.$confirm(
         `此操作将永久删除 <span style='color:red'>${name}</span> 设备, 是否继续?`,
 
@@ -1051,7 +1053,8 @@ export default {
             this.$message.error("您的权限不足");
           }
         })
-        .catch(() => {
+        .catch((err) => {
+          console.log(err);
           this.$message({
             type: "info",
             message: "已取消删除",

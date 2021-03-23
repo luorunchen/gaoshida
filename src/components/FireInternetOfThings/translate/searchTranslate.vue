@@ -51,7 +51,7 @@
                 class="olList"
                 v-for="(item, index) in SElec_DetailElecDevice_List_Copy"
                 :key="index"
-                @click="see(item.BH)"
+                @click="see(item.BH, item.text)"
               >
                 <li v-if="item.text != null || item.text != undefined">
                   <span v-if="item.value != null || item.value != undefined"
@@ -438,9 +438,13 @@ export default {
       this.$refs.publicPopUps.initOff();
       this.$refs.publicPopUps.echart_wapper(data);
     },
-    see(data) {
-      this.$refs.publicPopUps.initOff();
-      this.$refs.publicPopUps.echart_wapper(data);
+    see(data, text) {
+      if (text != undefined) {
+        this.$refs.publicPopUps.see(data);
+      } else {
+        this.$refs.publicPopUps.initOff();
+        this.$refs.publicPopUps.echart_wapper(data);
+      }
     },
 
     handleSizeChange(val) {
@@ -1096,7 +1100,7 @@ export default {
   }
 }
 .rightWapper {
-  margin-top: 50px;
+  margin-top: 100px;
   position: absolute;
   z-index: 99;
   right: 20px;

@@ -20,26 +20,15 @@
           </div>
         </div>
       </div>
-      <el-upload
-        :data="{ user_name: this.utils.userName }"
-        ref="upload"
-        class="upload-demo"
-        action="/earlyWarn/upload.action"
-        list-type="picture"
-        :on-success="handlePreview"
-        :show-file-list="false"
-      >
-        <div class="titleIMG">
-          <p class="titleName">智慧安全系统平台</p>
-          <img
-            v-if="this.images_wapper == ''"
-            src="../../assets/images/juxing4.png"
-            alt=""
-          />
-          <img v-else width="478px" height="100%" :src="images_wapper" alt="" />
-        </div>
-      </el-upload>
-
+      <div class="titleIMG">
+        <p class="titleName">智慧安全系统平台</p>
+        <img
+          src="../../assets/images/juxing4.png"
+          alt=""
+          width="100%"
+          height="100%"
+        />
+      </div>
       <div class="titleRight">
         <img
           src="../../assets/images/juxing3.png"
@@ -54,13 +43,15 @@
           <div class="btnRightTwo" @click="SystemSettings">
             <span>系统设置</span>
           </div>
-          <div class="btnRightThree">
-            <span @click="audioON">报警声音({{ onOFF }})</span>
-          </div>
+          <span
+            @click="audioON"
+            style="margin-left: 30px; line-height: 30px; cursor: pointer"
+            >报警声音({{ onOFF }})</span
+          >
         </div>
       </div>
       <div class="titlePassword">
-        <span>
+        <span style="margin-right: 45px">
           <img src="../../assets/images/mima.png" alt="" />
           <el-button type="text" @click="dialogVisible = true"
             >更改密码</el-button
@@ -84,6 +75,7 @@
                 :rules="[{ required: true, message: '原密码不能为空' }]"
               >
                 <el-input
+                  type="password"
                   prefix-icon="el-icon-goods"
                   placeholder="原密码"
                   v-model="numberValidateForm.Odd_Password"
@@ -96,6 +88,7 @@
                 :rules="[{ required: true, message: '新密码不能为空' }]"
               >
                 <el-input
+                  type="password"
                   prefix-icon="el-icon-goods"
                   placeholder="新密码"
                   v-model="numberValidateForm.New_Password"
@@ -108,6 +101,7 @@
                 :rules="[{ required: true, message: '确认不能为空' }]"
               >
                 <el-input
+                  type="password"
                   placeholder="确认密码"
                   prefix-icon="el-icon-goods"
                   v-model="numberValidateForm.True_Password"
@@ -129,7 +123,12 @@
           </el-dialog>
         </span>
         <span @click="out">
-          <img src="../../assets/images/tuichu.png" alt="" />退出</span
+          <img
+            src="../../assets//images/tuichu.png"
+            width="18px"
+            height="15px"
+            alt=""
+          />退出</span
         >
       </div>
     </div>
@@ -156,13 +155,13 @@
         <div class="infoYMR">
           <div class="infoYMRLi">
             <div class="infoYMRLi_item"></div>
-            <p style="color: #f830af">
+            <p style="color: #f830af; font-size: 24px">
               {{ this.AlarmData.AlarmNo }}
             </p>
-            <p style="color: #9bdef0">未处理报警</p>
+            <p style="color: #9bdef0; font-size: 14px">未处理报警</p>
           </div>
           <div class="infoYMRLi">
-            <p style="color: #00c0ff">
+            <p style="color: #00c0ff; font-size: 24px">
               {{ this.AlarmData.AlarmYes }}
             </p>
 
@@ -174,17 +173,17 @@
         <div class="infoYMR">
           <div class="infoYMRLi">
             <div class="infoYMRLi_item"></div>
-            <p style="color: #f830af">
+            <p style="color: #f830af; font-size: 24px">
               {{ this.AlarmData.FaultNo }}
             </p>
-            <p style="color: #9bdef0">未处理故障数</p>
+            <p style="color: #9bdef0; font-size: 14px">未处理故障数</p>
           </div>
           <div class="infoYMRLi">
             <div class="infoYMRLi_item"></div>
-            <p style="color: #00c0ff">
+            <p style="color: #00c0ff; font-size: 24px">
               {{ this.AlarmData.FaultYes }}
             </p>
-            <p style="color: #9bdef0">已处理故障数</p>
+            <p style="color: #9bdef0; font-size: 14px">已处理故障数</p>
           </div>
           <!-- <div class="infoYMRLi"></div>
           <div class="infoYMRLi"></div> -->
@@ -212,39 +211,39 @@
     <div class="infoRight">
       <div class="one">
         <p>报警信息</p>
-        <vueSeamlessScroll
-          :data="AlarmInfo"
-          class="scroll_wapper"
-          :class-option="classOption"
-        >
-          <div class="scroll_wapper" v-if="this.AlarmInfo.length > 0">
-            <div
-              class="oneEchartWapper"
-              v-for="(item, index) in AlarmInfo"
-              :key="index"
-            >
-              <div class="oneEchart">
-                <div style="display: flex">
-                  <div class="circular"></div>
-                  <template>{{ item.isTrafficname }}</template>
-                </div>
-
-                <template>
-                  {{ item.creationtime }}
-                </template>
-                >
-              </div>
+        <div class="scroll_wapper">
+          <template v-if="this.AlarmInfo.length > 0">
+            <vueSeamlessScroll :data="AlarmInfo" :class-option="classOption">
               <div
-                style="margin-left: 14px; color: #00e4ff"
-                @click="alarmInfoClick(item.did, item.devicenoid)"
+                class="oneEchartWapper"
+                v-for="(item, index) in AlarmInfo"
+                :key="index"
               >
-                <div>设备:{{ item.deviceno_name }}</div>
-                <div>地址:{{ item.address }}</div>
-              </div>
-            </div>
-          </div>
-          <div class="no_alarm" v-else>暂无报警</div>
-        </vueSeamlessScroll>
+                <div class="oneEchart">
+                  <div style="display: flex">
+                    <div class="circular"></div>
+                    <template>{{ item.isTrafficname }}</template>
+                  </div>
+
+                  <template>
+                    {{ item.creationtime }}
+                  </template>
+                  >
+                </div>
+                <div
+                  style="margin-left: 14px; color: #00e4ff"
+                  @click="alarmInfoClick(item.did, item.devicenoid)"
+                >
+                  <div>设备:{{ item.deviceno_name }}</div>
+                  <div>地址:{{ item.address }}</div>
+                </div>
+              </div></vueSeamlessScroll
+            >
+          </template>
+          <template v-else>
+            <div class="no_AlarmInfo">暂无报警</div>
+          </template>
+        </div>
         <p
           class="sc_p"
           v-if="this.AlarmInfo != ''"
@@ -281,22 +280,19 @@ import {
   push_ProjectRegion,
   AlarmInforMore,
   DeviceProjectNew,
-  getLogo,
   updateuserpassword,
 } from "@/api/index.js";
-import vueSeamlessScroll from "vue-seamless-scroll";
 import md5 from "js-md5";
+import vueSeamlessScroll from "vue-seamless-scroll";
 import PublicPopUps from "../FireInternetOfThings/translate/publicPopUps";
 // import AMap from "AMap";
 export default {
   data() {
     return {
-      date: "",
-      day: "",
-      pagetype: 2,
+      pagetype: 3,
       fullscreenLoading: false,
       pageSize: 1,
-      AlarmInfo: [],
+      AlarmInfo: "",
       btnColor: "d",
       AlarmData: {
         AlarmNo: "",
@@ -304,13 +300,14 @@ export default {
         FaultNo: "",
         FaultYes: "",
       },
-      images_wapper: "",
       dialogVisible: false,
       numberValidateForm: {
         Odd_Password: "",
         New_Password: "",
         True_Password: "",
       },
+      date: "",
+      day: "",
       onOFF: "关",
     };
   },
@@ -318,11 +315,10 @@ export default {
     this.init();
     this.drawLine();
     this.push_AlarmData_info("d");
-
     this.day = this.$moment().format("MM-DD");
-    // console.log(day);
+    // //console.log(day);
     const date = this.$moment().isoWeekday();
-    console.log(date);
+    // //console.log(date);
     switch (date) {
       case 1:
         this.date = "周一";
@@ -347,13 +343,20 @@ export default {
         this.date = "周日";
         break;
     }
-
-    getLogo(this.utils.userName).then((res) => {
-      // this.images = res.data[0];
-      // console.log(this.images);
-      console.log(res);
-      this.images_wapper = `http://${res.data}`;
-    });
+  },
+  computed: {
+    classOption() {
+      return {
+        step: 0.5, // 数值越大速度滚动越快
+        limitMoveNum: 3, // 开始无缝滚动的数据量 this.dataList.length
+        hoverStop: true, // 是否开启鼠标悬停stop
+        direction: 1, // 0向下 1向上 2向左 3向右
+        openWatch: true, // 开启数据实时监控刷新dom
+        singleHeight: 0, // 单步运动停止的高度(默认值0是无缝不停止的滚动) direction => 0/1
+        singleWidth: 0, // 单步运动停止的宽度(默认值0是无缝不停止的滚动) direction => 2/3
+        waitTime: 1000, // 单步运动停止的时间(默认值1000ms)
+      };
+    },
   },
   methods: {
     alarmInfoClick(devId, p_num) {
@@ -371,32 +374,22 @@ export default {
         this.$store.commit("SoundSwitchFun", "开");
       }
     },
-    //上传图片
-    handlePreview(response, file, fileList) {
-      this.images_wapper = `http://${response.data[0]}`;
-      console.log(this.images_wapper);
-      if (this.images != "") {
-        return this.$message.success("替换成功");
-      } else {
-        return this.$message.error("替换失败");
-      }
-    },
     //年月日信息获取
     push_AlarmData_info(data) {
-      // console.log(this.utils);
+      // //console.log(this.utils);
       this.btnColor = data;
       push_AlarmData(this.utils.userName, data).then((res) => {
-        // console.log(res);
+        // ////console.log(res);
         this.AlarmData.AlarmNo = res.data.AlarmNo;
         this.AlarmData.AlarmYes = res.data.AlarmYes;
         this.AlarmData.FaultNo = res.data.FaultNo;
         this.AlarmData.FaultYes = res.data.FaultYes;
       });
       push_AlarmInfo(this.utils.userName, data).then((res) => {
-        console.log(res.data.data, 99999);
+        ////console.log(res.data.data, 99999);
         this.AlarmInfo = res.data.data;
         this.pageCount = res.data.pageCount;
-        console.log(this.pageCount);
+        ////console.log(this.pageCount);
       });
     },
     //设备概况
@@ -425,9 +418,9 @@ export default {
           this.AlarmInfo.push(element);
           this.fullscreenLoading = false;
         });
-        console.log(res.data.data);
+        //console.log(res.data.data);
         // this.AlarmInfo.push(res.data.data);
-        console.log(this.AlarmInfo);
+        //console.log(this.AlarmInfo);
       });
     },
     //系统设置跳转
@@ -446,9 +439,18 @@ export default {
         zoom: 5,
         mapStyle: "amap://styles/dcb78e5f043e25116ab6bdeaa6813234",
       });
+      this.map.addControl(
+        new AMap.MapType({
+          defaultType: 0, //0代表默认，1代表卫星
+        })
+      );
       this.map.setZoomAndCenter(4, [116.205467, 39.907761]);
-      DeviceProjectNew(this.utils.userName, "3", 1).then((res) => {
-        console.log(res);
+      const region = sessionStorage.getItem("region");
+      DeviceProjectNew(this.utils.userName, "3", region).then((res) => {
+        if (res.data.length <= 0) {
+          return (this.loading_map = false);
+        }
+        //console.log(res);
         const style = [
           {
             url: "https://a.amap.com/jsapi_demos/static/images/mass2.png",
@@ -463,6 +465,7 @@ export default {
         ];
         let a = [];
         let b = [];
+        // console.log(res.data.Company.length);
         for (let i = 0; i < res.data.Company.length; i++) {
           if (res.data.Company[i].style == 1) {
             b.push(res.data.Company[i]);
@@ -477,18 +480,20 @@ export default {
           cursor: "pointer",
           style: style,
         });
+        console.log(mass, 999);
+        console.log(this.map, 999);
         const marker = new AMap.Marker({ content: " ", map: this.map });
         mass.setMap(this.map);
-
-        var _that = this;
+        let _that = this;
         //绑定事件模块
         mass.on("click", function (e) {
-          console.log("asdasd");
-
-          // this.$refs.publicPopUps.initOff();
-
+          console.log(e);
           _that.$refs.publicPopUps.initOff();
           _that.$refs.publicPopUps.echart_wapper(e.data.pid);
+          _that.map.setZoomAndCenter(20, [
+            e.data.lnglat.lng,
+            e.data.lnglat.lat,
+          ]);
         });
       });
     },
@@ -513,7 +518,7 @@ export default {
             }
           );
         } else {
-          console.log("error submit!!");
+          //console.log("error submit!!");
           return false;
         }
       });
@@ -689,14 +694,14 @@ export default {
       );
       var indictedCase = [10, 7, 15, 8];
       push_AlarmNumData(this.utils.userName, "").then((res) => {
-        // console.log(res.data[0].typeName);
+        // //console.log(res.data[0].typeName);
         let listName = [];
         let listNum = [];
         res.data.forEach((element) => {
           listName.push(element.typeName);
           listNum.push(element.num);
         });
-        // console.log(listName);
+        // //console.log(listName);
         myChart_four.setOption({
           // backgroundColor: "#051c71",
           // title: {
@@ -782,33 +787,34 @@ export default {
       );
 
       push_AlarmAndFault(this.utils.userName, "0").then((res) => {
-        console.log(res, 7777);
-
-        let tiem = [];
-        let data = [];
-        let fault = [];
+        //console.log(res, 7777);
+        console.log(res.data.Alarm.length <= 0, 78987897);
+        // if(res.data)
         if (res.data.Alarm.length <= 0) {
           res.data.Alarm = [
-            { num: 287, date: "03-03" },
-            { num: 362, date: "03-04" },
-            { num: 357, date: "03-05" },
-            { num: 385, date: "03-06" },
-            { num: 291, date: "03-07" },
-            { num: 350, date: "03-08" },
-            { num: 207, date: "03-09" },
+            { num: 181, date: "03-14" },
+            { num: 337, date: "03-16" },
+            { num: 333, date: "03-17" },
+            { num: 341, date: "03-18" },
+            { num: 314, date: "03-19" },
+            { num: 276, date: "03-20" },
           ];
         }
         if (res.data.Fault.length <= 0) {
           res.data.Fault = [
-            { num: 3, date: "03-03" },
-            { num: 3, date: "03-04" },
-            { num: 1, date: "03-05" },
-            { num: 4, date: "03-06" },
-            { num: 2, date: "03-07" },
-            { num: 1, date: "03-08" },
-            { num: 3, date: "03-09" },
+            { num: 1, date: "03-14" },
+            { num: 3, date: "03-15" },
+            { num: 2, date: "03-16" },
+            { num: 3, date: "03-17" },
+            { num: 2, date: "03-18" },
+            { num: 3, date: "03-19" },
+            { num: 3, date: "03-20" },
           ];
         }
+
+        let tiem = [];
+        let data = [];
+        let fault = [];
         res.data.Alarm.forEach((element) => {
           tiem.push(element.date);
           data.push(element.num);
@@ -816,7 +822,7 @@ export default {
         res.data.Fault.forEach((element) => {
           fault.push(element.num);
         });
-        console.log(tiem);
+        //console.log(tiem);
         twoEchart_right.setOption({
           tooltip: {
             trigger: "axis",
@@ -891,10 +897,10 @@ export default {
         document.querySelector(".threeEchart_right")
       );
       push_ProjectRegion(this.utils.userName, "").then((res) => {
-        console.log(res, 6666);
+        //console.log(res, 6666);
         if (res.data.length <= 0) {
           // return this.$message.error("图表数据加载失败");
-          return "";
+          return; //console.log("数据加载失败");
         }
         let name = [];
         let num = [];
@@ -1061,24 +1067,9 @@ export default {
       this.$router.push("/login");
     },
   },
-
-  computed: {
-    classOption() {
-      return {
-        step: 0.5, // 数值越大速度滚动越快
-        limitMoveNum: 3, // 开始无缝滚动的数据量 this.dataList.length
-        hoverStop: true, // 是否开启鼠标悬停stop
-        direction: 1, // 0向下 1向上 2向左 3向右
-        openWatch: true, // 开启数据实时监控刷新dom
-        singleHeight: 0, // 单步运动停止的高度(默认值0是无缝不停止的滚动) direction => 0/1
-        singleWidth: 0, // 单步运动停止的宽度(默认值0是无缝不停止的滚动) direction => 2/3
-        waitTime: 1000, // 单步运动停止的时间(默认值1000ms)
-      };
-    },
-  },
   components: {
-    PublicPopUps,
     vueSeamlessScroll,
+    PublicPopUps,
   },
 };
 </script>
@@ -1086,6 +1077,11 @@ export default {
 #app {
   width: 100%;
   height: calc(100vh);
+  /deep/ .amap-maptypecontrol {
+    right: 410px;
+    top: 130px;
+    position: absolute;
+  }
   // background: #bfa;
   .title {
     display: flex;
@@ -1123,10 +1119,11 @@ export default {
           display: flex;
           justify-content: center;
           align-items: center;
-          background: rgb(7, 82, 194);
+          background: #3094d5;
           text-decoration: none;
           color: #fff;
           transform: skewX(25deg);
+          cursor: pointer;
           span {
             font-weight: 900;
             transform: skewX(-25deg);
@@ -1142,6 +1139,7 @@ export default {
           text-decoration: none;
           color: #fff;
           transform: skewX(25deg);
+          cursor: pointer;
           span {
             font-weight: 900;
             transform: skewX(-25deg);
@@ -1156,32 +1154,30 @@ export default {
 
       // transform: translateX(-30%);
       text-align: center;
-      // margin: 0 auto;
       img {
         width: 478px;
         height: 100%;
       }
+      // margin: 0 auto;
       .titleName {
         font-size: 35px;
         position: absolute;
-        z-index: 999;
+        width: 478px;
+        // z-index: 999;
         // left: 50%;
         // top: 50%;
-        width: 478px;
         // transform: translateX(-50%);
         line-height: 60px;
-        // background-image: url(../../assets/images/juxing4.png);
-        background-size: 100% 100%;
       }
     }
     .titleRight {
       width: 460px;
       height: 48px;
       .btnRight {
-        font-size: 16px;
         // float: right;
         display: flex;
         margin-top: -44px;
+        font-size: 16px;
         // margin-right: 30px;
         margin-left: 30px;
         .btnRightOne {
@@ -1195,6 +1191,7 @@ export default {
           text-decoration: none;
           color: #fff;
           transform: skewX(-25deg);
+          cursor: pointer;
           span {
             font-weight: 900;
             transform: skewX(25deg);
@@ -1210,16 +1207,11 @@ export default {
           text-decoration: none;
           color: #fff;
           transform: skewX(-25deg);
+          cursor: pointer;
           span {
             font-weight: 900;
             transform: skewX(25deg);
           }
-        }
-        .btnRightThree {
-          cursor: pointer;
-          margin-left: 51px;
-          line-height: 25px;
-          font-size: 14px;
         }
       }
     }
@@ -1232,11 +1224,6 @@ export default {
       img {
         width: 18px;
         height: 15px;
-      }
-      span {
-        &:nth-child(1) {
-          margin-right: 58px;
-        }
       }
       /deep/.el-dialog {
         background: none;
@@ -1322,20 +1309,6 @@ export default {
           height: 50px;
           background: rgb(15, 60, 118);
           position: relative;
-          p {
-            &:nth-child(1) {
-              font-size: 24px;
-            }
-            &:nth-child(2) {
-              font-size: 24px;
-            }
-            &:nth-child(3) {
-              font-size: 14px;
-            }
-            &:nth-child(4) {
-              font-size: 214px;
-            }
-          }
           .infoYMRLi_item {
             position: absolute;
             bottom: 0;
@@ -1453,12 +1426,6 @@ export default {
       height: 200px;
     }
   }
-  .no_alarm {
-    text-align: center;
-    line-height: 200px;
-    font-size: 40px;
-    color: #999;
-  }
   .infoRight {
     color: #fff;
     margin-right: 20px;
@@ -1478,22 +1445,21 @@ export default {
         line-height: 60px;
         font-size: 18px;
       }
-
-      .sc_p {
-        text-align: center;
-        line-height: 30px;
-        color: #999;
-        font-size: 14px;
-        cursor: pointer;
-      }
       .scroll_wapper {
-        // overflow-y: auto;
-        height: 65%; //高度根据需求自行设定
+        overflow-y: auto;
+        height: 66%; //高度根据需求自行设定
         overflow-x: hidden;
+        .no_AlarmInfo {
+          font-size: 40px;
+          color: #999;
+          line-height: 200px;
+          text-align: center;
+        }
         .oneEchartWapper {
           width: 332px;
           margin: 0 auto;
           font-size: 14px;
+
           .oneEchart {
             display: flex;
             justify-content: space-between;
@@ -1509,6 +1475,13 @@ export default {
             }
           }
         }
+      }
+      .sc_p {
+        text-align: center;
+        line-height: 30px;
+        color: #999;
+        font-size: 14px;
+        cursor: pointer;
       }
     }
     .two {
@@ -1526,11 +1499,11 @@ export default {
     }
     .three {
       height: 250px;
-      background-image: url("../../assets/images/juxing7.png");
+      background-image: url("../../assets//images/juxing7.png");
       background-size: 100% 100%;
       p {
         text-align: center;
-        line-height: 50px;
+        line-height: 40px;
         font-size: 18px;
       }
       .threeEchart_right {

@@ -474,12 +474,12 @@ export function deleDevice(devId, username) {
   })
 }
 //删除项目
-export function deleProject(devId, username) {
+export function deleProject(pid, username) {
   return service({
     url: `/admin/project/check/deleProject.action`,
     method: 'GET',
     params: {
-      devId, username
+      pid, username
     }
   })
 }
