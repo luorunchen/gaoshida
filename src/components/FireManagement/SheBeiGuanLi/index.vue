@@ -39,7 +39,7 @@
         <el-table-column label="项目名称" width="120">
           <template slot-scope="scope">{{ scope.row.name }}</template>
         </el-table-column>
-        <el-table-column prop="installLocation" label="项目位置">
+        <el-table-column prop="installLocation" label="设备位置">
           <template slot-scope="scope">
             <!-- <p v-if="scope.row.dSName == '智能重合闸'">智能重合闸</p>
             <p v-else>{{ scope.row.installLocation }}</p> -->
@@ -615,6 +615,7 @@ export default {
       updateDeviceSim(
         this.devID,
         this.mapInfo.remak,
+        this.lanlat,
         this.utils.userName,
         this.mapInfo.address
       ).then((res) => {
@@ -866,7 +867,8 @@ export default {
         AMap.event.addListener(auto, "select", this.select); //注册监听，当选中某条记录时会触发
         AMap.event.addListener(this.placeSearch, "markerClick", (e) => {
           // console.log(e.data.location.lng, e.data.location.lat); // 经纬度
-          console.log(e, 654);
+          this.lanlat = e.data.location.lng + "," + e.data.location.lat;
+          // console.log(e, 654);
           this.mapInfo.address = `${e.data.cityname}${e.data.adname}${e.data.address}`;
         });
       });
@@ -946,7 +948,7 @@ export default {
       console.log(e);
       this.placeSearch.setCity(e.poi.adcode);
       this.placeSearch.search(e.poi.name); //关键字查询查询
-
+      this.lanlat = e.poi.location.lng + "," + e.poi.location.lat;
       this.mapInfo.address =
         e.poi.district + "" + e.poi.address + "" + e.poi.name;
     },

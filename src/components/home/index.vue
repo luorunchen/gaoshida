@@ -203,6 +203,9 @@
         <div class="fourEchart"></div>
       </div>
     </div>
+    <div class="btnQh">
+      <el-button type="primary" @click="locationFun">{{ location }}</el-button>
+    </div>
     <div class="center">
       <p>电量统计图</p>
       <div class="gaoshidaEchart"></div>
@@ -281,6 +284,7 @@ import {
   AlarmInforMore,
   DeviceProjectNew,
   updateuserpassword,
+  getAllDevicePostion,
 } from "@/api/index.js";
 import md5 from "js-md5";
 import vueSeamlessScroll from "vue-seamless-scroll";
@@ -289,6 +293,7 @@ import PublicPopUps from "../FireInternetOfThings/translate/publicPopUps";
 export default {
   data() {
     return {
+      location: "设备点位",
       pagetype: 3,
       fullscreenLoading: false,
       pageSize: 1,
@@ -316,9 +321,9 @@ export default {
     this.drawLine();
     this.push_AlarmData_info("d");
     this.day = this.$moment().format("MM-DD");
-    // //console.log(day);
+    // ////console.log(day);
     const date = this.$moment().isoWeekday();
-    // //console.log(date);
+    // ////console.log(date);
     switch (date) {
       case 1:
         this.date = "周一";
@@ -359,12 +364,123 @@ export default {
     },
   },
   methods: {
+    locationFun() {
+      if (this.mass != undefined) {
+        this.mass.setMap(null);
+      }
+
+      // console.log(this.mass);
+      if (this.location == "项目点位") {
+        this.location = "设备点位";
+        const region = sessionStorage.getItem("region");
+        DeviceProjectNew(this.utils.userName, "3", region).then((res) => {
+          if (res.data.length <= 0) {
+            return (this.loading_map = false);
+          }
+          ////console.log(res);
+          const style = [
+            {
+              url: "http://124.71.11.195/image/点4.png",
+              anchor: new AMap.Pixel(4, 4),
+              size: new AMap.Size(30, 30),
+            },
+            {
+              url: "https://a.amap.com/jsapi_demos/static/images/mass0.png",
+              anchor: new AMap.Pixel(6, 6),
+              size: new AMap.Size(30, 30),
+            },
+          ];
+          let a = [];
+          let b = [];
+          // //console.log(res.data.Company.length);
+          for (let i = 0; i < res.data.Company.length; i++) {
+            if (res.data.Company[i].style == 1) {
+              b.push(res.data.Company[i]);
+            } else {
+              a.push(res.data.Company[i]);
+            }
+          }
+          let c = [...a, ...b];
+          this.mass = new AMap.MassMarks(c, {
+            opacity: 0.8,
+            zIndex: 111,
+            cursor: "pointer",
+            style: style,
+          });
+          //console.log(mass, 999);
+          //console.log(this.map, 999);
+          const marker = new AMap.Marker({ content: " ", map: this.map });
+          this.mass.setMap(this.map);
+          let _that = this;
+          //绑定事件模块
+          this.mass.on("click", function (e) {
+            //console.log(e);
+            _that.$refs.publicPopUps.initOff();
+            _that.$refs.publicPopUps.echart_wapper(e.data.pid);
+            _that.map.setZoomAndCenter(20, [
+              e.data.lnglat.lng,
+              e.data.lnglat.lat,
+            ]);
+          });
+        });
+      } else {
+        this.location = "项目点位";
+        getAllDevicePostion(this.utils.userName).then((res) => {
+          //console.log(res.data.data);
+          const style = [
+            {
+              url: "http://124.71.11.195/image/点4.png",
+              anchor: new AMap.Pixel(4, 4),
+              size: new AMap.Size(30, 30),
+            },
+            {
+              url: "https://a.amap.com/jsapi_demos/static/images/mass0.png",
+              anchor: new AMap.Pixel(6, 6),
+              size: new AMap.Size(30, 30),
+            },
+          ];
+          let a = [];
+          let b = [];
+          // //console.log(res.data.Company.length);
+          for (let i = 0; i < res.data.data.length; i++) {
+            if (res.data.data[i].style == 1) {
+              b.push(res.data.data[i]);
+            } else {
+              a.push(res.data.data[i]);
+            }
+          }
+          let c = [...a, ...b];
+          this.mass = new AMap.MassMarks(c, {
+            opacity: 0.8,
+            zIndex: 111,
+            cursor: "pointer",
+            style: style,
+          });
+          //console.log(mass, 999);
+          //console.log(this.map, 999);
+          const marker = new AMap.Marker({ content: " ", map: this.map });
+          this.mass.setMap(this.map);
+          let _that = this;
+          //绑定事件模块
+          this.mass.on("click", function (e) {
+            console.log(e);
+            // _that.$refs.publicPopUps.initOff();
+            // this.$refs.publicPopUps.see(devId, p_num);
+            // _that.$refs.publicPopUps.echart_wapper(e.data.pid);
+            _that.map.setZoomAndCenter(20, [
+              e.data.lnglat.lng,
+              e.data.lnglat.lat,
+            ]);
+          });
+        });
+      }
+    },
     alarmInfoClick(devId, p_num) {
       this.$refs.publicPopUps.see(devId, p_num);
     },
     // 声音开关
     audioON() {
-      // console.log(123);
+      // //console.log(123);
       if (this.onOFF == "开") {
         this.$store.commit("SoundSwitchFun", "关");
         return (this.onOFF = "关");
@@ -376,20 +492,20 @@ export default {
     },
     //年月日信息获取
     push_AlarmData_info(data) {
-      // //console.log(this.utils);
+      // ////console.log(this.utils);
       this.btnColor = data;
       push_AlarmData(this.utils.userName, data).then((res) => {
-        // ////console.log(res);
+        // //////console.log(res);
         this.AlarmData.AlarmNo = res.data.AlarmNo;
         this.AlarmData.AlarmYes = res.data.AlarmYes;
         this.AlarmData.FaultNo = res.data.FaultNo;
         this.AlarmData.FaultYes = res.data.FaultYes;
       });
       push_AlarmInfo(this.utils.userName, data).then((res) => {
-        ////console.log(res.data.data, 99999);
+        //////console.log(res.data.data, 99999);
         this.AlarmInfo = res.data.data;
         this.pageCount = res.data.pageCount;
-        ////console.log(this.pageCount);
+        //////console.log(this.pageCount);
       });
     },
     //设备概况
@@ -418,9 +534,9 @@ export default {
           this.AlarmInfo.push(element);
           this.fullscreenLoading = false;
         });
-        //console.log(res.data.data);
+        ////console.log(res.data.data);
         // this.AlarmInfo.push(res.data.data);
-        //console.log(this.AlarmInfo);
+        ////console.log(this.AlarmInfo);
       });
     },
     //系统设置跳转
@@ -441,7 +557,7 @@ export default {
       });
       this.map.addControl(
         new AMap.MapType({
-          defaultType: 0, //0代表默认，1代表卫星
+          defaultType: 1, //0代表默认，1代表卫星
         })
       );
       this.map.setZoomAndCenter(4, [116.205467, 39.907761]);
@@ -450,22 +566,22 @@ export default {
         if (res.data.length <= 0) {
           return (this.loading_map = false);
         }
-        //console.log(res);
+        ////console.log(res);
         const style = [
           {
-            url: "https://a.amap.com/jsapi_demos/static/images/mass2.png",
+            url: "http://124.71.11.195/image/点4.png",
             anchor: new AMap.Pixel(4, 4),
-            size: new AMap.Size(20, 20),
+            size: new AMap.Size(30, 30),
           },
           {
             url: "https://a.amap.com/jsapi_demos/static/images/mass0.png",
             anchor: new AMap.Pixel(6, 6),
-            size: new AMap.Size(23, 23),
+            size: new AMap.Size(30, 30),
           },
         ];
         let a = [];
         let b = [];
-        // console.log(res.data.Company.length);
+        // //console.log(res.data.Company.length);
         for (let i = 0; i < res.data.Company.length; i++) {
           if (res.data.Company[i].style == 1) {
             b.push(res.data.Company[i]);
@@ -474,20 +590,20 @@ export default {
           }
         }
         let c = [...a, ...b];
-        const mass = new AMap.MassMarks(c, {
+        this.mass = new AMap.MassMarks(c, {
           opacity: 0.8,
           zIndex: 111,
           cursor: "pointer",
           style: style,
         });
-        console.log(mass, 999);
-        console.log(this.map, 999);
+        //console.log(mass, 999);
+        //console.log(this.map, 999);
         const marker = new AMap.Marker({ content: " ", map: this.map });
-        mass.setMap(this.map);
+        this.mass.setMap(this.map);
         let _that = this;
         //绑定事件模块
-        mass.on("click", function (e) {
-          console.log(e);
+        this.mass.on("click", function (e) {
+          //console.log(e);
           _that.$refs.publicPopUps.initOff();
           _that.$refs.publicPopUps.echart_wapper(e.data.pid);
           _that.map.setZoomAndCenter(20, [
@@ -518,7 +634,7 @@ export default {
             }
           );
         } else {
-          //console.log("error submit!!");
+          ////console.log("error submit!!");
           return false;
         }
       });
@@ -588,7 +704,7 @@ export default {
             orient: "vertical",
             left: 10,
             bottom: 10,
-            data: ["报警", "故障", "离线", "正常", "设备总数", "项目总数"],
+            data: ["报警", "正常", "离线", "故障", "设备总数", "项目总数"],
             textStyle: {
               color: "#fft",
             },
@@ -616,9 +732,10 @@ export default {
               },
               data: [
                 { value: res.data.DeciveNumAlarm, name: "报警" },
-                { value: res.data.DeciveNumFault, name: "故障" },
-                { value: res.data.DeciveNumOff, name: "离线" },
                 { value: res.data.DeciveNumOn, name: "正常" },
+                { value: res.data.DeciveNumOff, name: "离线" },
+
+                { value: res.data.DeciveNumFault, name: "故障" },
                 { value: res.data.DeciveNumAll, name: "设备总数" },
                 { value: res.data.ProjectNumAll, name: "项目总数" },
               ],
@@ -637,11 +754,15 @@ export default {
 
         const data2 = res.data.list[0].values.split(",");
 
-        for (let i = 0; i < data2.length; i++) {
-          const data = res.data.list[0].name.split(",");
-          const data2 = res.data.list[0].values.split(",");
-          arr.push({ name: data[i], value: data2[i] });
-        }
+        // for (let i = 0; i < data2.length; i++) {
+        //   const data = res.data.list[0].name.split(",");
+        //   const data2 = res.data.list[0].values.split(",");
+        //   arr.push({ name: data[i], value: data2[i] });
+        // }
+        arr = [
+          { name: "智慧用电保护器", value: "20" },
+          { name: "网关", value: "10" },
+        ];
         myChart_three.setOption({
           tooltip: {
             trigger: "item",
@@ -694,88 +815,178 @@ export default {
       );
       var indictedCase = [10, 7, 15, 8];
       push_AlarmNumData(this.utils.userName, "").then((res) => {
-        // //console.log(res.data[0].typeName);
-        let listName = [];
-        let listNum = [];
-        res.data.forEach((element) => {
-          listName.push(element.typeName);
-          listNum.push(element.num);
+        ////console.log(res.data[0].typeName);
+        console.log(res.data);
+        // let listName = [];
+        // let listNum = [];
+        // res.data.forEach((element) => {
+        //   listName.push(element.typeName);
+        //   listNum.push(element.num);
+        // });
+        let name = [];
+        let num = [];
+        res.data.forEach((el) => {
+          name.push(el.typeName);
+          num.push(el.num);
         });
-        // //console.log(listName);
+        // ////console.log(listName);
         myChart_four.setOption({
-          // backgroundColor: "#051c71",
-          // title: {
-          //   text: echarts.format.addCommas(dataCount) + " Data",
-          //   left: 10,
-          // },
-          // toolbox: {
-          //   feature: {
-          //     dataZoom: {
-          //       yAxisIndex: false,
-          //     },
-          //     saveAsImage: {
-          //       pixelRatio: 2,
-          //     },
-          //   },
-          // },
+          // -----------------------------------------
           tooltip: {
             trigger: "axis",
-            axisPointer: {
-              type: "shadow",
+            backgroundColor: "#fff",
+            padding: [15, 30],
+            extraCssText:
+              "box-shadow: 0px 0px 25px 5px rgb(41, 95, 159) inset;border-radius:10px",
+          },
+          // dataZoom: [
+          //   {
+          //     type: "slider",
+          //     show: true,
+          //     start: 0,
+          //     end: 30,
+          //     xAxisIndex: [0],
+          //   },
+          // ],
+          legend: {
+            show: true,
+            top: "5%",
+
+            textStyle: {
+              color: "#fff",
             },
+            data: ["数量"],
           },
           grid: {
-            bottom: "30%",
-            top: "5%",
+            top: "20%",
+            left: "3%",
+            right: "4%",
+            bottom: "2%",
+            containLabel: true,
           },
-          dataZoom: [
-            {
-              type: "inside",
-            },
-            {
-              type: "slider",
-            },
-          ],
           xAxis: {
-            data: listName,
-            silent: false,
-            splitLine: {
+            type: "category",
+            axisTick: {
               show: false,
             },
-            splitArea: {
-              show: false,
-            },
+            // axisLabel: { interval: 0, rotate: 90 },
+
             axisLabel: {
               // rotate: 10,
               //"rotate": 30,
+              // interval: 0,
               interval: 0,
-              // color: "#eee",
+              // rotate: 90,
+              color: "#eee",
               fontSize: 14,
-              formatter: function (params) {
+              // formatter: function (params) {
+              //
+              // },
+              //图表文字竖向显示
+              formatter: function (value) {
                 var val = "";
-                if (params.length > 1) {
-                  val = params.substr(0, 4) + "...";
-                  return val;
+                if (value.length > 2) {
+                  val = value.substr(0, 2);
+                  return val.split("").join("\n");
                 } else {
-                  return params;
+                  value;
                 }
+                return value.split("").join("\n");
               },
             },
+
+            data: name,
           },
-          yAxis: {
-            splitArea: {
-              show: false,
+          yAxis: [
+            {
+              type: "value",
+              name: "单位:(个)",
+              min: 0,
+              // "max": leftMax*2,
+              axisTick: {
+                show: false,
+              },
+              // splitLine: {
+              //   show: false,
+              //   lineStyle: {
+              //     color: "transparent",
+              //   },
+              // },
+              splitNumber: 5,
+              axisLabel: {
+                show: true,
+                textStyle: {
+                  color: "#eee",
+                },
+              },
+              nameTextStyle: {
+                color: "#fff",
+              },
             },
-            axisLabel: {
-              color: "#fff",
-            },
-          },
+          ],
           series: [
             {
+              name: "数量",
               type: "bar",
-              data: listNum,
-              // Set `large` for large data amount
-              large: true,
+              barWidth: 8,
+              barGap: 0,
+              label: {
+                normal: {
+                  show: false,
+                  position: "insideRight",
+                },
+              },
+              itemStyle: {
+                normal: {
+                  color: "#77f9ef",
+                },
+              },
+              data: num,
+            },
+            {
+              name: "数量",
+              type: "bar",
+              barWidth: 8,
+              tooltip: {
+                show: false,
+              },
+              label: {
+                normal: {
+                  show: false,
+                  position: "insideRight",
+                },
+              },
+              itemStyle: {
+                normal: {
+                  color: "#52bbb3",
+                },
+              },
+              data: num,
+            },
+            {
+              name: "数量",
+              type: "pictorialBar", // 长方体顶部四边形
+              symbol: "diamond",
+              symbolRotate: 0,
+              symbolSize: ["16", "10"],
+              symbolOffset: ["0", "-5"],
+              symbolPosition: "end",
+              z: 3, // 顶部四边形
+              tooltip: {
+                show: false,
+              },
+              label: {
+                normal: {
+                  show: false,
+                  position: "insideRight",
+                },
+              },
+              itemStyle: {
+                normal: {
+                  color: "#52bbb3",
+                },
+              },
+              data: num,
             },
           ],
         });
@@ -787,8 +998,8 @@ export default {
       );
 
       push_AlarmAndFault(this.utils.userName, "0").then((res) => {
-        //console.log(res, 7777);
-        console.log(res.data.Alarm.length <= 0, 78987897);
+        ////console.log(res, 7777);
+        //console.log(res.data.Alarm.length <= 0, 78987897);
         // if(res.data)
         if (res.data.Alarm.length <= 0) {
           res.data.Alarm = [
@@ -822,7 +1033,7 @@ export default {
         res.data.Fault.forEach((element) => {
           fault.push(element.num);
         });
-        //console.log(tiem);
+        ////console.log(tiem);
         twoEchart_right.setOption({
           tooltip: {
             trigger: "axis",
@@ -897,10 +1108,10 @@ export default {
         document.querySelector(".threeEchart_right")
       );
       push_ProjectRegion(this.utils.userName, "").then((res) => {
-        //console.log(res, 6666);
+        ////console.log(res, 6666);
         if (res.data.length <= 0) {
           // return this.$message.error("图表数据加载失败");
-          return; //console.log("数据加载失败");
+          return; ////console.log("数据加载失败");
         }
         let name = [];
         let num = [];
@@ -1405,6 +1616,15 @@ export default {
         height: 180px;
       }
     }
+  }
+  .btnQh {
+    position: absolute;
+    z-index: 999;
+    left: 1420px;
+    width: 58%;
+    bottom: 80px;
+    height: 250px;
+    right: 0px;
   }
   .center {
     position: absolute;

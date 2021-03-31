@@ -32,6 +32,14 @@
                 @click="echart_wapper(item.BH)"
               >
                 <li>
+                  <div class="location" @click.stop="mapPoints(item.long_lat)">
+                    <el-button
+                      type="primary"
+                      icon="el-icon-rank"
+                      circle
+                      size="mini"
+                    ></el-button>
+                  </div>
                   <span v-if="item.value != null || item.value != undefined"
                     >{{ index + 1 }}.</span
                   >
@@ -54,6 +62,14 @@
                 @click="see(item.BH, item.text)"
               >
                 <li v-if="item.text != null || item.text != undefined">
+                  <div class="location" @click.stop="mapPoints(item.long_lat)">
+                    <el-button
+                      type="primary"
+                      icon="el-icon-rank"
+                      circle
+                      size="mini"
+                    ></el-button>
+                  </div>
                   <span v-if="item.value != null || item.value != undefined"
                     >{{ index + 1 }}.</span
                   >
@@ -100,6 +116,7 @@ export default {
   props: ["SElec_DetailElecDevice_List", "pagetype", "DeviceProjectNewData"],
   data() {
     return {
+      location: "项目点位",
       DeviceHistory: "",
       SElec_DetailElecDevice_List_Copy: "",
       fazhishezhi: {
@@ -175,6 +192,19 @@ export default {
     PublicPopUps,
   },
   methods: {
+    //点位跟踪
+    mapPoints(lnglat) {
+      //获取地图点
+      let map;
+      let Mlng = lnglat.split(",");
+      if (Mlng[0] > 60) {
+        map = [Mlng[0] * 1, Mlng[1] * 1];
+      } else {
+        map = [Mlng[1] * 1, Mlng[0] * 1];
+      }
+      this.$store.commit("set_map", map);
+    },
+
     //设备历史
     deviceHistory() {
       console.log(this.DeviceHistory);
@@ -539,6 +569,7 @@ export default {
 
   // background-color: #f9fafc;
 }
+
 .titleWapper {
   /deep/.el-dialog__header {
     background: rgb(20, 49, 108);
@@ -562,6 +593,7 @@ export default {
     border: 1px solid #3486da;
     // border-radius: 6px;
   }
+
   .title_name {
     width: 255px;
     height: 30px;
@@ -1142,7 +1174,7 @@ export default {
         .olList {
           padding-left: 18px;
           font-size: 14px;
-
+          position: relative;
           background: linear-gradient(-87deg, #3053af, #14295a);
           border-top: 1px solid #3486da;
 
@@ -1153,6 +1185,12 @@ export default {
           li {
             padding-bottom: 5px;
           }
+        }
+        .location {
+          position: absolute;
+          right: 10px;
+          // top: 10px;
+          margin-top: 10px;
         }
       }
     }

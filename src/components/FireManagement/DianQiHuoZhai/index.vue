@@ -1,6 +1,9 @@
 <template>
   <div id="dianqiHZ">
     <div class="title2"></div>
+    <div class="btnQh">
+      <el-button type="primary" @click="locationFun">{{ location }}</el-button>
+    </div>
     <div class="leftWapper">
       <div class="left_one" ref="leftOne">
         <p>今日报警项目</p>
@@ -9,17 +12,18 @@
             <li>{{ item }}</li>
           </ul>
         </div>
-
-        <ul
-          class="ulList"
-          v-for="(item, index) in DeviceAlarmList"
-          :key="index"
-        >
-          <li @click="callPolice(item.pid)">
-            <span>{{ item.typeName }}</span
-            ><span>共{{ item.value }}条未处理></span>
-          </li>
-        </ul>
+        <div class="scroll_wapper">
+          <ul
+            class="ulList"
+            v-for="(item, index) in DeviceAlarmList"
+            :key="index"
+          >
+            <li @click="callPolice(item.pid)">
+              <span>{{ item.typeName }}</span
+              ><span>共{{ item.value }}条未处理></span>
+            </li>
+          </ul>
+        </div>
       </div>
       <div class="left_two">
         <p>接入电气火灾探测器</p>
@@ -41,6 +45,7 @@ import {
   DeviceAlarm,
   SElec_DetailElecDevice,
   DeviceProjectNew,
+  getAllDevicePostion,
 } from "@/api/index.js";
 import Translate from "../../FireInternetOfThings/translate/baojingTranslate.vue";
 import SearchTranslate from "../../FireInternetOfThings/translate/searchTranslate.vue";
@@ -49,6 +54,7 @@ export default {
   data() {
     return {
       SElec_DetailElecDevice_List: "",
+      location: "设备点位",
       baojingNum: "",
       DeviceAlarmList: "",
       pagetype: 2,
@@ -83,6 +89,117 @@ export default {
     this.stop();
   },
   methods: {
+    //点位切换
+    locationFun() {
+      if (this.mass != undefined) {
+        this.mass.setMap(null);
+      }
+
+      // console.log(this.mass);
+      if (this.location == "项目点位") {
+        this.location = "设备点位";
+        const region = sessionStorage.getItem("region");
+        DeviceProjectNew(this.utils.userName, "3", region).then((res) => {
+          if (res.data.length <= 0) {
+            return (this.loading_map = false);
+          }
+          ////console.log(res);
+          const style = [
+            {
+              url: "https://a.amap.com/jsapi_demos/static/images/mass1.png",
+              anchor: new AMap.Pixel(4, 4),
+              size: new AMap.Size(30, 30),
+            },
+            {
+              url: "https://a.amap.com/jsapi_demos/static/images/mass0.png",
+              anchor: new AMap.Pixel(6, 6),
+              size: new AMap.Size(30, 30),
+            },
+          ];
+          let a = [];
+          let b = [];
+          // //console.log(res.data.Company.length);
+          for (let i = 0; i < res.data.Company.length; i++) {
+            if (res.data.Company[i].style == 1) {
+              b.push(res.data.Company[i]);
+            } else {
+              a.push(res.data.Company[i]);
+            }
+          }
+          let c = [...a, ...b];
+          this.mass = new AMap.MassMarks(c, {
+            opacity: 0.8,
+            zIndex: 111,
+            cursor: "pointer",
+            style: style,
+          });
+          //console.log(mass, 999);
+          //console.log(this.map, 999);
+          const marker = new AMap.Marker({ content: " ", map: this.map });
+          this.mass.setMap(this.map);
+          let _that = this;
+          //绑定事件模块
+          this.mass.on("click", function (e) {
+            //console.log(e);
+            _that.$refs.publicPopUps.initOff();
+            _that.$refs.publicPopUps.echart_wapper(e.data.pid);
+            _that.map.setZoomAndCenter(20, [
+              e.data.lnglat.lng,
+              e.data.lnglat.lat,
+            ]);
+          });
+        });
+      } else {
+        this.location = "项目点位";
+        getAllDevicePostion(this.utils.userName).then((res) => {
+          //console.log(res.data.data);
+          const style = [
+            {
+              url: "https://a.amap.com/jsapi_demos/static/images/mass1.png",
+              anchor: new AMap.Pixel(4, 4),
+              size: new AMap.Size(30, 30),
+            },
+            {
+              url: "https://a.amap.com/jsapi_demos/static/images/mass0.png",
+              anchor: new AMap.Pixel(6, 6),
+              size: new AMap.Size(30, 30),
+            },
+          ];
+          let a = [];
+          let b = [];
+          // //console.log(res.data.Company.length);
+          for (let i = 0; i < res.data.data.length; i++) {
+            if (res.data.data[i].style == 1) {
+              b.push(res.data.data[i]);
+            } else {
+              a.push(res.data.data[i]);
+            }
+          }
+          let c = [...a, ...b];
+          this.mass = new AMap.MassMarks(c, {
+            opacity: 0.8,
+            zIndex: 111,
+            cursor: "pointer",
+            style: style,
+          });
+          //console.log(mass, 999);
+          //console.log(this.map, 999);
+          const marker = new AMap.Marker({ content: " ", map: this.map });
+          this.mass.setMap(this.map);
+          let _that = this;
+          //绑定事件模块
+          this.mass.on("click", function (e) {
+            //console.log(e);
+            _that.$refs.publicPopUps.initOff();
+            _that.$refs.publicPopUps.echart_wapper(e.data.pid);
+            _that.map.setZoomAndCenter(20, [
+              e.data.lnglat.lng,
+              e.data.lnglat.lat,
+            ]);
+          });
+        });
+      }
+    },
     stop() {
       var mo = function (e) {
         e.preventDefault();
@@ -129,14 +246,14 @@ export default {
         this.$nextTick(() => {
           const style = [
             {
-              url: "https://a.amap.com/jsapi_demos/static/images/mass2.png",
+              url: "https://a.amap.com/jsapi_demos/static/images/mass1.png",
               anchor: new AMap.Pixel(4, 4),
-              size: new AMap.Size(20, 20),
+              size: new AMap.Size(30, 30),
             },
             {
               url: "https://a.amap.com/jsapi_demos/static/images/mass0.png",
               anchor: new AMap.Pixel(6, 6),
-              size: new AMap.Size(23, 23),
+              size: new AMap.Size(30, 30),
             },
           ];
           // console.log(this.DeviceProjectNewData, 987987);
@@ -206,9 +323,28 @@ export default {
 <style lang='less' scoped>
 #dianqiHZ {
   /deep/ .amap-maptypecontrol {
-    right: 0px;
+    right: 280px;
     top: 30px;
     position: absolute;
+  }
+  /deep/.btnQh {
+    position: absolute;
+    z-index: 999;
+
+    width: 58%;
+    top: 80px;
+
+    right: -850px;
+  }
+  .scroll_wapper {
+    margin-top: 15px;
+    // position: relative;
+    overflow-y: auto;
+    height: 300px; //高度根据需求自行设定
+    overflow-x: hidden;
+  }
+  .scroll_wapper ::-webkit-scrollbar {
+    display: none; /*隐藏滚动条*/
   }
   height: 800px;
   .title2 {

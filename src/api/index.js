@@ -454,12 +454,12 @@ export function getAllProjecForState(username, cp, col, state, kw, ls, pname) {
   })
 }
 //编辑设备
-export function updateDeviceSim(devId, remark, my_username, installLocation) {
+export function updateDeviceSim(devId, remark, long_lat, my_username, installLocation) {
   return service({
     url: `/admin/device/check/updateDeviceSim.action`,
     method: 'GET',
     params: {
-      devId, remark, my_username, installLocation
+      devId, remark, long_lat, my_username, installLocation
     }
   })
 }
@@ -813,6 +813,16 @@ export function getDeviceByDeploy(my_username, pageSize, type) {
     method: 'GET',
     params: {
       my_username, pageSize, type
+    }
+  })
+}
+//获取操作记录
+export function getAllDevicePostion(username) {
+  return service({
+    url: `WebProject/getAllDevicePostion.action`,
+    method: 'GET',
+    params: {
+      username
     }
   })
 }
