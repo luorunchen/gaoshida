@@ -3,6 +3,7 @@
     <!-- 搜索内容弹窗 -->
     <div class="titleWapper">
       <el-dialog
+        :close-on-click-modal="false"
         :visible.sync="dialogVisible"
         width="60%"
         :modal-append-to-body="false"
@@ -389,6 +390,7 @@
 
     <!-- 内部弹窗 ->查看 -->
     <el-dialog
+      :close-on-click-modal="false"
       width="60%"
       title="查看"
       :visible.sync="innerVisible"
@@ -540,8 +542,8 @@
                           <el-col :span="6">
                             <div class="imgWapper_img">
                               <img src="../../../assets/images/dianliu.png" />
-                              <p>{{ shengyu_loudian.fourAlarm }}A</p>
-                              <p>{{ shengyu_loudian.fourDianLiu }}A</p>
+                              <p>{{ shengyu_loudian.fourAlarm }}mA</p>
+                              <p>{{ shengyu_loudian.fourDianLiu }}mA</p>
                             </div>
                           </el-col>
                         </template>
@@ -695,8 +697,8 @@
                           <el-col :span="6">
                             <div class="imgWapper_img">
                               <img src="../../../assets/images/dianliu.png" />
-                              <p>{{ shengyu_loudian.fourAlarm }}A</p>
-                              <p>{{ shengyu_loudian.fourDianLiu }}A</p>
+                              <p>{{ shengyu_loudian.fourAlarm }}mA</p>
+                              <p>{{ shengyu_loudian.fourDianLiu }}mA</p>
                             </div>
                           </el-col>
                         </template>
@@ -866,8 +868,8 @@
                           <el-col :span="6">
                             <div class="imgWapper_img">
                               <img src="../../../assets/images/dianliu.png" />
-                              <p>{{ shengyu_loudian.fourAlarm }}A</p>
-                              <p>{{ shengyu_loudian.fourDianLiu }}A</p>
+                              <p>{{ shengyu_loudian.fourAlarm }}mA</p>
+                              <p>{{ shengyu_loudian.fourDianLiu }}mA</p>
                             </div>
                           </el-col>
                         </template>
@@ -1020,8 +1022,8 @@
                           <el-col :span="6">
                             <div class="imgWapper_img">
                               <img src="../../../assets/images/dianliu.png" />
-                              <p>{{ shengyu_loudian.fourAlarm }}A</p>
-                              <p>{{ shengyu_loudian.fourDianLiu }}A</p>
+                              <p>{{ shengyu_loudian.fourAlarm }}mA</p>
+                              <p>{{ shengyu_loudian.fourDianLiu }}mA</p>
                             </div>
                           </el-col>
                         </template>
@@ -1128,6 +1130,8 @@
               </template>
             </el-row>
           </template>
+
+          <!-- 正常设备 -->
           <template
             v-else-if="
               this.ElecDataList_typeName == '正常' &&
@@ -1142,7 +1146,7 @@
               <el-col :span="8"
                 ><div class="grid-content bg-purple">
                   <div class="imgWapper">
-                    <el-row>
+                    <el-row type="flex" justify="center">
                       <template>
                         <el-col :span="6">
                           <div class="imgWapper_img">
@@ -1151,7 +1155,7 @@
                             <p>{{ shengyu_loudian.oneDianLiu }}A</p>
                           </div>
                         </el-col>
-                        <el-col :span="6">
+                        <!-- <el-col :span="6">
                           <div class="imgWapper_img">
                             <img src="../../../assets/images/dianliu.png" />
                             <p>{{ shengyu_loudian.twoAlarm }}A</p>
@@ -1164,12 +1168,12 @@
                             <p>{{ shengyu_loudian.threeAlarm }}A</p>
                             <p>{{ shengyu_loudian.threeDianLiu }}A</p>
                           </div>
-                        </el-col>
+                        </el-col> -->
                         <el-col :span="6">
                           <div class="imgWapper_img">
                             <img src="../../../assets/images/dianliu.png" />
-                            <p>{{ shengyu_loudian.fourAlarm }}A</p>
-                            <p>{{ shengyu_loudian.fourDianLiu }}A</p>
+                            <p>{{ shengyu_loudian.fourAlarm }}mA</p>
+                            <p>{{ shengyu_loudian.fourDianLiu }}mA</p>
                           </div>
                         </el-col>
                       </template>
@@ -1185,28 +1189,33 @@
               <el-col :span="8"
                 ><div class="grid-content bg-purple">
                   <div class="imgWapper">
-                    <el-row>
+                    <el-row type="flex" justify="center">
                       <el-col :span="8">
                         <div class="imgWapper_img">
                           <img src="../../../assets/images/dianya.png" />
-                          <p>{{ shengyu_loudian.oneVolatage }}V</p>
-                          <p>{{ shengyu_loudian.oneDianYa }}V</p>
+
+                          <p>{{ shengyu_loudian.twoAlarm }}V</p>
+                          <p>{{ shengyu_loudian.twoDianLiu }}V</p>
+                          <!-- <p>{{ shengyu_loudian.oneVolatage }}V</p>
+                          <p>{{ shengyu_loudian.oneDianYa }}V</p> -->
                         </div>
                       </el-col>
                       <el-col :span="8">
+                        <div class="imgWapper_img">
+                          <img src="../../../assets/images/dianya.png" />
+                          <p>{{ shengyu_loudian.threeAlarm }}V</p>
+                          <p>{{ shengyu_loudian.threeDianLiu }}V</p>
+                          <!-- <p>{{ shengyu_loudian.twoVolatage }}V</p>
+                          <p>{{ shengyu_loudian.twoDianYa }}V</p> -->
+                        </div>
+                      </el-col>
+                      <!-- <el-col :span="8">
                         <div class="imgWapper_img">
                           <img src="../../../assets/images/dianya.png" />
                           <p>{{ shengyu_loudian.twoVolatage }}V</p>
                           <p>{{ shengyu_loudian.twoDianYa }}V</p>
                         </div>
-                      </el-col>
-                      <el-col :span="8">
-                        <div class="imgWapper_img">
-                          <img src="../../../assets/images/dianya.png" />
-                          <p>{{ shengyu_loudian.twoVolatage }}V</p>
-                          <p>{{ shengyu_loudian.twoDianYa }}V</p>
-                        </div>
-                      </el-col>
+                      </el-col> -->
                     </el-row>
                     <ul>
                       <li>报警状态:无</li>
@@ -1219,7 +1228,7 @@
               <el-col :span="8"
                 ><div class="grid-content bg-purple">
                   <div class="imgWapper">
-                    <el-row>
+                    <el-row type="flex" justify="center">
                       <el-col :span="6">
                         <div class="imgWapper_img">
                           <img src="../../../assets/images/wenduji.png" />
@@ -1227,7 +1236,7 @@
                           <p>{{ shengyu_loudian.oneWenDu }}℃</p>
                         </div>
                       </el-col>
-                      <el-col :span="6">
+                      <!-- <el-col :span="6">
                         <div class="imgWapper_img">
                           <img src="../../../assets/images/wenduji.png" />
                           <p>{{ shengyu_loudian.twoTempera }}℃</p>
@@ -1247,7 +1256,7 @@
                           <p>{{ shengyu_loudian.fourTempera }}℃</p>
                           <p>{{ shengyu_loudian.fourWenDu }}℃</p>
                         </div>
-                      </el-col>
+                      </el-col> -->
                     </el-row>
                     <ul>
                       <li>报警状态:无</li>
@@ -1344,6 +1353,7 @@
 
     <!-- 内部弹窗->设置设备 -->
     <el-dialog
+      :close-on-click-modal="false"
       width="50%"
       title="设备设置"
       :visible.sync="innerVisible_shebei"
@@ -1455,7 +1465,7 @@
                   <el-tab-pane label="阀值设置" class="tabs_one" name="first">
                     <el-row :gutter="20">
                       <el-col :span="12">
-                        <p>剩余电流/mA</p>
+                        <p>漏电电流/mA</p>
                         <el-input
                           v-model="fazhishezhi.SYDL"
                           size="mini"
@@ -1463,15 +1473,23 @@
                         ></el-input>
                       </el-col>
                       <el-col :span="12"
+                        ><p>电流过流/A</p>
+                        <el-input
+                          v-model="fazhishezhi.AXDL"
+                          size="mini"
+                          placeholder="请输入内容"
+                        ></el-input
+                      ></el-col>
+                      <!-- <el-col :span="12"
                         ><p>A相温度/℃</p>
                         <el-input
                           v-model="fazhishezhi.AXWD"
                           size="mini"
                           placeholder="请输入内容"
                         ></el-input
-                      ></el-col>
+                      ></el-col> -->
                     </el-row>
-                    <el-row :gutter="20">
+                    <!-- <el-row :gutter="20">
                       <el-col :span="12">
                         <p>B相温度/℃</p>
                         <el-input
@@ -1488,28 +1506,28 @@
                           placeholder="请输入内容"
                         ></el-input
                       ></el-col>
-                    </el-row>
+                    </el-row> -->
                     <el-row :gutter="20">
-                      <el-col :span="12">
+                      <!-- <el-col :span="12">
                         <p>N相温度/℃</p>
                         <el-input
                           v-model="fazhishezhi.NXWD"
                           size="mini"
                           placeholder="请输入内容"
                         ></el-input>
-                      </el-col>
-                      <el-col :span="12"
-                        ><p>A相电流/A</p>
+                      </el-col> -->
+                      <!-- <el-col :span="12"
+                        ><p>电流过流/A</p>
                         <el-input
                           v-model="fazhishezhi.AXDL"
                           size="mini"
                           placeholder="请输入内容"
                         ></el-input
-                      ></el-col>
+                      ></el-col> -->
                     </el-row>
                     <el-row :gutter="20">
                       <el-col :span="12">
-                        <p>B相电流/A</p>
+                        <p>电压过压/V</p>
                         <el-input
                           v-model="fazhishezhi.BXDL"
                           size="mini"
@@ -1517,7 +1535,7 @@
                         ></el-input>
                       </el-col>
                       <el-col :span="12"
-                        ><p>C相电流/A</p>
+                        ><p>电压欠压/V</p>
                         <el-input
                           v-model="fazhishezhi.CXDL"
                           size="mini"
@@ -1525,7 +1543,7 @@
                         ></el-input
                       ></el-col>
                     </el-row>
-                    <el-row :gutter="20">
+                    <!-- <el-row :gutter="20">
                       <el-col :span="12">
                         <p>A相电压/V</p>
                         <el-input
@@ -1542,8 +1560,8 @@
                           placeholder="请输入内容"
                         ></el-input
                       ></el-col>
-                    </el-row>
-                    <el-row :gutter="20">
+                    </el-row> -->
+                    <!-- <el-row :gutter="20">
                       <el-col :span="12">
                         <p>C相电压/V</p>
                         <el-input
@@ -1552,10 +1570,12 @@
                           placeholder="请输入内容"
                         ></el-input>
                       </el-col>
-                    </el-row>
+                    </el-row> -->
                     <el-row type="flex" justify="center">
                       <el-col :span="4"
-                        ><el-button size="mini">取消</el-button></el-col
+                        ><el-button size="mini" @click="offInfo"
+                          >取消</el-button
+                        ></el-col
                       >
                       <el-col :span="4"
                         ><el-button
@@ -1681,6 +1701,7 @@
 
     <!-- 内部弹窗->历史报警 -->
     <el-dialog
+      :close-on-click-modal="false"
       title="历史报警"
       :modal-append-to-body="false"
       :visible.sync="innerVisible_lishi"
@@ -1732,6 +1753,7 @@
 
     <!-- 消防水液体弹窗 -->
     <el-dialog
+      :close-on-click-modal="false"
       title="实时数据"
       :visible.sync="FireWaterSystemDialog"
       width="50%"
@@ -1783,6 +1805,7 @@
 
     <!-- 火灾报警与燃气弹窗共用弹窗 -->
     <el-dialog
+      :close-on-click-modal="false"
       title="设备信息"
       :visible.sync="FireAlarmSystemDialog"
       width="50%"
@@ -1900,6 +1923,7 @@
 
     <!-- 重点部位弹窗 -->
     <el-dialog
+      :close-on-click-modal="false"
       title="查看视频"
       :visible.sync="KeyPartsDialog"
       width="50%"
@@ -1909,6 +1933,7 @@
     </el-dialog>
     <!-- 独立烟感弹窗 -->
     <el-dialog
+      :close-on-click-modal="false"
       title="设备信息"
       :visible.sync="SmartIndependentSmokeDialog"
       width="60%"
@@ -2042,7 +2067,8 @@ import {
   fracture,
   getHistDeviceAlarm,
   getUserInfo,
-  getHistoryFault 
+  getHistoryFault,
+  SetParameterApi,
 } from "@/api/index.js";
 
 import EZUIKit from "ezuikit-js";
@@ -2115,7 +2141,7 @@ export default {
       ElecDataList_typeName: "",
       currentPage4: 4,
       tableData: [],
-     
+
       time: "",
     };
   },
@@ -2183,7 +2209,7 @@ export default {
         this.$forceUpdate();
       });
     },
-     //设备历史
+    //设备历史
     deviceHistory(type) {
       if (type == "故障") {
         getHistoryFault(
@@ -2266,31 +2292,32 @@ export default {
         this.fazhishezhi.BXDY,
         this.fazhishezhi.CXDY
       ).then((res) => {
-        if (result.status == 1) {
-          alert("参数设置成功");
-          setTimeout(function () {
-            parent.location.reload();
-          }, 1000);
+        if (res.data.status == 1) {
+          this.$message.success("设置成功");
         } else {
-          alert("参数设置失败");
+          this.$message.error("参数设置失败");
         }
       });
     },
     //提交处置情况
     management() {
-      if (this.ElecDataList.DevData == "正常") {
+      if (this.ElecDataList.DevData[0].aFid == "") {
         return this.$message.warning("设备正常,无需解除");
       }
       if (this.managementInput == "") {
         return this.$message.error("请填写处置信息");
       }
-      WebeditFileimageServlet(this.utils.userName, this.managementInput).then(
-        (res) => {
-          if (res.data.list[0].status == true) {
-            return this.$message.success("报警解除成功");
-          }
+      console.log(this.ElecDataList.DevData[0]);
+      WebeditFileimageServlet(
+        this.utils.userName + "," + this.ElecDataList.DevData[0].aFid,
+        this.managementInput
+      ).then((res) => {
+        if (res.data.list[0].status == true) {
+          this.$message.success("报警解除成功");
+          this.innerVisible = false;
+          location.reload();
         }
-      );
+      });
     },
     //独立烟感
     SmartIndependentSmokeSee(devId, imei) {
@@ -3023,242 +3050,248 @@ export default {
       switch (num) {
         //远程断电
         case "1":
-          if (role == "1000" || power.indexOf("10003003") != -1) {
-            resetclose(this.ElecDataList.DevData[0].productNumber, 0).then(
-              (res) => {
-                if (res.data.message == "请求成功") {
-                  this.$message.success(res.data.message);
-                } else {
-                  this.$message.error(res.data.message);
-                }
-              },
-              () => {
-                this.$message.error("请稍后重试或联系管理员");
+          // if (role == "1000" || power.indexOf("10003003") != -1) {
+          resetclose(this.ElecDataList.DevData[0].productNumber, 0).then(
+            (res) => {
+              if (res.data.message == "请求成功") {
+                this.$message.success(res.data.message);
+              } else {
+                this.$message.error(res.data.message);
               }
-            );
-          } else {
-            this.$message.error("暂无权限");
-          }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
+            }
+          );
+          // } else {
+          //   this.$message.error("暂无权限");
+          // }
 
           break;
 
         //远程开机
         case "2":
-          if (role == "1000" || power.indexOf("10003004") != -1) {
-            putMessToDeviceOn(
-              this.ElecDataList.DevData[0].productNumber,
-              "shutdown"
-            ).then(
-              (res) => {
-                if (res.data.message == "请求成功") {
-                  this.$message.success(res.data.message);
-                } else {
-                  this.$message.error(res.data.message);
-                }
-              },
-              () => {
-                this.$message.error("请稍后重试或联系管理员");
+          // if (role == "1000" || power.indexOf("10003004") != -1) {
+          putMessToDeviceOn(
+            this.utils.userName,
+            this.ElecDataList.DevData[0].productNumber,
+            "shutdown"
+          ).then(
+            (res) => {
+              if (res.data.message == "请求成功") {
+                this.$message.success(res.data.message);
+              } else {
+                this.$message.error(res.data.message);
               }
-            );
-            break;
-          } else {
-            this.$message.error("暂无权限");
-          }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
+            }
+          );
+          break;
+        // } else {
+        //   this.$message.error("暂无权限");
+        // }
         //远程关机
         case "3":
-          if (role == "1000" || power.indexOf("10003004") != -1) {
-            putMessToDeviceOn(
-              this.ElecDataList.DevData[0].productNumber,
-              "startup"
-            ).then(
-              (res) => {
-                if (res.data.message == "请求成功") {
-                  this.$message.success(res.data.message);
-                } else {
-                  this.$message.error(res.data.message);
-                }
-              },
-              () => {
-                this.$message.error("请稍后重试或联系管理员");
+          // if (role == "1000" || power.indexOf("10003004") != -1) {
+          putMessToDeviceOn(
+            this.utils.userName,
+            this.ElecDataList.DevData[0].productNumber,
+            "startup"
+          ).then(
+            (res) => {
+              if (res.data.message == "请求成功") {
+                this.$message.success(res.data.message);
+              } else {
+                this.$message.error(res.data.message);
               }
-            );
-            break;
-          } else {
-            this.message.error("暂无权限");
-          }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
+            }
+          );
+          break;
+          // } else {
+          //   this.message.error("暂无权限");
+          // }
           break;
         //开启蜂鸣器
         case "4":
-          if (role == "1000" || power.indexOf("10003004") != -1) {
-            putMessToDeviceOn(
-              this.ElecDataList.DevData[0].productNumber,
-              "voiceon"
-            ).then(
-              (res) => {
-                if (res.data.message == "请求成功") {
-                  this.$message.success(res.data.message);
-                } else {
-                  this.$message.error(res.data.message);
-                }
-              },
-              () => {
-                this.$message.error("请稍后重试或联系管理员");
+          // if (role == "1000" || power.indexOf("10003004") != -1) {
+          putMessToDeviceOn(
+            this.utils.userName,
+            this.ElecDataList.DevData[0].productNumber,
+            "voiceon"
+          ).then(
+            (res) => {
+              if (res.data.message == "请求成功") {
+                this.$message.success(res.data.message);
+              } else {
+                this.$message.error(res.data.message);
               }
-            );
-            break;
-          } else {
-            this.$message.error("暂无权限");
-          }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
+            }
+          );
+          break;
+          // } else {
+          //   this.$message.error("暂无权限");
+          // }
           break;
         //关闭蜂鸣器
         case "5":
-          if (role == "1000" || power.indexOf("10003004") != -1) {
-            putMessToDeviceOn(
-              this.ElecDataList.DevData[0].productNumber,
-              "voiceoff"
-            ).then(
-              (res) => {
-                if (res.data.message == "请求成功") {
-                  this.$message.success(res.data.message);
-                } else {
-                  this.$message.error(res.data.message);
-                }
-              },
-              () => {
-                this.$message.error("请稍后重试或联系管理员");
+          // if (role == "1000" || power.indexOf("10003004") != -1) {
+          putMessToDeviceOn(
+            this.utils.userName,
+            this.ElecDataList.DevData[0].productNumber,
+            "voiceoff"
+          ).then(
+            (res) => {
+              if (res.data.message == "请求成功") {
+                this.$message.success(res.data.message);
+              } else {
+                this.$message.error(res.data.message);
               }
-            );
-            break;
-          } else {
-            this.message.error("暂无权限");
-          }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
+            }
+          );
+          break;
+          // } else {
+          //   this.message.error("暂无权限");
+          // }
           break;
         //远程消音
         case "6":
-          if (role == "1000" || power.indexOf("10003001") != -1) {
-            resetclose(this.ElecDataList.DevData[0].productNumber, 2).then(
-              (res) => {
-                if (res.data.message == "请求成功") {
-                  this.$message.success(res.data.message);
-                } else {
-                  this.$message.error(res.data.message);
-                }
-              },
-              () => {
-                this.$message.error("请稍后重试或联系管理员");
+          // if (role == "1000" || power.indexOf("10003001") != -1) {
+          resetclose(this.ElecDataList.DevData[0].productNumber, 2).then(
+            (res) => {
+              if (res.data.message == "请求成功") {
+                this.$message.success(res.data.message);
+              } else {
+                this.$message.error(res.data.message);
               }
-            );
-          } else {
-            this.$message.error("暂无权限");
-          }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
+            }
+          );
+          // } else {
+          //   this.$message.error("暂无权限");
+          // }
 
           break;
         //开启流量
         case "7":
-          if (role == "1000" || power.indexOf("10003004") != -1) {
-            putMessToDeviceOn(
-              this.ElecDataList.DevData[0].productNumber,
-              "openflow"
-            ).then(
-              (res) => {
-                if (res.data.message == "请求成功") {
-                  this.$message.success(res.data.message);
-                } else {
-                  this.$message.error(res.data.message);
-                }
-              },
-              () => {
-                this.$message.error("请稍后重试或联系管理员");
+          // if (role == "1000" || power.indexOf("10003004") != -1) {
+          putMessToDeviceOn(
+            this.utils.userName,
+            this.ElecDataList.DevData[0].productNumber,
+            "openflow"
+          ).then(
+            (res) => {
+              if (res.data.message == "请求成功") {
+                this.$message.success(res.data.message);
+              } else {
+                this.$message.error(res.data.message);
               }
-            );
-            break;
-          } else {
-            this.$message.error("暂无权限");
-          }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
+            }
+          );
+          break;
+          // } else {
+          //   this.$message.error("暂无权限");
+          // }
           break;
         //远程复位
         case "8":
-          if (role == "1000" || power.indexOf("10003003") != -1) {
-            resetclosefuwei(this.ElecDataList.DevData[0].productNumber, 2).then(
-              (res) => {
-                if (res.data.status == "1") {
-                  this.$message.success(res.data.message);
-                } else {
-                  this.$message.error(res.data.message);
-                }
-              },
-              () => {
-                this.$message.error("请稍后重试或联系管理员");
+          // if (role == "1000" || power.indexOf("10003003") != -1) {
+          resetclosefuwei(this.ElecDataList.DevData[0].productNumber, 2).then(
+            (res) => {
+              if (res.data.status == "1") {
+                this.$message.success(res.data.message);
+              } else {
+                this.$message.error(res.data.message);
               }
-            );
-          } else {
-            this.$message.error("暂无权限");
-          }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
+            }
+          );
+          // } else {
+          //   this.$message.error("暂无权限");
+          // }
           break;
         //授权
         case "9":
-          if (role == "1000" || power.indexOf("10003004") != -1) {
-            insertClouddog(this.ElecDataList.DevData[0].productNumber).then(
-              (res) => {
-                if (res.data.list[0].status == "true") {
-                  this.$message.success(
-                    "授权成功.工作日一天后将授权生效,非工作日将延期"
-                  );
-                } else {
-                  this.$message.error("授权失败");
-                }
-              },
-              () => {
-                this.$message.error("请稍后重试或联系管理员");
+          // if (role == "1000" || power.indexOf("10003004") != -1) {
+          insertClouddog(this.ElecDataList.DevData[0].productNumber).then(
+            (res) => {
+              if (res.data.list[0].status == "true") {
+                this.$message.success(
+                  "授权成功.工作日一天后将授权生效,非工作日将延期"
+                );
+              } else {
+                this.$message.error("授权失败");
               }
-            );
-          }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
+            }
+          );
+          // }
           break;
         //开启屏蔽器
         case "10":
-          if (role == "1000" || power.indexOf("10003013") != -1) {
-            updateShutdown(
-              this.ElecDataList.DevData[0].productNumber,
-              this.utils,
-              userName
-            ).then(
-              (res) => {
-                if (res.data.status == "true") {
-                  layer.open({
-                    content: res.mess,
-                  });
-                  this.$message.success(res.data.mess);
-                } else {
-                  this.$message.error(res.data.mess);
-                }
-              },
-              () => {
-                this.$message.error("请稍后重试或联系管理员");
+          // if (role == "1000" || power.indexOf("10003013") != -1) {
+          updateShutdown(
+            this.ElecDataList.DevData[0].productNumber,
+            this.utils,
+            userName
+          ).then(
+            (res) => {
+              if (res.data.status == "true") {
+                layer.open({
+                  content: res.mess,
+                });
+                this.$message.success(res.data.mess);
+              } else {
+                this.$message.error(res.data.mess);
               }
-            );
-          }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
+            }
+          );
+          // }
           break;
         //下发保险单
         case "11":
           // console.log(6554654);
           // console.log(this.ElecDataList.DevData[0].productNumber, 789789);
-          if (role == "1000" || power.indexOf("10003004") != -1) {
-            putMessToDevice(
-              this.ElecDataList.DevData[0].productNumber,
-              this.baoxiandanhao
-            ).then(
-              (res) => {
-                if (res.data.message == "请求成功") {
-                  alert("下发保险单号成功");
-                } else {
-                  this.$message.error("请稍后重试");
-                }
-              },
-              () => {
-                this.$message.error("请稍后重试或联系管理员");
+          // if (role == "1000" || power.indexOf("10003004") != -1) {
+          putMessToDevice(
+            this.utils.userName,
+            this.ElecDataList.DevData[0].productNumber,
+            this.baoxiandanhao
+          ).then(
+            (res) => {
+              if (res.data.message == "请求成功") {
+                alert("下发保险单号成功");
+              } else {
+                this.$message.error("请稍后重试");
               }
-            );
-          }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
+            }
+          );
+          // }
           // var res = JSON.parse(result);
           // console.log(res);
 
@@ -3273,6 +3306,27 @@ export default {
     },
     onSubmit() {
       console.log("submit!");
+    },
+
+    //阀值设置取消按钮
+    offInfo() {
+      ReadParameterApi(this.ElecDataList.DevData[0].productNumber).then(
+        (res) => {
+          console.log(res.data.row);
+          const row = res.data.row;
+          this.fazhishezhi.AXWD = row.AWenDu;
+          this.fazhishezhi.BXWD = row.BWenDu;
+          this.fazhishezhi.CXWD = row.CWenDu;
+          this.fazhishezhi.NXWD = row.NWenDu;
+          this.fazhishezhi.SYDL = row.SYdianliu;
+          this.fazhishezhi.AXDL = row.ADianLiu;
+          this.fazhishezhi.BXDL = row.BDianLiu;
+          this.fazhishezhi.CXDL = row.CDianLiu;
+          this.fazhishezhi.AXDY = row.ADianYa;
+          this.fazhishezhi.BXDY = row.BDianYa;
+          this.fazhishezhi.CXDY = row.CDianYa;
+        }
+      );
     },
     // TabS 切换函数
     handleClick(tab, event) {

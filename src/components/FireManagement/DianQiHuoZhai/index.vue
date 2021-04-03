@@ -2,7 +2,18 @@
   <div id="dianqiHZ">
     <div class="title2"></div>
     <div class="btnQh">
-      <el-button type="primary" @click="locationFun">{{ location }}</el-button>
+      <el-button
+        type="primary"
+        :class="location == '设备点位' ? 'btnRed' : 'btnBlue'"
+        @click="locationFun('设备点位')"
+        >设备点位</el-button
+      >
+      <el-button
+        type="primary"
+        :class="location == '项目点位' ? 'btnRed' : 'btnBlue'"
+        @click="locationFun('项目点位')"
+        >项目点位</el-button
+      >
     </div>
     <div class="leftWapper">
       <div class="left_one" ref="leftOne">
@@ -35,6 +46,7 @@
       :SElec_DetailElecDevice_List="SElec_DetailElecDevice_List"
       :pagetype="pagetype"
       :DeviceProjectNewData="DeviceProjectNewData"
+      @status="status"
     />
     <PublicPopUps ref="publicPopUps" :pagetype="pagetype" />
   </div>
@@ -87,17 +99,26 @@ export default {
     this.DeviceAlarm();
     this.map();
     this.stop();
+    this.locationFun("设备点位");
+    this.time = setInterval(() => {
+      this.DeviceAlarm();
+    }, 30000);
   },
   methods: {
+    status(data) {
+      console.log(data, "我是data");
+      // this.mapStaus = data;
+      this.locationFun(data);
+    },
     //点位切换
-    locationFun() {
+    locationFun(type) {
       if (this.mass != undefined) {
         this.mass.setMap(null);
       }
 
       // console.log(this.mass);
-      if (this.location == "项目点位") {
-        this.location = "设备点位";
+      if (type == "项目点位") {
+        this.location = type;
         const region = sessionStorage.getItem("region");
         DeviceProjectNew(this.utils.userName, "3", region).then((res) => {
           if (res.data.length <= 0) {
@@ -106,7 +127,7 @@ export default {
           ////console.log(res);
           const style = [
             {
-              url: "https://a.amap.com/jsapi_demos/static/images/mass1.png",
+              url: "http://124.71.11.195/image/点4.png",
               anchor: new AMap.Pixel(4, 4),
               size: new AMap.Size(30, 30),
             },
@@ -150,12 +171,12 @@ export default {
           });
         });
       } else {
-        this.location = "项目点位";
+        this.location = type;
         getAllDevicePostion(this.utils.userName).then((res) => {
           //console.log(res.data.data);
           const style = [
             {
-              url: "https://a.amap.com/jsapi_demos/static/images/mass1.png",
+              url: "http://124.71.11.195/image/点4.png",
               anchor: new AMap.Pixel(4, 4),
               size: new AMap.Size(30, 30),
             },
@@ -190,8 +211,9 @@ export default {
           //绑定事件模块
           this.mass.on("click", function (e) {
             //console.log(e);
-            _that.$refs.publicPopUps.initOff();
-            _that.$refs.publicPopUps.echart_wapper(e.data.pid);
+            // _that.$refs.publicPopUps.initOff();
+            // _that.$refs.publicPopUps.echart_wapper(e.data.pid);
+            _that.$refs.publicPopUps.see(e.data.devId, e.data.imei);
             _that.map.setZoomAndCenter(20, [
               e.data.lnglat.lng,
               e.data.lnglat.lat,
@@ -220,68 +242,68 @@ export default {
         })
       );
       this.map.setZoomAndCenter(4, [116.397428, 39.90923]);
-      const region = sessionStorage.getItem("region");
-      DeviceProjectNew(this.utils.userName, "3", region).then((res) => {
-        // this.DeviceProjectNewData = res.data.Company;
+      // const region = sessionStorage.getItem("region");
+      // DeviceProjectNew(this.utils.userName, "3", region).then((res) => {
+      //   // this.DeviceProjectNewData = res.data.Company;
 
-        if (res.data == [] || res.data == "") {
-          return (this.loading_map = false);
-        }
+      //   if (res.data == [] || res.data == "") {
+      //     return (this.loading_map = false);
+      //   }
 
-        let a = [];
-        let b = [];
-        for (let i = 0; i < res.data.Company.length; i++) {
-          if (res.data.Company[i].style == 1) {
-            b.push(res.data.Company[i]);
-          } else {
-            a.push(res.data.Company[i]);
-          }
-        }
+      //   let a = [];
+      //   let b = [];
+      //   for (let i = 0; i < res.data.Company.length; i++) {
+      //     if (res.data.Company[i].style == 1) {
+      //       b.push(res.data.Company[i]);
+      //     } else {
+      //       a.push(res.data.Company[i]);
+      //     }
+      //   }
 
-        this.DeviceProjectNewData = [...a, ...b];
-        // [...new Set(this.DeviceProjectNewData)];
-        // console.log(this.DeviceProjectNewData);
+      //   this.DeviceProjectNewData = [...a, ...b];
+      //   // [...new Set(this.DeviceProjectNewData)];
+      //   // console.log(this.DeviceProjectNewData);
 
-        // console.log(c, "我是aa,b");
-        this.$nextTick(() => {
-          const style = [
-            {
-              url: "https://a.amap.com/jsapi_demos/static/images/mass1.png",
-              anchor: new AMap.Pixel(4, 4),
-              size: new AMap.Size(30, 30),
-            },
-            {
-              url: "https://a.amap.com/jsapi_demos/static/images/mass0.png",
-              anchor: new AMap.Pixel(6, 6),
-              size: new AMap.Size(30, 30),
-            },
-          ];
-          // console.log(this.DeviceProjectNewData, 987987);
+      //   // console.log(c, "我是aa,b");
+      //   this.$nextTick(() => {
+      //     const style = [
+      //       {
+      //         url: "http://124.71.11.195/image/点4.png",
+      //         anchor: new AMap.Pixel(4, 4),
+      //         size: new AMap.Size(30, 30),
+      //       },
+      //       {
+      //         url: "https://a.amap.com/jsapi_demos/static/images/mass0.png",
+      //         anchor: new AMap.Pixel(6, 6),
+      //         size: new AMap.Size(30, 30),
+      //       },
+      //     ];
+      //     // console.log(this.DeviceProjectNewData, 987987);
 
-          this.mass = new AMap.MassMarks(this.DeviceProjectNewData, {
-            opacity: 0.8,
-            zIndex: 111,
-            cursor: "pointer",
-            style: style,
-          });
-          // this.DeviceProjectNewData = [];
-          const marker = new AMap.Marker({ content: " ", map: this.map });
-          this.mass.setMap(this.map);
+      //     this.mass = new AMap.MassMarks(this.DeviceProjectNewData, {
+      //       opacity: 0.8,
+      //       zIndex: 111,
+      //       cursor: "pointer",
+      //       style: style,
+      //     });
+      //     // this.DeviceProjectNewData = [];
+      //     const marker = new AMap.Marker({ content: " ", map: this.map });
+      //     this.mass.setMap(this.map);
 
-          this.loading_map = false;
-          // 保存this
-          var _that = this;
-          //绑定事件模块
-          this.mass.on("click", function (e) {
-            console.log("asdasd");
+      //     this.loading_map = false;
+      //     // 保存this
+      //     var _that = this;
+      //     //绑定事件模块
+      //     this.mass.on("click", function (e) {
+      //       console.log("asdasd");
 
-            // this.$refs.publicPopUps.initOff();
+      //       // this.$refs.publicPopUps.initOff();
 
-            _that.$refs.publicPopUps.initOff();
-            _that.$refs.publicPopUps.echart_wapper(e.data.pid);
-          });
-        });
-      });
+      //       _that.$refs.publicPopUps.initOff();
+      //       _that.$refs.publicPopUps.echart_wapper(e.data.pid);
+      //     });
+      //   });
+      // });
     },
 
     callPolice(pid) {
@@ -310,8 +332,13 @@ export default {
           let str = "000000" + num;
           this.baojingNum = str.substring(str.length - 6);
         }
+
+        this.$forceUpdate();
       });
     },
+  },
+  destroyed() {
+    clearInterval(this.time);
   },
   components: {
     Translate,
@@ -335,6 +362,14 @@ export default {
     top: 80px;
 
     right: -850px;
+  }
+  .btnRed {
+    background: red;
+    border: none;
+  }
+  .btnBlue {
+    background: #409eff;
+    border: none;
   }
   .scroll_wapper {
     margin-top: 15px;

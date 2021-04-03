@@ -31,15 +31,19 @@
                 :key="index"
                 @click="echart_wapper(item.BH)"
               >
+                <div
+                  class="location"
+                  @click.stop="mapPoints(item.long_lat, item.productNumber)"
+                >
+                  <el-button
+                    type="primary"
+                    icon="el-icon-rank"
+                    circle
+                    size="mini"
+                  ></el-button>
+                </div>
+
                 <li>
-                  <div class="location" @click.stop="mapPoints(item.long_lat)">
-                    <el-button
-                      type="primary"
-                      icon="el-icon-rank"
-                      circle
-                      size="mini"
-                    ></el-button>
-                  </div>
                   <span v-if="item.value != null || item.value != undefined"
                     >{{ index + 1 }}.</span
                   >
@@ -61,15 +65,18 @@
                 :key="index"
                 @click="see(item.BH, item.text)"
               >
+                <div
+                  class="location"
+                  @click.stop="mapPoints(item.long_lat, item.productNumber)"
+                >
+                  <el-button
+                    type="primary"
+                    icon="el-icon-rank"
+                    circle
+                    size="mini"
+                  ></el-button>
+                </div>
                 <li v-if="item.text != null || item.text != undefined">
-                  <div class="location" @click.stop="mapPoints(item.long_lat)">
-                    <el-button
-                      type="primary"
-                      icon="el-icon-rank"
-                      circle
-                      size="mini"
-                    ></el-button>
-                  </div>
                   <span v-if="item.value != null || item.value != undefined"
                     >{{ index + 1 }}.</span
                   >
@@ -79,7 +86,7 @@
                 <li v-if="item.value != null || item.value != undefined">
                   报警次数:{{ item.value }}
                 </li>
-                <li v-else>设备名称:{{ item.device_name }}</li>
+                <li v-else>项目名称:{{ item.device_name }}</li>
 
                 <li>地址:{{ item.MC || "暂无" }}</li>
               </ul>
@@ -193,8 +200,15 @@ export default {
   },
   methods: {
     //点位跟踪
-    mapPoints(lnglat) {
+    mapPoints(lnglat, imei) {
       //获取地图点
+      console.log(imei == undefined);
+      if (imei != undefined) {
+        this.$emit("status", "设备点位");
+      } else {
+        console.log(123);
+        this.$emit("status", "项目点位");
+      }
       let map;
       let Mlng = lnglat.split(",");
       if (Mlng[0] > 60) {
@@ -274,22 +288,22 @@ export default {
         }
       });
     },
-    //提交处置情况
-    management() {
-      if (this.ElecDataList.DevData == "正常") {
-        return this.$message.warning("设备正常,无需解除");
-      }
-      if (this.managementInput == "") {
-        return this.$message.error("请填写处置信息");
-      }
-      WebeditFileimageServlet(this.utils.userName, this.managementInput).then(
-        (res) => {
-          if (res.data.list[0].status == true) {
-            return this.$message.success("报警解除成功");
-          }
-        }
-      );
-    },
+    // //提交处置情况
+    // management() {
+    //   if (this.ElecDataList.DevData == "正常") {
+    //     return this.$message.warning("设备正常,无需解除");
+    //   }
+    //   if (this.managementInput == "") {
+    //     return this.$message.error("请填写处置信息");
+    //   }
+    //   WebeditFileimageServlet(this.utils.userName, this.managementInput).then(
+    //     (res) => {
+    //       if (res.data.list[0].status == true) {
+    //         return this.$message.success("报警解除成功");
+    //       }
+    //     }
+    //   );
+    // },
     //独立烟感
     SmartIndependentSmokeSee() {
       this.$nextTick(() => {
@@ -507,6 +521,7 @@ export default {
           this.SElec_DetailElecDevice_List_Copy = res.data;
         });
       } else {
+        console.log(this.DeviceProjectNewData);
         for (let i = 0; i < this.DeviceProjectNewData.length; i++) {
           if (
             this.DeviceProjectNewData[i].address.indexOf(

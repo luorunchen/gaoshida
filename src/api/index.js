@@ -287,11 +287,12 @@ export function ReadParameterApi(id) {
   })
 }
 //接入设备->报警=>设备设置(保险单号)接口
-export function putMessToDevice(imei, content) {
+export function putMessToDevice(username, imei, content) {
   return service({
     url: `/admin/project/putMessToDevice.action`,
     method: 'GET',
     params: {
+      username,
       imei,
       "content=InsuranceNo": content
     }
@@ -320,11 +321,12 @@ export function resetclosefuwei(imei, states) {
   })
 }
 //接入设备->报警=>设备设置(远程开/关机)接口
-export function putMessToDeviceOn(imei, content) {
+export function putMessToDeviceOn(username, imei, content) {
   return service({
     url: `/admin/project/putMessToDevice.action`,
     method: 'GET',
     params: {
+      username,
       imei,
       content
     }
@@ -823,6 +825,38 @@ export function getAllDevicePostion(username) {
     method: 'GET',
     params: {
       username
+    }
+  })
+}
+
+
+//获取下级手机号
+export function getSlave(username) {
+  return service({
+    url: `WebProject/getSlave.action`,
+    method: 'GET',
+    params: {
+      username
+    }
+  })
+}
+//分配设备
+export function shareDevice(username, device, role, slavePhone) {
+  return service({
+    url: `WebProject/shareDevice.action`,
+    method: 'GET',
+    params: {
+      username, device, role, slavePhone
+    }
+  })
+}
+//分配设备
+export function saveDevice(username, devices) {
+  return service({
+    url: `WebProject/saveDevice.action`,
+    method: 'GET',
+    params: {
+      username, devices
     }
   })
 }

@@ -156,7 +156,15 @@ export default {
         shui_echart.setOption({
           xAxis: {
             type: "category",
-            data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+            data: [
+              "星期一",
+              "星期二",
+              "星期三",
+              "星期四",
+              "星期五",
+              "星期六",
+              "星期日",
+            ],
           },
           yAxis: {
             type: "value",

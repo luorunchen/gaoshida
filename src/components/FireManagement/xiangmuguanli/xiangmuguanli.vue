@@ -97,7 +97,12 @@
     </div>
 
     <!-- 弹窗部分-------------------------------- -->
-    <el-dialog title="提示" :visible.sync="dialogVisible" width="40%">
+    <el-dialog
+      title="新增项目"
+      :close-on-click-modal="false"
+      :visible.sync="dialogVisible"
+      width="40%"
+    >
       <el-form :inline="true" class="demo-form-inline" label-width="100px">
         <el-form-item label="项目名称">
           <el-input
@@ -280,7 +285,7 @@
             class="item"
             effect="dark"
             :content="mapInfo.address"
-            placement="right"
+            placement="bottom-start"
           >
             <el-input
               id="tipinput"
@@ -303,7 +308,12 @@
     </el-dialog>
 
     <!-- 添加人员弹窗 -->
-    <el-dialog title="添加" :visible.sync="outerVisible" width="20%">
+    <el-dialog
+      title="添加"
+      :close-on-click-modal="false"
+      :visible.sync="outerVisible"
+      width="20%"
+    >
       用户名:<el-input v-model="mapInfo.addUser"></el-input> 手机号:<el-input
         v-model="mapInfo.addPhone"
       ></el-input>
@@ -317,7 +327,12 @@
     </el-dialog>
 
     <!-- 删除防火员弹窗 -->
-    <el-dialog title="删除" :visible.sync="deletVisible" width="20%">
+    <el-dialog
+      title="删除"
+      :close-on-click-modal="false"
+      :visible.sync="deletVisible"
+      width="20%"
+    >
       <p>删除责任人/防火员:</p>
       <el-select
         @focus="inputClick('防火员责任人')"
@@ -347,7 +362,12 @@
     </el-dialog>
 
     <!-- 新增设备弹窗 -->
-    <el-dialog title="新增设备" :visible.sync="addNewSheBeiVisible" width="40%">
+    <el-dialog
+      title="新增设备"
+      :close-on-click-modal="false"
+      :visible.sync="addNewSheBeiVisible"
+      width="40%"
+    >
       <el-form label-width="100px" :inline="true" class="demo-form-inline">
         <el-form-item label="设备编号">
           <el-input
@@ -398,12 +418,12 @@
         </el-form-item>
       </el-form>
       <el-form label-width="100px" :inline="true" class="demo-form-inline">
-        <el-form-item label="项目位置">
+        <el-form-item label="设备位置">
           <el-tooltip
             class="item"
             effect="dark"
             :content="mapInfo.address"
-            placement="right"
+            placement="bottom-start"
           >
             <el-input
               id="tipinput"
@@ -418,15 +438,11 @@
             placeholder="请填写备注"
           ></el-input>
         </el-form-item>
-        <div id="container2"></div>
+        <div id="container"></div>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addNewSheBeiVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="(addNewSheBeiVisible = false), addNewSheBeiTrue()"
-          >确 定</el-button
-        >
+        <el-button type="primary" @click="addNewSheBeiTrue()">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -489,76 +505,76 @@ export default {
         changsuo: "",
       },
       options: [],
-      shebeiListValue: "",
+      shebeiListValue: "3",
       shebeiList: [
         {
-          value: "",
-          label: "",
-        },
-        {
-          value: "网关",
-          label: "0",
-        },
-        {
-          value: "烟感",
-          label: "2",
-        },
-        {
-          value: "电气",
+          value: "智慧用电保护器",
           label: "3",
         },
         {
-          value: "水压",
-          label: "4",
+          value: "网关",
+          label: "1",
         },
-        {
-          value: "消防主机",
-          label: "5",
-        },
-        {
-          value: "无线气感",
-          label: "6",
-        },
-        {
-          value: "粉尘设备",
-          label: "7",
-        },
-        {
-          value: "液位",
-          label: "8",
-        },
-        {
-          value: "录像",
-          label: "9",
-        },
-        {
-          value: "消防门磁",
-          label: "10",
-        },
-        {
-          value: "工业燃气",
-          label: "11",
-        },
-        {
-          value: "电气火灾探测器",
-          label: "12",
-        },
-        {
-          value: "声光报警器",
-          label: "15",
-        },
-        {
-          value: "手动报警",
-          label: "16",
-        },
-        {
-          value: "水浸报警",
-          label: "18",
-        },
-        {
-          value: "紧急报警",
-          label: "19",
-        },
+        // {
+        //   value: "烟感",
+        //   label: "2",
+        // },
+        // {
+        //   value: "电气",
+        //   label: "3",
+        // },
+        // {
+        //   value: "水压",
+        //   label: "4",
+        // },
+        // {
+        //   value: "消防主机",
+        //   label: "5",
+        // },
+        // {
+        //   value: "无线气感",
+        //   label: "6",
+        // },
+        // {
+        //   value: "粉尘设备",
+        //   label: "7",
+        // },
+        // {
+        //   value: "液位",
+        //   label: "8",
+        // },
+        // {
+        //   value: "录像",
+        //   label: "9",
+        // },
+        // {
+        //   value: "消防门磁",
+        //   label: "10",
+        // },
+        // {
+        //   value: "工业燃气",
+        //   label: "11",
+        // },
+        // {
+        //   value: "电气火灾探测器",
+        //   label: "12",
+        // },
+        // {
+        //   value: "声光报警器",
+        //   label: "15",
+        // },
+        // {
+        //   value: "手动报警",
+        //   label: "16",
+        // },
+        // {
+        //   value: "水浸报警",
+        //   label: "18",
+        // },
+        // {
+        //   value: "紧急报警",
+        //   label: "19",
+        // },
       ],
       newType: "",
     };
@@ -652,9 +668,9 @@ export default {
       // console.log(this.mapInfo.address);
       this.$forceUpdate();
     },
-    // 添加项目函数
+    // 新增项目函数
     addProjectFun() {
-      if (this.lanlat == undefined || this.lanlat == null) {
+      if (this.lanlat.split(",")[0] == "undefined" || this.lanlat == null) {
         return this.$message.error("无法获取您的项目经纬度,请重新输入");
       }
 
@@ -667,9 +683,22 @@ export default {
           return this.$message.error("请选择街道");
         }
 
+        if (this.mapInfo.huilu == undefined) {
+          this.mapInfo.huilu = "80639";
+        }
+        if (this.mapInfo.shebei == undefined) {
+          this.mapInfo.shebei = "80639";
+        }
+        // if (this.mapInfo.type == undefined) {
+        //   this.mapInfo.type = "";
+        // }
+        // if (this.mapInfo.zhuche == undefined) {
+        //   this.mapInfo.zhuche = "";
+        // }
+        // console.log(this.mapInfo.huilu, 999);
         addProject(
           this.utils.userName,
-          this.mapInfo.name, //项目名称
+          this.mapInfo.projectname, //项目名称
           this.mapInfo.address, //项目地址
           this.mapInfo.huilu, //防火员
           this.mapInfo.shebei, //责任人
@@ -1205,12 +1234,13 @@ export default {
       let devId = "";
       let devRemark = "";
       // let sms = "0";
+      console.log(this.lanlat.split(",")[0]);
       if (
-        this.lanlat == undefined ||
+        this.lanlat.split(",")[0] == "undefined" ||
         this.lanlat == null ||
         this.lanlat == ""
       ) {
-        return this.$message.error("无法获取您的项目经纬度,请重新输入");
+        return this.$message.error("无法获取您的设备经纬度,请重新输入");
       }
       // console.log(this.lanlat, 999999);
 
@@ -1232,6 +1262,7 @@ export default {
         (res) => {
           if (res.data.list[0].status == "true") {
             this.$message.success("添加设备成功");
+            this.addNewSheBeiVisible = false;
           } else {
             this.$message.error(res.data.list[0].mess);
           }

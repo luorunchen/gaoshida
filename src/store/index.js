@@ -7,7 +7,7 @@ export default new Vuex.Store({
   state: {
     initStatus: '',
     map_lnglat: [116.397428, 39.90923],
-    SoundSwitch: "关"
+    SoundSwitch: "开"
   },
   mutations: {
     changeStatus(state, status) {  //  重复赋值

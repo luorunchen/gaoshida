@@ -5,23 +5,23 @@
     </div>
     <div class="titleFZ">智慧安全系统平台</div>
 
-    <el-upload
+    <!-- <el-upload
       ref="upload"
       class="upload-demo"
       action="/earlyWarn/upload.action?user_name=13076920054"
       list-type="picture"
-    >
-      <div class="loginIMGLeft">
-        <img
-          src="@/assets/images/fengmian.png"
-          width="100%"
-          height="100%"
-          alt=""
-        />
-      </div>
-      <!-- <el-button size="small" type="primary">点击上传</el-button>
+    > -->
+    <div class="loginIMGLeft">
+      <img
+        src="@/assets/images/fengmian.png"
+        width="100%"
+        height="100%"
+        alt=""
+      />
+    </div>
+    <!-- <el-button size="small" type="primary">点击上传</el-button>
       <div slot="tip" class="el-upload__tip">只能上传jpg/png文件</div> -->
-    </el-upload>
+    <!-- </el-upload> -->
     <div class="loginImg">
       <img
         src="@/assets/images/juxing5.png"

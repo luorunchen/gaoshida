@@ -13,7 +13,8 @@ import axios from 'axios'
 import utils from './utils/utils.js'
 
 import moment from 'moment'//导入文件 
-
+import XLSX from 'xlsx'
+Vue.prototype.XLSX = XLSX
 Vue.prototype.$moment = moment;//赋值使用
 
 Vue.prototype.axios = axios;

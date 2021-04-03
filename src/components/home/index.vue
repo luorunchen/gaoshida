@@ -22,12 +22,16 @@
       </div>
       <div class="titleIMG">
         <p class="titleName">智慧安全系统平台</p>
-        <img
-          src="../../assets/images/juxing4.png"
-          alt=""
-          width="100%"
-          height="100%"
-        />
+
+        <el-upload
+          :show-file-list="false"
+          class="upload-demo"
+          action="/earlyWarn/upload.action?user_name=13076920054"
+          :data="{ user_name: this.utils.userName }"
+          :on-success="handleAvatarSuccess"
+        >
+          <img :src="imagesUrl" alt="" width="100%" height="100%" />
+        </el-upload>
       </div>
       <div class="titleRight">
         <img
@@ -46,7 +50,7 @@
           <span
             @click="audioON"
             style="margin-left: 30px; line-height: 30px; cursor: pointer"
-            >报警声音({{ onOFF }})</span
+            >报警声音({{ this.$store.state.SoundSwitch }})</span
           >
         </div>
       </div>
@@ -204,7 +208,18 @@
       </div>
     </div>
     <div class="btnQh">
-      <el-button type="primary" @click="locationFun">{{ location }}</el-button>
+      <el-button
+        type="primary"
+        :class="location == '设备点位' ? 'btnRed' : 'btnBlue'"
+        @click="locationFun('设备点位')"
+        >设备点位</el-button
+      >
+      <el-button
+        type="primary"
+        :class="location == '项目点位' ? 'btnRed' : 'btnBlue'"
+        @click="locationFun('项目点位')"
+        >项目点位</el-button
+      >
     </div>
     <div class="center">
       <p>电量统计图</p>
@@ -285,6 +300,7 @@ import {
   DeviceProjectNew,
   updateuserpassword,
   getAllDevicePostion,
+  getLogo,
 } from "@/api/index.js";
 import md5 from "js-md5";
 import vueSeamlessScroll from "vue-seamless-scroll";
@@ -293,7 +309,8 @@ import PublicPopUps from "../FireInternetOfThings/translate/publicPopUps";
 export default {
   data() {
     return {
-      location: "设备点位",
+      imagesUrl: "http://124.71.11.195:80/image/1000/1617435800865juxing4.png",
+      fileList: [],
       pagetype: 3,
       fullscreenLoading: false,
       pageSize: 1,
@@ -314,13 +331,16 @@ export default {
       date: "",
       day: "",
       onOFF: "关",
+      location: "项目点位",
     };
   },
   mounted() {
     this.init();
     this.drawLine();
+    this.getLogoFun();
     this.push_AlarmData_info("d");
     this.day = this.$moment().format("MM-DD");
+    this.locationFun("设备点位");
     // ////console.log(day);
     const date = this.$moment().isoWeekday();
     // ////console.log(date);
@@ -364,14 +384,32 @@ export default {
     },
   },
   methods: {
-    locationFun() {
+    getLogoFun() {
+      getLogo(this.utils.userName).then((res) => {
+        console.log(res.data, "=======");
+        this.imagesUrl = `http://${res.data}`;
+        // http://124.71.11.195/image/1000/1615798468172juxing4.png
+      });
+    },
+    handleAvatarSuccess(res, file) {
+      // this.imageUrl = URL.createObjectURL(file.raw);
+      console.log(res, file);
+      this.imagesUrl = `http://${res.data[0]}`;
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
+    },
+    locationFun(type) {
       if (this.mass != undefined) {
         this.mass.setMap(null);
       }
 
       // console.log(this.mass);
-      if (this.location == "项目点位") {
-        this.location = "设备点位";
+      if (type == "项目点位") {
+        this.location = "项目点位";
         const region = sessionStorage.getItem("region");
         DeviceProjectNew(this.utils.userName, "3", region).then((res) => {
           if (res.data.length <= 0) {
@@ -424,7 +462,7 @@ export default {
           });
         });
       } else {
-        this.location = "项目点位";
+        this.location = "设备点位";
         getAllDevicePostion(this.utils.userName).then((res) => {
           //console.log(res.data.data);
           const style = [
@@ -467,6 +505,7 @@ export default {
             // _that.$refs.publicPopUps.initOff();
             // this.$refs.publicPopUps.see(devId, p_num);
             // _that.$refs.publicPopUps.echart_wapper(e.data.pid);
+            _that.$refs.publicPopUps.see(e.data.devId, e.data.imei);
             _that.map.setZoomAndCenter(20, [
               e.data.lnglat.lng,
               e.data.lnglat.lat,
@@ -561,57 +600,57 @@ export default {
         })
       );
       this.map.setZoomAndCenter(4, [116.205467, 39.907761]);
-      const region = sessionStorage.getItem("region");
-      DeviceProjectNew(this.utils.userName, "3", region).then((res) => {
-        if (res.data.length <= 0) {
-          return (this.loading_map = false);
-        }
-        ////console.log(res);
-        const style = [
-          {
-            url: "http://124.71.11.195/image/点4.png",
-            anchor: new AMap.Pixel(4, 4),
-            size: new AMap.Size(30, 30),
-          },
-          {
-            url: "https://a.amap.com/jsapi_demos/static/images/mass0.png",
-            anchor: new AMap.Pixel(6, 6),
-            size: new AMap.Size(30, 30),
-          },
-        ];
-        let a = [];
-        let b = [];
-        // //console.log(res.data.Company.length);
-        for (let i = 0; i < res.data.Company.length; i++) {
-          if (res.data.Company[i].style == 1) {
-            b.push(res.data.Company[i]);
-          } else {
-            a.push(res.data.Company[i]);
-          }
-        }
-        let c = [...a, ...b];
-        this.mass = new AMap.MassMarks(c, {
-          opacity: 0.8,
-          zIndex: 111,
-          cursor: "pointer",
-          style: style,
-        });
-        //console.log(mass, 999);
-        //console.log(this.map, 999);
-        const marker = new AMap.Marker({ content: " ", map: this.map });
-        this.mass.setMap(this.map);
-        let _that = this;
-        //绑定事件模块
-        this.mass.on("click", function (e) {
-          //console.log(e);
-          _that.$refs.publicPopUps.initOff();
-          _that.$refs.publicPopUps.echart_wapper(e.data.pid);
-          _that.map.setZoomAndCenter(20, [
-            e.data.lnglat.lng,
-            e.data.lnglat.lat,
-          ]);
-        });
-      });
+      // const region = sessionStorage.getItem("region");
+      // DeviceProjectNew(this.utils.userName, "3", region).then((res) => {
+      //   if (res.data.length <= 0) {
+      //     return (this.loading_map = false);
+      //   }
+      //   ////console.log(res);
+      //   const style = [
+      //     {
+      //       url: "http://124.71.11.195/image/点4.png",
+      //       anchor: new AMap.Pixel(4, 4),
+      //       size: new AMap.Size(30, 30),
+      //     },
+      //     {
+      //       url: "https://a.amap.com/jsapi_demos/static/images/mass0.png",
+      //       anchor: new AMap.Pixel(6, 6),
+      //       size: new AMap.Size(30, 30),
+      //     },
+      //   ];
+      //   let a = [];
+      //   let b = [];
+      //   // //console.log(res.data.Company.length);
+      //   for (let i = 0; i < res.data.Company.length; i++) {
+      //     if (res.data.Company[i].style == 1) {
+      //       b.push(res.data.Company[i]);
+      //     } else {
+      //       a.push(res.data.Company[i]);
+      //     }
+      //   }
+      //   let c = [...a, ...b];
+      //   this.mass = new AMap.MassMarks(c, {
+      //     opacity: 0.8,
+      //     zIndex: 111,
+      //     cursor: "pointer",
+      //     style: style,
+      //   });
+      //   //console.log(mass, 999);
+      //   //console.log(this.map, 999);
+      //   const marker = new AMap.Marker({ content: " ", map: this.map });
+      //   this.mass.setMap(this.map);
+      //   let _that = this;
+      //   //绑定事件模块
+      //   this.mass.on("click", function (e) {
+      //     //console.log(e);
+      //     _that.$refs.publicPopUps.initOff();
+      //     _that.$refs.publicPopUps.echart_wapper(e.data.pid);
+      //     _that.map.setZoomAndCenter(20, [
+      //       e.data.lnglat.lng,
+      //       e.data.lnglat.lat,
+      //     ]);
+      //   });
+      // });
     },
     submitForm(formName) {
       let odd = this.numberValidateForm.Odd_Password;
@@ -649,7 +688,15 @@ export default {
       gaoshida.setOption({
         xAxis: {
           type: "category",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+          data: [
+            "星期一",
+            "星期二",
+            "星期三",
+            "星期四",
+            "星期五",
+            "星期六",
+            "星期天",
+          ],
           axisLine: {
             lineStyle: {
               color: "#fff",
@@ -816,19 +863,75 @@ export default {
       var indictedCase = [10, 7, 15, 8];
       push_AlarmNumData(this.utils.userName, "").then((res) => {
         ////console.log(res.data[0].typeName);
-        console.log(res.data);
+        // console.log(res.data);
         // let listName = [];
         // let listNum = [];
         // res.data.forEach((element) => {
         //   listName.push(element.typeName);
         //   listNum.push(element.num);
         // });
+
+        // if(res.data[typeName])
+        if (res.data.length <= 0) {
+          res.data.push({ typeName: "欠压预警", num: "0" });
+        }
+
+        console.log(res.data);
         let name = [];
         let num = [];
+        //  = [
+        //   "欠压",
+        //   "过流",
+        //   "短路",
+        //   "漏电",
+        //   "灭弧",
+        //   "烟雾",
+        //   "气体",
+        //   "老化线路",
+        //   "温度",
+        //   "过压",
+        // ];
+        // let num = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"];
+
+        res.data.forEach((el) => {
+          // if(el.typeName)
+
+          if (el.typeName.indexOf("欠压") < 0) {
+            res.data.push({ typeName: "欠压预警", num: "0" });
+          }
+          if (el.typeName.indexOf("漏电") < 0) {
+            res.data.push({ typeName: "漏电预警", num: "0" });
+          }
+          if (el.typeName.indexOf("短路") < 0) {
+            res.data.push({ typeName: "短路预警", num: "0" });
+          }
+          if (el.typeName.indexOf("过流") < 0) {
+            res.data.push({ typeName: "过流预警", num: "0" });
+          }
+          if (el.typeName.indexOf("灭弧") < 0) {
+            res.data.push({ typeName: "灭弧预警", num: "0" });
+          }
+          if (el.typeName.indexOf("烟雾") < 0) {
+            res.data.push({ typeName: "烟雾预警", num: "0" });
+          }
+          if (el.typeName.indexOf("气体") < 0) {
+            res.data.push({ typeName: "气体预警", num: "0" });
+          }
+          if (el.typeName.indexOf("老化") < 0) {
+            res.data.push({ typeName: "老化线路", num: "0" });
+          }
+          if (el.typeName.indexOf("温度") < 0) {
+            res.data.push({ typeName: "温度预警", num: "0" });
+          }
+          if (el.typeName.indexOf("过压") < 0) {
+            res.data.push({ typeName: "过压预警", num: "0" });
+          }
+        });
         res.data.forEach((el) => {
           name.push(el.typeName);
           num.push(el.num);
         });
+        console.log(res.data);
         // ////console.log(listName);
         myChart_four.setOption({
           // -----------------------------------------
@@ -1293,6 +1396,14 @@ export default {
     top: 130px;
     position: absolute;
   }
+  .btnRed {
+    background: red;
+    border: none;
+  }
+  .btnBlue {
+    background: #409eff;
+    border: none;
+  }
   // background: #bfa;
   .title {
     display: flex;
@@ -1620,7 +1731,7 @@ export default {
   .btnQh {
     position: absolute;
     z-index: 999;
-    left: 1420px;
+    left: 1320px;
     width: 58%;
     bottom: 80px;
     height: 250px;

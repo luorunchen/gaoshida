@@ -118,7 +118,7 @@
         </div>
       </el-col>
     </el-row>
-    <PublicPopUps ref="publicPopUps" />
+    <PublicPopUps ref="publicPopUps" :pagetype="pagetype" />
   </div>
 </template>
 
@@ -128,6 +128,7 @@ import PublicPopUps from "../../FireInternetOfThings/translate/publicPopUps";
 export default {
   data() {
     return {
+      pagetype: 9,
       loading: true,
       props: {
         label: "name",
@@ -195,7 +196,12 @@ export default {
     loadNode(node, resolve) {
       if (node.level === 0) {
         getProvince(this.utils.userName, "zTreeAsyncTest").then((res) => {
-          return resolve([{ name: res.data[0].name, code: res.data[0].id }]);
+          let data = [];
+          res.data.forEach((element) => {
+            data.push({ name: element.name, code: element.id });
+          });
+          // console.log(data);
+          return resolve(data);
         });
         this.getRegionListFun(15, 1);
       } else if (node.level === 4) {
