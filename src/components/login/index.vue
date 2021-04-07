@@ -128,12 +128,24 @@ export default {
         if (res.data.status === true) {
           var role = res.data.role[0]; //权限
           // console.log(this.utils.userName, 666);
+          if (res.data.region == "null") {
+            res.data.region = "";
+          }
+          if (res.data.role[0] == 2000) {
+            res.data.role[0] = 1000;
+          }
           sessionStorage.setItem("userName", username);
           sessionStorage.setItem("role", res.data.role[0]);
           sessionStorage.setItem("new_role", res.data.new_role);
           sessionStorage.setItem("region", res.data.region);
           sessionStorage.setItem("power", res.data.power);
           this.utils.userName = username;
+          this.utils.powerId = res.data.new_role;
+          if (this.utils.powerId == 2000) {
+            this.utils.powerId = 1000;
+          }
+          this.utils.rid = res.data.power;
+          console.log(this.utils.rid);
           // console.log(this.utils.userName, 666);
           this.$router.push({ path: "/" });
           return this.$message({

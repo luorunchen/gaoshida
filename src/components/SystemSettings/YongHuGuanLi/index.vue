@@ -18,9 +18,7 @@
       <el-form-item>
         <el-button type="primary" @click="onSubmit">查询</el-button>
         <!-- <el-button type="primary" @click="onSubmit">新增</el-button> -->
-        <el-button type="primary" @click="dialogVisible = true"
-          >新增
-        </el-button>
+        <el-button type="primary" @click="addNew()">新增 </el-button>
       </el-form-item>
     </el-form>
     <div class="tabs">
@@ -39,8 +37,8 @@
         </el-table-column>
         <el-table-column prop="mobile" label="邮箱"> </el-table-column>
         <el-table-column prop="phone" label="手机号码"> </el-table-column>
-        <el-table-column prop="new_role" label="角色">
-          <template slot-scope="scope">
+        <el-table-column prop="newRoleName" label="角色">
+          <!-- <template slot-scope="scope">
             <p
               v-if="
                 scope.row.new_role == '36d4264f-ce5c-4b2c-9882-c4d5beb5d7f1'
@@ -49,7 +47,7 @@
               增删改查
             </p>
             <p v-if="scope.row.new_role == '1000'">超级管理员</p>
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
@@ -58,6 +56,7 @@
                 @click="(dialogVisible_bianji = true), childMethod(scope.row)"
                 >编辑</span
               >
+              <span @click="open(scope.row)">删除</span>
               <!-- <span>禁用</span>
               <span>删除</span> -->
             </div>
@@ -66,7 +65,12 @@
       </el-table>
     </div>
     <!-- 用户管理新增弹窗 -->
-    <el-dialog title="新增" :visible.sync="dialogVisible" width="50%">
+    <el-dialog
+      :close-on-click-modal="false"
+      title="新增"
+      :visible.sync="dialogVisible"
+      width="50%"
+    >
       <template>
         <el-form label-width="200px" class="demo-ruleForm" :inline="true">
           <el-form-item label="账号(必填)">
@@ -126,7 +130,12 @@
         </span>
       </template>
     </el-dialog>
-    <el-dialog title="编辑" :visible.sync="dialogVisible_bianji" width="50%">
+    <el-dialog
+      :close-on-click-modal="false"
+      title="编辑"
+      :visible.sync="dialogVisible_bianji"
+      width="50%"
+    >
       <template>
         <el-form
           :model="ruleForm"
@@ -203,6 +212,7 @@ import {
   getPowerOther,
   updateUser,
   addUserRole,
+  delRegister,
 } from "@/api/index.js";
 export default {
   props: ["size", "current"],
@@ -247,12 +257,57 @@ export default {
     onSubmit() {
       this.action(1, 10);
     },
+    addNew() {
+      if (
+        this.utils.powerId == 1000 ||
+        this.utils.rid.indexOf("10001003") != -1
+      ) {
+        this.dialogVisible = true;
+      } else {
+        return this.$message.error("暂无权限,请向上级申请");
+      }
+    },
+    open(data) {
+      // console.log(data)\;
+
+      if (this.utils.powerId == 1000 || this.utils.rid.indexOf("10001004")) {
+        this.$confirm(
+          `是否确定删除 <span style='color:red'>${data.userName} </span> 用户 `,
+          {
+            confirmButtonText: "确定",
+            dangerouslyUseHTMLString: true,
+          }
+        )
+          .then(() => {
+            delRegister(data.user_name, this.utils.userName).then(
+              (res) => {
+                if (res.data.code == 200) {
+                  this.$message.success("删除成功");
+                  this.action(this.current, this.size);
+                } else {
+                  this.$message.error("删除失败");
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
+              }
+            );
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else {
+        this.$message.error("暂无权限,请向上级申请");
+      }
+    },
+
     // 新增用户函数
     submitForm() {
       let role = sessionStorage.getItem("role");
       // if(this.addPrope.username)
       const reg = /^[0-9]+.?[0-9]*$/;
-      if (!reg.test(this.addPrope.username) && this.addPrope.username == "") {
+
+      if (!reg.test(this.addPrope.username) || this.addPrope.username == "") {
         return this.$message.error("账号必须为数字且不为空");
       }
       if (this.addPrope.password == "") {
@@ -305,13 +360,22 @@ export default {
       );
     },
     childMethod(data) {
+      if (
+        this.utils.powerId == 1000 ||
+        this.utils.rid.indexOf("10001002") != 1
+      ) {
+        this.ruleForm.name = data.userName;
+        this.ruleForm.gudingphone = data.company_phone;
+        this.ruleForm.address = data.address;
+        this.ruleForm.danwei = data.company;
+        this.ruleForm.mobile = data.mobile;
+        this.ruleForm.phone = data.phone;
+        this.ruleForm.type = data.new_role;
+        this.ruleForm.type_down = data.powerOther;
+      } else {
+        this.$message.error("暂无权限,请向上级申请");
+      }
       // console.log(data);
-      this.ruleForm.name = data.userName;
-      this.ruleForm.gudingphone = data.company_phone;
-      this.ruleForm.address = data.address;
-      this.ruleForm.danwei = data.company;
-      this.ruleForm.mobile = data.mobile;
-      this.ruleForm.phone = data.phone;
     },
     // 编辑用户弹窗
     edit() {

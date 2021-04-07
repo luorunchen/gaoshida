@@ -456,7 +456,14 @@
               <div
                 class="status"
                 style="background: #13d61c"
-                v-if="item.typeName == '正常'"
+                v-if="item.typeName == '正常' && item.status == '在线'"
+              >
+                <p>设备正常/{{ item.status }}</p>
+              </div>
+              <div
+                class="status"
+                style="background: #999"
+                v-else-if="item.typeName == '正常' && item.status == '离线'"
               >
                 <p>设备正常/{{ item.status }}</p>
               </div>
@@ -1054,7 +1061,7 @@
                             </div>
                           </el-col>
                           <el-col :span="6">
-                            <div sclass="imgWapper_img">
+                            <div class="imgWapper_img">
                               <img src="../../../assets/images/dianliu.png" />
                               <p>{{ shengyu_loudian.threeAlarm }}A</p>
                               <p>{{ shengyu_loudian.threeDianLiu }}A</p>
@@ -1171,6 +1178,7 @@
               </template>
             </el-row>
           </template>
+
           <!-- 正常设备 -->
           <template
             v-else-if="
@@ -1234,8 +1242,8 @@
                         <div class="imgWapper_img">
                           <img src="../../../assets/images/dianya.png" />
 
-                          <p>{{ shengyu_loudian.twoAlarm }}V</p>
-                          <p>{{ shengyu_loudian.twoDianLiu }}V</p>
+                          <p>{{ shengyu_loudian.oneVolatage }}V</p>
+                          <p>{{ shengyu_loudian.oneDianYa }}V</p>
                           <!-- <p>{{ shengyu_loudian.oneVolatage }}V</p>
                           <p>{{ shengyu_loudian.oneDianYa }}V</p> -->
                         </div>
@@ -1244,7 +1252,7 @@
                         <div class="imgWapper_img">
                           <img src="../../../assets/images/dianya.png" />
                           <p>{{ shengyu_loudian.threeAlarm }}V</p>
-                          <p>{{ shengyu_loudian.threeDianLiu }}V</p>
+                          <p>{{ shengyu_loudian.louDianvoltage }}V</p>
                           <!-- <p>{{ shengyu_loudian.twoVolatage }}V</p>
                           <p>{{ shengyu_loudian.twoDianYa }}V</p> -->
                         </div>
@@ -1272,8 +1280,8 @@
                       <el-col :span="6">
                         <div class="imgWapper_img">
                           <img src="../../../assets/images/wenduji.png" />
-                          <p>{{ shengyu_loudian.oneTempera }}℃</p>
-                          <p>{{ shengyu_loudian.oneWenDu }}℃</p>
+                          <p>0℃</p>
+                          <p>0℃</p>
                         </div>
                       </el-col>
                       <!-- <el-col :span="6">
@@ -1321,7 +1329,7 @@
             ></div>
           </div>
           <div class="two_echarts">
-            <p class="titleP">电压统计图</p>
+            <p class="titleP">温度统计图</p>
 
             <div
               class="echarts_wapper_two"
@@ -1332,7 +1340,7 @@
             ></div>
           </div>
           <div class="three_echarts">
-            <p class="titleP">温度统计图</p>
+            <p class="titleP">电压统计图</p>
 
             <div
               class="echarts_wapper_three"
@@ -1398,19 +1406,24 @@
               >
                 <el-col :span="8">
                   <el-button @click="shebeiBtn('1')"
-                    >远程断电</el-button
+                    >远程分闸</el-button
                   ></el-col
                 >
                 <el-col :span="8">
                   <el-button @click="shebeiBtn('2')"
-                    >远程开机</el-button
+                    >远程合闸</el-button
                   ></el-col
                 >
                 <el-col :span="8">
+                  <el-button @click="shebeiBtn('8')"
+                    >远程复位</el-button
+                  ></el-col
+                >
+                <!-- <el-col :span="8">
                   <el-button @click="shebeiBtn('3')"
                     >远程关机</el-button
                   ></el-col
-                >
+                > -->
               </el-row>
               <el-row :gutter="20" class="row-bg">
                 <el-col :span="8">
@@ -1430,27 +1443,23 @@
                 >
               </el-row>
               <el-row :gutter="20" class="row-bg">
-                <el-col :span="8">
+                <!-- <el-col :span="8">
                   <el-button @click="shebeiBtn('7')"
                     >开启流量</el-button
                   ></el-col
-                >
-                <el-col :span="8">
-                  <el-button @click="shebeiBtn('8')"
-                    >远程复位</el-button
-                  ></el-col
-                >
-                <el-col :span="8">
+                > -->
+
+                <!-- <el-col :span="8">
                   <el-button @click="shebeiBtn('9')">授权</el-button></el-col
-                >
+                > -->
               </el-row>
               <el-row :gutter="20" class="row-bg">
-                <el-col :span="8">
+                <!-- <el-col :span="8">
                   <el-button @click="shebeiBtn('10')"
                     >开启屏蔽器</el-button
                   ></el-col
-                >
-                <el-col :span="8">
+                > -->
+                <!-- <el-col :span="8">
                   <el-button @click="shebeiBtn('11')">下发保险单</el-button>
                 </el-col>
                 <el-col :span="8">
@@ -1458,7 +1467,7 @@
                     placeholder="请输入保险单号"
                     v-model="baoxiandanhao"
                   ></el-input>
-                </el-col>
+                </el-col> -->
 
                 <!-- <el-col :span="8"> <el-button>远程关机</el-button></el-col> -->
               </el-row>
@@ -1494,24 +1503,24 @@
                         ></el-input
                       ></el-col> -->
                     </el-row>
-                    <!-- <el-row :gutter="20">
+                    <el-row :gutter="20">
                       <el-col :span="12">
-                        <p>B相温度/℃</p>
+                        <p>L温度/℃</p>
                         <el-input
-                          v-model="fazhishezhi.BXWD"
+                          v-model="fazhishezhi.AXWD"
                           size="mini"
                           placeholder="请输入内容"
                         ></el-input>
                       </el-col>
                       <el-col :span="12"
-                        ><p>C相温度/℃</p>
+                        ><p>N温度/℃</p>
                         <el-input
-                          v-model="fazhishezhi.CXWD"
+                          v-model="fazhishezhi.NXWD"
                           size="mini"
                           placeholder="请输入内容"
                         ></el-input
                       ></el-col>
-                    </el-row> -->
+                    </el-row>
                     <el-row :gutter="20">
                       <!-- <el-col :span="12">
                         <p>N相温度/℃</p>
@@ -1788,6 +1797,7 @@ import {
   getDeviceByDeploy,
   getUserInfo,
 } from "@/api/index.js";
+
 export default {
   props: ["name"],
   data() {
@@ -1969,248 +1979,260 @@ export default {
       switch (num) {
         //远程断电
         case "1":
-          // if (role == "1000" || power.indexOf("10003003") != -1) {
-          resetclose(this.ElecDataList.DevData[0].productNumber, 0).then(
-            (res) => {
-              if (res.data.message == "请求成功") {
-                this.$message.success(res.data.message);
-              } else {
-                this.$message.error(res.data.message);
+          if (role == "1000" || power.indexOf("10003003") != -1) {
+            putMessToDeviceOn(
+              this.utils.userName,
+              this.ElecDataList.DevData[0].productNumber,
+              "poweroff"
+            ).then(
+              (res) => {
+                if (res.data.message == "请求成功") {
+                  this.$message.success(res.data.message);
+                } else {
+                  this.$message.error(res.data.message);
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
               }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
-            }
-          );
-          // } else {
-          //   this.$message.error("暂无权限");
-          // }
+            );
+          } else {
+            this.$message.error("暂无权限");
+          }
 
           break;
 
         //远程开机
         case "2":
-          // if (role == "1000" || power.indexOf("10003004") != -1) {
-          putMessToDeviceOn(
-            this.utils.userName,
-            this.ElecDataList.DevData[0].productNumber,
-            "shutdown"
-          ).then(
-            (res) => {
-              if (res.data.message == "请求成功") {
-                this.$message.success(res.data.message);
-              } else {
-                this.$message.error(res.data.message);
+          if (role == "1000" || power.indexOf("10003004") != -1) {
+            putMessToDeviceOn(
+              this.utils.userName,
+              this.ElecDataList.DevData[0].productNumber,
+              "poweron"
+            ).then(
+              (res) => {
+                if (res.data.message == "请求成功") {
+                  this.$message.success(res.data.message);
+                } else {
+                  this.$message.error(res.data.message);
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
               }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
-            }
-          );
-          break;
-        // } else {
-        //   this.$message.error("暂无权限");
-        // }
+            );
+            break;
+          } else {
+            this.$message.error("暂无权限");
+          }
         //远程关机
         case "3":
-          // if (role == "1000" || power.indexOf("10003004") != -1) {
-          putMessToDeviceOn(
-            this.utils.userName,
-            this.ElecDataList.DevData[0].productNumber,
-            "startup"
-          ).then(
-            (res) => {
-              if (res.data.message == "请求成功") {
-                this.$message.success(res.data.message);
-              } else {
-                this.$message.error(res.data.message);
+          if (role == "1000" || power.indexOf("10003004") != -1) {
+            putMessToDeviceOn(
+              this.utils.userName,
+              this.ElecDataList.DevData[0].productNumber,
+              "startup"
+            ).then(
+              (res) => {
+                if (res.data.message == "请求成功") {
+                  this.$message.success(res.data.message);
+                } else {
+                  this.$message.error(res.data.message);
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
               }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
-            }
-          );
-          break;
-          // } else {
-          //   this.message.error("暂无权限");
-          // }
+            );
+            break;
+          } else {
+            this.message.error("暂无权限");
+          }
           break;
         //开启蜂鸣器
         case "4":
-          // if (role == "1000" || power.indexOf("10003004") != -1) {
-          putMessToDeviceOn(
-            this.utils.userName,
-            this.ElecDataList.DevData[0].productNumber,
-            "voiceon"
-          ).then(
-            (res) => {
-              if (res.data.message == "请求成功") {
-                this.$message.success(res.data.message);
-              } else {
-                this.$message.error(res.data.message);
+          if (role == "1000" || power.indexOf("10003004") != -1) {
+            putMessToDeviceOn(
+              this.utils.userName,
+              this.ElecDataList.DevData[0].productNumber,
+              "voiceon"
+            ).then(
+              (res) => {
+                if (res.data.message == "请求成功") {
+                  this.$message.success(res.data.message);
+                } else {
+                  this.$message.error(res.data.message);
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
               }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
-            }
-          );
-          break;
-          // } else {
-          //   this.$message.error("暂无权限");
-          // }
+            );
+            break;
+          } else {
+            this.$message.error("暂无权限");
+          }
           break;
         //关闭蜂鸣器
         case "5":
-          // if (role == "1000" || power.indexOf("10003004") != -1) {
-          putMessToDeviceOn(
-            this.utils.userName,
-            this.ElecDataList.DevData[0].productNumber,
-            "voiceoff"
-          ).then(
-            (res) => {
-              if (res.data.message == "请求成功") {
-                this.$message.success(res.data.message);
-              } else {
-                this.$message.error(res.data.message);
+          if (role == "1000" || power.indexOf("10003004") != -1) {
+            putMessToDeviceOn(
+              this.utils.userName,
+              this.ElecDataList.DevData[0].productNumber,
+              "voiceoff"
+            ).then(
+              (res) => {
+                if (res.data.message == "请求成功") {
+                  this.$message.success(res.data.message);
+                } else {
+                  this.$message.error(res.data.message);
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
               }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
-            }
-          );
-          break;
-          // } else {
-          //   this.message.error("暂无权限");
-          // }
+            );
+            break;
+          } else {
+            this.message.error("暂无权限");
+          }
           break;
         //远程消音
         case "6":
-          // if (role == "1000" || power.indexOf("10003001") != -1) {
-          resetclose(this.ElecDataList.DevData[0].productNumber, 2).then(
-            (res) => {
-              if (res.data.message == "请求成功") {
-                this.$message.success(res.data.message);
-              } else {
-                this.$message.error(res.data.message);
+          if (role == "1000" || power.indexOf("10003001") != -1) {
+            putMessToDeviceOn(
+              this.utils.userName,
+              this.ElecDataList.DevData[0].productNumber,
+              "mute"
+            ).then(
+              (res) => {
+                if (res.data.message == "请求成功") {
+                  this.$message.success(res.data.message);
+                } else {
+                  this.$message.error(res.data.message);
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
               }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
-            }
-          );
-          // } else {
-          //   this.$message.error("暂无权限");
-          // }
+            );
+          } else {
+            this.$message.error("暂无权限");
+          }
 
           break;
         //开启流量
         case "7":
-          // if (role == "1000" || power.indexOf("10003004") != -1) {
-          putMessToDeviceOn(
-            this.utils.userName,
-            this.ElecDataList.DevData[0].productNumber,
-            "openflow"
-          ).then(
-            (res) => {
-              if (res.data.message == "请求成功") {
-                this.$message.success(res.data.message);
-              } else {
-                this.$message.error(res.data.message);
+          if (role == "1000" || power.indexOf("10003004") != -1) {
+            putMessToDeviceOn(
+              this.utils.userName,
+              this.ElecDataList.DevData[0].productNumber,
+              "openflow"
+            ).then(
+              (res) => {
+                if (res.data.message == "请求成功") {
+                  this.$message.success(res.data.message);
+                } else {
+                  this.$message.error(res.data.message);
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
               }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
-            }
-          );
-          break;
-          // } else {
-          //   this.$message.error("暂无权限");
-          // }
+            );
+            break;
+          } else {
+            this.$message.error("暂无权限");
+          }
           break;
         //远程复位
         case "8":
-          // if (role == "1000" || power.indexOf("10003003") != -1) {
-          resetclosefuwei(this.ElecDataList.DevData[0].productNumber, 2).then(
-            (res) => {
-              if (res.data.status == "1") {
-                this.$message.success(res.data.message);
-              } else {
-                this.$message.error(res.data.message);
+          if (role == "1000" || power.indexOf("10003003") != -1) {
+            putMessToDeviceOn(
+              this.utils.userName,
+              this.ElecDataList.DevData[0].productNumber,
+              "reset"
+            ).then(
+              (res) => {
+                if (res.data.status == "1") {
+                  this.$message.success(res.data.message);
+                } else {
+                  this.$message.error(res.data.message);
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
               }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
-            }
-          );
-          // } else {
-          //   this.$message.error("暂无权限");
-          // }
+            );
+          } else {
+            this.$message.error("暂无权限");
+          }
           break;
         //授权
         case "9":
-          // if (role == "1000" || power.indexOf("10003004") != -1) {
-          insertClouddog(this.ElecDataList.DevData[0].productNumber).then(
-            (res) => {
-              if (res.data.list[0].status == "true") {
-                this.$message.success(
-                  "授权成功.工作日一天后将授权生效,非工作日将延期"
-                );
-              } else {
-                this.$message.error("授权失败");
+          if (role == "1000" || power.indexOf("10003004") != -1) {
+            insertClouddog(this.ElecDataList.DevData[0].productNumber).then(
+              (res) => {
+                if (res.data.list[0].status == "true") {
+                  this.$message.success(
+                    "授权成功.工作日一天后将授权生效,非工作日将延期"
+                  );
+                } else {
+                  this.$message.error("授权失败");
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
               }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
-            }
-          );
-          // }
+            );
+          }
           break;
         //开启屏蔽器
         case "10":
-          // if (role == "1000" || power.indexOf("10003013") != -1) {
-          updateShutdown(
-            this.ElecDataList.DevData[0].productNumber,
-            this.utils,
-            userName
-          ).then(
-            (res) => {
-              if (res.data.status == "true") {
-                layer.open({
-                  content: res.mess,
-                });
-                this.$message.success(res.data.mess);
-              } else {
-                this.$message.error(res.data.mess);
+          if (role == "1000" || power.indexOf("10003013") != -1) {
+            updateShutdown(
+              this.ElecDataList.DevData[0].productNumber,
+              this.utils,
+              userName
+            ).then(
+              (res) => {
+                if (res.data.status == "true") {
+                  layer.open({
+                    content: res.mess,
+                  });
+                  this.$message.success(res.data.mess);
+                } else {
+                  this.$message.error(res.data.mess);
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
               }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
-            }
-          );
-          // }
+            );
+          }
           break;
         //下发保险单
         case "11":
           // console.log(6554654);
           // console.log(this.ElecDataList.DevData[0].productNumber, 789789);
-          // if (role == "1000" || power.indexOf("10003004") != -1) {
-          putMessToDevice(
-            this.utils.userName,
-            this.ElecDataList.DevData[0].productNumber,
-            this.baoxiandanhao
-          ).then(
-            (res) => {
-              if (res.data.message == "请求成功") {
-                alert("下发保险单号成功");
-              } else {
-                this.$message.error("请稍后重试");
+          if (role == "1000" || power.indexOf("10003004") != -1) {
+            putMessToDevice(
+              this.utils.userName,
+              this.ElecDataList.DevData[0].productNumber,
+              this.baoxiandanhao
+            ).then(
+              (res) => {
+                if (res.data.message == "请求成功") {
+                  alert("下发保险单号成功");
+                } else {
+                  this.$message.error("请稍后重试");
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
               }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
-            }
-          );
-          // }
+            );
+          }
           // var res = JSON.parse(result);
           // console.log(res);
 
@@ -2239,7 +2261,9 @@ export default {
           this.$message.success("报警解除成功");
           this.innerVisible = false;
 
-          location.reload();
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
         }
       });
     },
@@ -2435,8 +2459,8 @@ export default {
           this.fazhishezhi.NXWD = row.NWenDu;
           this.fazhishezhi.SYDL = row.SYdianliu;
           this.fazhishezhi.AXDL = row.ADianLiu;
-          this.fazhishezhi.BXDL = row.BDianLiu;
-          this.fazhishezhi.CXDL = row.CDianLiu;
+          this.fazhishezhi.BXDL = row.ADianYa;
+          this.fazhishezhi.CXDL = row.u_voltage;
           this.fazhishezhi.AXDY = row.ADianYa;
           this.fazhishezhi.BXDY = row.BDianYa;
           this.fazhishezhi.CXDY = row.CDianYa;
@@ -2457,8 +2481,8 @@ export default {
             this.fazhishezhi.NXWD = row.NWenDu;
             this.fazhishezhi.SYDL = row.SYdianliu;
             this.fazhishezhi.AXDL = row.ADianLiu;
-            this.fazhishezhi.BXDL = row.BDianLiu;
-            this.fazhishezhi.CXDL = row.CDianLiu;
+            this.fazhishezhi.BXDL = row.ADianYa;
+            this.fazhishezhi.CXDL = row.u_voltage;
             this.fazhishezhi.AXDY = row.ADianYa;
             this.fazhishezhi.BXDY = row.BDianYa;
             this.fazhishezhi.CXDY = row.CDianYa;
@@ -2610,6 +2634,7 @@ export default {
             twoWenDu: res.data.row.BWenDu,
             threeWenDu: res.data.row.CWenDu,
             fourWenDu: res.data.row.NWenDu,
+            louDianvoltage: res.data.row.u_voltage,
           };
           console.log(this.shengyu_loudian);
         });
@@ -2779,7 +2804,7 @@ export default {
               trigger: "axis",
             },
             legend: {
-              data: ["A电压(A)", "B电压(A)", "C电压(A)"],
+              data: ["A电压(V)", "B电压(V)", "C电压(V)"],
             },
             grid: {
               left: "3%",
@@ -2802,19 +2827,19 @@ export default {
             },
             series: [
               {
-                name: "A电压(A)",
+                name: "A电压(V)",
                 type: "line",
                 // stack: "总量",
                 data: dianYaA.reverse(),
               },
               {
-                name: "B电压(A)",
+                name: "B电压(V)",
                 type: "line",
                 // stack: "总量",
                 data: dianYaB.reverse(),
               },
               {
-                name: "C电压(A)",
+                name: "C电压(V)",
                 type: "line",
                 // stack: "总量",
                 data: dianYaC.reverse(),
@@ -2828,16 +2853,17 @@ export default {
       SetParameterApi(
         this.ElecDataList.DevData[0].productNumber,
         this.fazhishezhi.SYDL,
-        this.fazhishezhi.AXWD,
-        this.fazhishezhi.BXWD,
-        this.fazhishezhi.CXWD,
-        this.fazhishezhi.NXWD,
         this.fazhishezhi.AXDL,
         this.fazhishezhi.BXDL,
-        this.fazhishezhi.CXDL,
-        this.fazhishezhi.AXDY,
-        this.fazhishezhi.BXDY,
-        this.fazhishezhi.CXDY
+        this.fazhishezhi.AXWD,
+        this.fazhishezhi.NXWD,
+        this.fazhishezhi.CXDL
+        // this.fazhishezhi.AXDL,
+        // this.fazhishezhi.BXDL,
+        // this.fazhishezhi.CXDL,
+        // this.fazhishezhi.AXDY,
+        // this.fazhishezhi.BXDY,
+        // this.fazhishezhi.CXDY
       ).then((res) => {
         if (res.data.status == 1) {
           this.$message.success("设置成功");

@@ -49,14 +49,19 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog :title="title" :visible.sync="dialogVisible" width="40%">
+    <el-dialog
+      :title="title"
+      :close-on-click-modal="false"
+      :visible.sync="dialogVisible"
+      width="40%"
+    >
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="角色名称">
           <el-input v-model="addNewUser" placeholder="角色名称"></el-input>
         </el-form-item>
-        <el-form-item label="区域权限">
+        <!-- <el-form-item label="区域权限">
           <el-cascader :props="props"></el-cascader>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <h3 style="margin-bottom: 20px">模块选择</h3>
       <!-- 用户管理 -->
@@ -162,6 +167,7 @@ import {
   givePowerRole,
   delPower,
   editPower,
+  getRoleByid,
 } from "@/api/index.js";
 
 export default {
@@ -207,7 +213,7 @@ export default {
         { name: "设备消音", value: 10003001 },
         { name: "设备复位", value: 10003002 },
         { name: "设备断电", value: 10003003 },
-        { name: "设备远程停", value: 10003004 },
+        { name: "设备远程停电", value: 10003004 },
         { name: "设备修改", value: 10003005 },
         { name: "设备删除", value: 10003007 },
         { name: "设备新增", value: 10003006 },
@@ -231,54 +237,115 @@ export default {
   },
   methods: {
     addNewPower() {
-      this.dialogVisible = true;
-      // this.getRegonFun();
-      this.title = "新增";
+      if (
+        this.utils.powerId == 1000 ||
+        this.utils.rid.indexOf("10004004") != -1
+      ) {
+        this.dialogVisible = true;
+        // this.getRegonFun();
+        this.title = "新增";
+      } else {
+        this.$message.error("暂无权限,请向上级申请");
+      }
     },
     //编辑按钮
     editPowerFun(data) {
-      this.title = "编辑";
+      if (this.utils.powerId == 1000 || this.utils.rid.indexOf("10004002")) {
+        this.title = "编辑";
+        // console.log(data);
+        this.dialogVisible = true;
+        this.addNewUser = data.name;
+        this.edit = data;
+        // console.log(
+        //   (this.checkedCities = [10001001, 10001002, 10001003, 10001004])
+        // );
+        this.checkedCities = [];
+        this.checkedCities1 = [];
+        this.checkedCities2 = [];
+        this.checkedCities3 = [];
 
-      this.dialogVisible = true;
-      this.addNewUser = data.name;
-      this.edit = data;
+        getRoleByid(data.id, "").then((res) => {
+          let arr = res.data.data.split(",");
+          let arr2 = [];
+
+          arr.forEach((el) => {
+            if (el.indexOf("10001") != -1) {
+              console.log(el);
+              this.checkedCities.push(el * 1);
+            }
+            if (el.indexOf("10002") != -1) {
+              console.log(el);
+              this.checkedCities1.push(el * 1);
+            }
+            if (el.indexOf("10003") != -1) {
+              console.log(el);
+              this.checkedCities2.push(el * 1);
+            }
+            if (el.indexOf("10004") != -1) {
+              console.log(el);
+              this.checkedCities3.push(el * 1);
+            }
+          });
+
+          // if (arr.indexOf("10001") != -1) {
+          //   console.log(arr, 9999);
+
+          //   arr.map((el) => {
+          //     console.log(el * 1);
+          //     arr2.push(el * 1);
+          //   });
+          //   console.log(arr2);
+          //   this.checkedCities = arr2;
+          //   console.log(this.checkedCities);
+          // }
+        });
+      } else {
+        this.$message.error("暂无权限,请向上级申请");
+      }
     },
     //删除按钮
     delPowerFun(id, name) {
-      this.$confirm(
-        `此操作将永久删除 <span style="color:red">${name}</span> , 是否继续?`,
-        {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          dangerouslyUseHTMLString: true,
-          type: "warning",
-        }
-      )
-        .then(() => {
-          delPower(this.utils.userName, id, "only").then(
-            (res) => {
-              if (res.data.code == 200) {
-                this.$message.success("删除成功");
-                this.action(1, 15);
-              } else {
-                this.$message.error("删除失败");
+      if (
+        this.utils.powerId == 1000 ||
+        this.utils.rid.indexOf("10004003") != -1
+      ) {
+        this.$confirm(
+          `此操作将永久删除 <span style="color:red">${name}</span> , 是否继续?`,
+          {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            dangerouslyUseHTMLString: true,
+            type: "warning",
+          }
+        )
+          .then(() => {
+            delPower(this.utils.userName, id, "only").then(
+              (res) => {
+                if (res.data.code == 200) {
+                  this.$message.success("删除成功");
+                  this.action(1, 15);
+                } else {
+                  this.$message.error("删除失败");
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
               }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
-            }
-          );
-          // this.$message({
-          //   type: 'success',
-          //   message: '删除成功!'
-          // });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除",
+            );
+            // this.$message({
+            //   type: 'success',
+            //   message: '删除成功!'
+            // });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消删除",
+            });
           });
-        });
+      } else {
+        this.$message.error("暂无权限,请向上级申请");
+      }
     },
 
     //新增/编辑确定按钮
@@ -314,7 +381,7 @@ export default {
         const data = this.edit;
         editPower(
           data.id,
-          data.name,
+          this.addNewUser,
           p_id,
           this.utils.userName,
           this.region
@@ -336,6 +403,7 @@ export default {
     //用户管理函数
     handleCheckAllChange(val) {
       let arr = [];
+
       this.cityOptions.forEach((element) => {
         arr.push(element.value);
       });

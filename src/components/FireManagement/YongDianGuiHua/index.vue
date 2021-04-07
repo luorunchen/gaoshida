@@ -60,7 +60,12 @@
       >
       </el-pagination>
     </div>
-    <el-dialog title="定时设置" :visible.sync="dialogVisible" width="30%">
+    <el-dialog
+      title="定时设置"
+      :close-on-click-modal="false"
+      :visible.sync="dialogVisible"
+      width="30%"
+    >
       <div class="time">
         <h3 class="demonstration">定时设置</h3>
         <el-date-picker
@@ -214,6 +219,7 @@ export default {
       });
     },
     set(dev, num) {
+      this.timeValue = "";
       this.dialogVisible = true;
       this.productNumber = num;
     },

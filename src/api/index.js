@@ -299,22 +299,24 @@ export function putMessToDevice(username, imei, content) {
   })
 }
 //接入设备->报警=>设备设置(远程断电/消音)接口
-export function resetclose(imei, states) {
+export function resetclose(username, imei, states) {
   return service({
     url: `/resetclose.action`,
     method: 'GET',
     params: {
+      username,
       imei,
       states
     }
   })
 }
 //接入设备->报警=>设备设置(远程复位)接口
-export function resetclosefuwei(imei, states) {
+export function resetclosefuwei(username, imei, states) {
   return service({
     url: `/resetclose.action`,
     method: 'GET',
     params: {
+      username,
       imei,
       states
     }
@@ -355,14 +357,14 @@ export function updateShutdown(devices, my_username) {
   })
 }
 //接入设备->报警=>设备设置(阀值设置)接口
-export function SetParameterApi(devSignature, parNine, parTen, parEleven,
-  parTwelve, parThirteen, parFourteen, parFifteen, parSixteen, parSeventeen, parEighteen, parNineteen) {
+export function SetParameterApi(devSignature, parNine, parFourteen, parSeventeen, parTen, parThirteen, U_voltage) {
   return service({
     url: `/SetParameterApi.action`,
     method: 'GET',
     params: {
-      devSignature, parNine, parTen, parEleven,
-      parTwelve, parThirteen, parFourteen, parFifteen, parSixteen, parSeventeen, parEighteen, parNineteen
+      // devSignature, parNine, parTen, parEleven,
+      // parTwelve, parThirteen, parFourteen, parFifteen, parSixteen, parSeventeen, parEighteen, parNineteen
+      devSignature, parNine, parFourteen, parSeventeen, parTen, parThirteen, U_voltage
     }
   })
 }
@@ -744,12 +746,32 @@ export function getDevTime(startTime, endTime, imei, week, state, content, usern
   })
 }
 //分享项目
-export function addRegisterProject(pid, username) {
+export function addRegisterProject(pid, username, ower) {
   return service({
     url: `/admin/project/addRegisterProject.action`,
     method: 'GET',
     params: {
-      pid, username
+      pid, username, ower
+    }
+  })
+}
+//查看分享项目
+export function getShareProject(username) {
+  return service({
+    url: `admin/project/getShareProject`,
+    method: 'GET',
+    params: {
+      username,
+    }
+  })
+}
+//删除分享项目
+export function delShareProject(pid, username, ower) {
+  return service({
+    url: `admin/project/delShareProject`,
+    method: 'GET',
+    params: {
+      pid, username, ower
     }
   })
 }
@@ -857,6 +879,28 @@ export function saveDevice(username, devices) {
     method: 'GET',
     params: {
       username, devices
+    }
+  })
+}
+//删除用户
+export function delRegister(username, master) {
+  return service({
+    url: `/admin/handle/delRegister.action`,
+    method: 'GET',
+    params: {
+      username, master
+    }
+  })
+}
+
+
+//获取角色权限
+export function getRoleByid(r_id, region) {
+  return service({
+    url: `/power/getRoleByid.action`,
+    method: 'GET',
+    params: {
+      r_id, region
     }
   })
 }

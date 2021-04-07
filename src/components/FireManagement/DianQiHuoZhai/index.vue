@@ -89,10 +89,20 @@ export default {
       // console.log(map.reverse());
       this.map.setZoomAndCenter(20, val);
     },
+    getStoreItem(val) {
+      console.log(val);
+      if (val == "开") {
+        this.locationFun(this.location);
+      }
+    },
   },
   computed: {
     contractFile() {
       return this.$store.state.map_lnglat;
+    },
+    getStoreItem() {
+      // console.log(this.$store.state.AlarmStatus);
+      return this.$store.state.AlarmStatus;
     },
   },
   mounted() {
@@ -119,7 +129,10 @@ export default {
       // console.log(this.mass);
       if (type == "项目点位") {
         this.location = type;
-        const region = sessionStorage.getItem("region");
+        let region = sessionStorage.getItem("region");
+        if (region == "null") {
+          region = "";
+        }
         DeviceProjectNew(this.utils.userName, "3", region).then((res) => {
           if (res.data.length <= 0) {
             return (this.loading_map = false);
@@ -136,12 +149,20 @@ export default {
               anchor: new AMap.Pixel(6, 6),
               size: new AMap.Size(30, 30),
             },
+            {
+              url: "https://a.amap.com/jsapi_demos/static/images/mass0.png",
+              anchor: new AMap.Pixel(6, 6),
+              size: new AMap.Size(20, 20),
+            },
           ];
           let a = [];
           let b = [];
           // //console.log(res.data.Company.length);
           for (let i = 0; i < res.data.Company.length; i++) {
-            if (res.data.Company[i].style == 1) {
+            if (
+              res.data.Company[i].style == 1 ||
+              res.data.Company[i].style == 2
+            ) {
               b.push(res.data.Company[i]);
             } else {
               a.push(res.data.Company[i]);
@@ -183,7 +204,12 @@ export default {
             {
               url: "https://a.amap.com/jsapi_demos/static/images/mass0.png",
               anchor: new AMap.Pixel(6, 6),
-              size: new AMap.Size(30, 30),
+              size: new AMap.Size(20, 20),
+            },
+            {
+              url: "https://a.amap.com/jsapi_demos/static/images/mass0.png",
+              anchor: new AMap.Pixel(6, 6),
+              size: new AMap.Size(20, 20),
             },
           ];
           let a = [];
@@ -191,12 +217,35 @@ export default {
           // //console.log(res.data.Company.length);
           for (let i = 0; i < res.data.data.length; i++) {
             if (res.data.data[i].style == 1) {
+              res.data.data[i].style = res.data.data[i].alarmType * 1;
               b.push(res.data.data[i]);
             } else {
+              res.data.data[i].style = res.data.data[i].alarmType * 1;
               a.push(res.data.data[i]);
             }
           }
+          for (let i = 0; i < res.data.share.length; i++) {
+            if (
+              res.data.share[i].alarmType == 1 ||
+              res.data.share[i].alarmType == 2
+            ) {
+              res.data.share[i].lnglat = [
+                res.data.share[i].long_lat.split(",")[0],
+                res.data.share[i].long_lat.split(",")[1],
+              ];
+              res.data.share[i].style = res.data.share[i].alarmType * 1;
+              b.push(res.data.share[i]);
+            } else {
+              res.data.share[i].lnglat = [
+                res.data.share[i].long_lat.split(",")[0],
+                res.data.share[i].long_lat.split(",")[1],
+              ];
+              res.data.share[i].style = res.data.share[i].alarmType * 1;
+              a.push(res.data.share[i]);
+            }
+          }
           let c = [...a, ...b];
+          // console.log(c);
           this.mass = new AMap.MassMarks(c, {
             opacity: 0.8,
             zIndex: 111,
@@ -313,11 +362,14 @@ export default {
     },
 
     DeviceAlarm() {
-      const region = sessionStorage.getItem("region");
+      let region = sessionStorage.getItem("region");
+      if (region == "null") {
+        region = "";
+      }
       DeviceAlarm(this.utils.userName, 3, region).then((res) => {
         this.DeviceAlarmList = res.data;
         let num = 0;
-        // console.log(res.data, 99);
+        console.log(res.data, 99);
         if (res.data.length <= 0) {
           // return this.$message.error("今日报警数据丢失");
           this.baojingNum = "000000";
@@ -327,7 +379,7 @@ export default {
           res.data.forEach((element) => {
             num += element.value;
           });
-
+          this.$refs.leftOne.style.height = "2.34375" + "rem";
           // this.baojingNum = str + num;
           let str = "000000" + num;
           this.baojingNum = str.substring(str.length - 6);
@@ -345,6 +397,7 @@ export default {
     SearchTranslate,
     PublicPopUps,
   },
+  updated() {},
 };
 </script>
 <style lang='less' scoped>

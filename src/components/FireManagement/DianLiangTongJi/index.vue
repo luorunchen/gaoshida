@@ -58,7 +58,12 @@
       >
       </el-pagination>
     </div>
-    <el-dialog title="查看" :visible.sync="dialogVisible" width="50%">
+    <el-dialog
+      title="查看"
+      :close-on-click-modal="false"
+      :visible.sync="dialogVisible"
+      width="50%"
+    >
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <span>最近7天用电量</span>

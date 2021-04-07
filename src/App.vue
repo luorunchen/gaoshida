@@ -50,14 +50,21 @@ export default {
     //   }
     // },
     dialogVisible(val) {
-      // console.log(val, "playState");
+      console.log(val, "playState");
       // console.log(this.listData, "playState");
       if (val == true && this.listData == "开") {
+        this.$store.commit("AlarmStatusFun", "关");
+        // console.log(this.$store.state.AlarmStatus);
         this.$nextTick(() => {
           this.audo = document.getElementById("audio");
+
           // console.log(this.audo);
           this.audo.play();
         });
+      }
+      if (val == false) {
+        this.$store.commit("AlarmStatusFun", "开");
+        // console.log(this.$store.state.AlarmStatus);
       }
     },
   },
@@ -110,7 +117,7 @@ export default {
       onMessage: function (message) {
         const res = message.content;
         const arr = res.split(",");
-
+        console.log(message);
         _that.arlme.name = arr[2];
         _that.arlme.imei = arr[0];
         _that.arlme.type = arr[4];
@@ -140,13 +147,13 @@ export default {
 }
 #baoj {
   .weiyi {
-    /deep/.el-dialog__header {
+    .el-dialog__header {
       padding: 0;
       background: #4c0e25;
       border: #b81c7f 1px solid;
       border-bottom: none;
     }
-    /deep/.el-dialog__body {
+    .el-dialog__body {
       background: #4c0e25;
       color: #fff;
       padding: 10px 20px;
@@ -156,7 +163,7 @@ export default {
         margin-bottom: 10px;
       }
     }
-    /deep/.el-dialog__title {
+    .el-dialog__title {
       width: 255px;
       height: 30px;
       background: linear-gradient(90deg, #812145, #4c0e25);

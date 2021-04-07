@@ -207,13 +207,13 @@
         </div>
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="7">
-            <el-button @click="shebeiBtn('4')">开启蜂鸣器</el-button></el-col
+            <el-button @click="shebeiBtn('1')">远程分闸</el-button></el-col
           >
           <el-col :span="7">
-            <el-button @click="shebeiBtn('5')">关闭蜂鸣器</el-button></el-col
+            <el-button @click="shebeiBtn('2')">远程合闸</el-button></el-col
           >
           <el-col :span="7">
-            <el-button @click="shebeiBtn('6')">远程消音</el-button></el-col
+            <el-button @click="shebeiBtn('8')">远程复位</el-button></el-col
           >
         </el-row>
         <el-row
@@ -223,10 +223,14 @@
           style="margin-top: 10px"
         >
           <el-col :span="7">
-            <el-button @click="shebeiBtn('8')">远程复位</el-button></el-col
+            <el-button @click="shebeiBtn('4')">开启蜂鸣器</el-button></el-col
           >
-          <el-col :span="7"> </el-col>
-          <el-col :span="7"> </el-col>
+          <el-col :span="7">
+            <el-button @click="shebeiBtn('5')">关闭蜂鸣器</el-button></el-col
+          >
+          <el-col :span="7">
+            <el-button @click="shebeiBtn('6')">远程消音</el-button></el-col
+          >
         </el-row>
       </el-card>
       <el-card class="box-card" style="margin-top: 30px">
@@ -264,24 +268,24 @@
                   ></el-input
                 ></el-col> -->
               </el-row>
-              <!-- <el-row :gutter="20">
+              <el-row :gutter="20">
                 <el-col :span="12">
-                  <p>B相温度/℃</p>
+                  <p>L温度/℃</p>
                   <el-input
-                    v-model="fazhishezhi.BXWD"
+                    v-model="fazhishezhi.AXWD"
                     size="mini"
                     placeholder="请输入内容"
                   ></el-input>
                 </el-col>
                 <el-col :span="12"
-                  ><p>C相温度/℃</p>
+                  ><p>N温度/℃</p>
                   <el-input
-                    v-model="fazhishezhi.CXWD"
+                    v-model="fazhishezhi.NXWD"
                     size="mini"
                     placeholder="请输入内容"
                   ></el-input
                 ></el-col>
-              </el-row> -->
+              </el-row>
               <el-row :gutter="20">
                 <!-- <el-col :span="12">
                   <p>N相温度/℃</p>
@@ -351,7 +355,9 @@
               </el-row> -->
               <el-row type="flex" justify="center" style="margin-top: 20px">
                 <el-col :span="4"
-                  ><el-button size="mini">取消</el-button></el-col
+                  ><el-button size="mini" @click="offInfo"
+                    >取消</el-button
+                  ></el-col
                 >
                 <el-col :span="4"
                   ><el-button
@@ -518,6 +524,22 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="单个设备导入" v-else>
+          <!-- <el-select
+            v-model="batch_phone_value"
+            filterable
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in batch_phone_list"
+              :key="item.value"
+              :label="item.user_name"
+              :value="item.role + ',' + item.user_name"
+            >
+            </el-option>
+          </el-select> -->
+          <el-input v-model="SingleDevice"></el-input>
+        </el-form-item>
       </el-form>
       <template>
         <el-table :data="batch_list" height="300">
@@ -527,11 +549,7 @@
       </template>
       <span slot="footer" class="dialog-footer">
         <el-button @click="batch_Visible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="(batch_Visible = false), batchFunTrue()"
-          >确 定</el-button
-        >
+        <el-button type="primary" @click="batchFunTrue()">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -558,6 +576,7 @@ import {
 export default {
   data() {
     return {
+      SingleDevice: "",
       batch_phone_value: "",
       batch_type: "",
       batch_list: [],
@@ -685,8 +704,25 @@ export default {
     // this.bj_map();
   },
   methods: {
+    //阀值设置取消按钮
+    offInfo() {
+      ReadParameterApi(this.setValue).then((res) => {
+        console.log(res.data.row);
+        const row = res.data.row;
+        this.fazhishezhi.AXWD = row.AWenDu;
+        this.fazhishezhi.BXWD = row.BWenDu;
+        this.fazhishezhi.CXWD = row.CWenDu;
+        this.fazhishezhi.NXWD = row.NWenDu;
+        this.fazhishezhi.SYDL = row.SYdianliu;
+        this.fazhishezhi.AXDL = row.ADianLiu;
+        this.fazhishezhi.BXDL = row.ADianYa;
+        this.fazhishezhi.CXDL = row.u_voltage;
+        this.fazhishezhi.AXDY = row.ADianYa;
+        this.fazhishezhi.BXDY = row.BDianYa;
+        this.fazhishezhi.CXDY = row.CDianYa;
+      });
+    },
     //批量分配确定按钮
-
     batchFunTrue() {
       let Equipment_number = [];
       this.batch_list.forEach((el) => {
@@ -705,6 +741,7 @@ export default {
             // console.log(res);
             if (res.data.code == 200) {
               this.$message.success("分配成功");
+              this.batch_Visible = false;
             } else {
               this.$message.error("分配失败");
             }
@@ -714,10 +751,25 @@ export default {
           }
         );
       } else {
-        saveDevice(this.utils.userName, Equipment_number.toString()).then(
+        console.log(this.SingleDevice, "==", Equipment_number, 999);
+        let data;
+        if (Equipment_number.length > 0 && this.SingleDevice == "") {
+          data = Equipment_number.toString();
+        }
+
+        if (Equipment_number.length == 0 && this.SingleDevice != "") {
+          data == this.SingleDevice;
+        }
+        if (Equipment_number.length > 0 && this.SingleDevice != "") {
+          // this.batch_Visible = false;
+          return this.$message.error("只能选择一种模式导入");
+        }
+
+        saveDevice(this.utils.userName, data).then(
           (res) => {
             if (res.data.code == 200) {
               this.$message.success("导入成功");
+              this.batch_Visible = false;
             } else {
               this.$message.error("导入失败");
             }
@@ -731,6 +783,7 @@ export default {
     //获取下级手机号
     batchFun(type) {
       this.batch_type = type;
+      this.batch_list = [];
       getSlave(this.utils.userName).then((res) => {
         console.log(res);
         this.batch_phone_list = res.data.data;
@@ -823,28 +876,21 @@ export default {
       //获取设备号
       this.setValue = data;
       // console.log(this.setValue);
-      ReadParameterApi(data).then(
-        (res) => {
-          console.log(res.data.row);
-
-          const row = res.data.row;
-          this.fazhishezhi.AXWD = row.AWenDu;
-          this.fazhishezhi.BXWD = row.BWenDu;
-          this.fazhishezhi.CXWD = row.CWenDu;
-          this.fazhishezhi.NXWD = row.NWenDu;
-          this.fazhishezhi.SYDL = row.SYdianliu;
-          this.fazhishezhi.AXDL = row.ADianLiu;
-          this.fazhishezhi.BXDL = row.BDianLiu;
-          this.fazhishezhi.CXDL = row.CDianLiu;
-          this.fazhishezhi.AXDY = row.ADianYa;
-          this.fazhishezhi.BXDY = row.BDianYa;
-          this.fazhishezhi.CXDY = row.CDianYa;
-          this.$forceUpdate();
-        },
-        (rej) => {
-          this.$message.error("请稍后重试/设备号不正确");
-        }
-      );
+      ReadParameterApi(this.setValue).then((res) => {
+        console.log(res.data.row);
+        const row = res.data.row;
+        this.fazhishezhi.AXWD = row.AWenDu;
+        this.fazhishezhi.BXWD = row.BWenDu;
+        this.fazhishezhi.CXWD = row.CWenDu;
+        this.fazhishezhi.NXWD = row.NWenDu;
+        this.fazhishezhi.SYDL = row.SYdianliu;
+        this.fazhishezhi.AXDL = row.ADianLiu;
+        this.fazhishezhi.BXDL = row.ADianYa;
+        this.fazhishezhi.CXDL = row.u_voltage;
+        this.fazhishezhi.AXDY = row.ADianYa;
+        this.fazhishezhi.BXDY = row.BDianYa;
+        this.fazhishezhi.CXDY = row.CDianYa;
+      });
     },
 
     //设备设置按钮
@@ -855,13 +901,22 @@ export default {
         //远程断电
         case "1":
           // if (role == "1000" || power.indexOf("10003003") != -1) {
-          resetclose(this.setValue, 0).then((res) => {
-            if (res.data.message == "请求成功") {
-              this.$message.success(res.data.message);
-            } else {
-              this.$message.error(res.data.message);
+          putMessToDeviceOn(
+            this.utils.userName,
+            this.setValue,
+            "poweroff"
+          ).then(
+            (res) => {
+              if (res.data.message == "请求成功") {
+                this.$message.success(res.data.message);
+              } else {
+                this.$message.error(res.data.message);
+              }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
             }
-          });
+          );
           // } else {
           //   this.$message.error("暂无权限");
           // }
@@ -871,17 +926,18 @@ export default {
         //远程开机
         case "2":
           // if (role == "1000" || power.indexOf("10003004") != -1) {
-          putMessToDeviceOn(
-            this.utils.userName,
-            this.setValue,
-            "shutdown"
-          ).then((res) => {
-            if (res.data.message == "请求成功") {
-              alert("远程开机成功");
-            } else {
-              alert("请稍后重试");
+          putMessToDeviceOn(this.utils.userName, this.setValue, "poweron").then(
+            (res) => {
+              if (res.data.message == "请求成功") {
+                this.$message.success(res.data.message);
+              } else {
+                this.$message.error(res.data.message);
+              }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
             }
-          });
+          );
           break;
         // } else {
         //   this.$message.error("暂无权限");
@@ -892,10 +948,13 @@ export default {
           putMessToDeviceOn(this.utils.userName, this.setValue, "startup").then(
             (res) => {
               if (res.data.message == "请求成功") {
-                alert("远程开机成功");
+                this.$message.success(res.data.message);
               } else {
-                alert("请稍后重试");
+                this.$message.error(res.data.message);
               }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
             }
           );
           break;
@@ -909,10 +968,13 @@ export default {
           putMessToDeviceOn(this.utils.userName, this.setValue, "voiceon").then(
             (res) => {
               if (res.data.message == "请求成功") {
-                this.$message.success("开启蜂鸣器成功");
+                this.$message.success(res.data.message);
               } else {
-                this.$message.error("开启蜂鸣器失败");
+                this.$message.error(res.data.message);
               }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
             }
           );
           break;
@@ -927,13 +989,18 @@ export default {
             this.utils.userName,
             this.setValue,
             "voiceoff"
-          ).then((res) => {
-            if (res.data.message == "请求成功") {
-              this.$message.success("关闭蜂鸣器成功");
-            } else {
-              this.$message.error("关闭蜂鸣器失败");
+          ).then(
+            (res) => {
+              if (res.data.message == "请求成功") {
+                this.$message.success(res.data.message);
+              } else {
+                this.$message.error(res.data.message);
+              }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
             }
-          });
+          );
           break;
           // } else {
           //   this.message.error("暂无权限");
@@ -942,17 +1009,18 @@ export default {
         //远程消音
         case "6":
           // if (role == "1000" || power.indexOf("10003001") != -1) {
-          resetclose(this.setValue, 2)
-            .then((res) => {
+          putMessToDeviceOn(this.utils.userName, this.setValue, "mute").then(
+            (res) => {
               if (res.data.message == "请求成功") {
-                this.$message.success("远程消音成功");
+                this.$message.success(res.data.message);
               } else {
-                this.$message.error("关闭远程消音失败");
+                this.$message.error(res.data.message);
               }
-            })
-            .catch((rej) => {
+            },
+            () => {
               this.$message.error("请稍后重试或联系管理员");
-            });
+            }
+          );
           // } else {
           //   this.$message.error("暂无权限");
           // }
@@ -965,13 +1033,18 @@ export default {
             this.utils.userName,
             this.setValue,
             "openflow"
-          ).then((res) => {
-            if (res.data.message == "请求成功") {
-              alert("开启流量成功");
-            } else {
-              alert("请稍后重试");
+          ).then(
+            (res) => {
+              if (res.data.message == "请求成功") {
+                this.$message.success(res.data.message);
+              } else {
+                this.$message.error(res.data.message);
+              }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
             }
-          });
+          );
           break;
           // } else {
           //   this.$message.error("暂无权限");
@@ -980,16 +1053,16 @@ export default {
         //远程复位
         case "8":
           // if (role == "1000" || power.indexOf("10003003") != -1) {
-          resetclosefuwei(this.setValue, 2).then(
+          putMessToDeviceOn(this.utils.userName, this.setValue, "reset").then(
             (res) => {
-              if (res.status == "1") {
+              if (res.data.status == "1" || res.data.message != "暂无权限") {
                 this.$message.success(res.data.message);
               } else {
                 this.$message.error(res.data.message);
               }
             },
-            (rej) => {
-              return this.$message.error("请稍后重试或联系管理员");
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
             }
           );
           // } else {
@@ -999,30 +1072,40 @@ export default {
         //授权
         case "9":
           // if (role == "1000" || power.indexOf("10003004") != -1) {
-          insertClouddog(this.setValue).then((res) => {
-            if (res.list[0].status == "true") {
-              this.$message.success(
-                "授权成功.工作日一天后将授权生效,非工作日将延期"
-              );
-            } else {
-              this.$message.error("授权失败");
+          insertClouddog(this.setValue).then(
+            (res) => {
+              if (res.data.list[0].status == "true") {
+                this.$message.success(
+                  "授权成功.工作日一天后将授权生效,非工作日将延期"
+                );
+              } else {
+                this.$message.error("授权失败");
+              }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
             }
-          });
+          );
           // }
           break;
         //开启屏蔽器
         case "10":
           // if (role == "1000" || power.indexOf("10003013") != -1) {
-          updateShutdown(this.setValue, this.utils, userName).then((res) => {
-            if (res.status == "true") {
-              layer.open({
-                content: res.mess,
-              });
-              this.$message.success(res.mess);
-            } else {
-              this.$message.error(res.mess);
+          updateShutdown(this.setValue, this.utils, userName).then(
+            (res) => {
+              if (res.data.status == "true") {
+                layer.open({
+                  content: res.mess,
+                });
+                this.$message.success(res.data.mess);
+              } else {
+                this.$message.error(res.data.mess);
+              }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
             }
-          });
+          );
           // }
           break;
         //下发保险单
@@ -1034,13 +1117,18 @@ export default {
             this.utils.userName,
             this.setValue,
             this.baoxiandanhao
-          ).then((res) => {
-            if (res.data.message == "请求成功") {
-              alert("下发保险单号成功");
-            } else {
-              this.$message.error("请稍后重试");
+          ).then(
+            (res) => {
+              if (res.data.message == "请求成功") {
+                alert("下发保险单号成功");
+              } else {
+                this.$message.error("请稍后重试");
+              }
+            },
+            () => {
+              this.$message.error("请稍后重试或联系管理员");
             }
-          });
+          );
           // }
           // var res = JSON.parse(result);
           // console.log(res);
@@ -1050,40 +1138,44 @@ export default {
     },
 
     bj_map(data, index) {
-      this.mapInfo.name = this.getAllDeviceWeb_list[index].name;
-      this.mapInfo.type = this.getAllDeviceWeb_list[index].dSName;
-      this.mapInfo.shebei = this.getAllDeviceWeb_list[index].productNumber;
-      this.mapInfo.zhuche = this.getAllDeviceWeb_list[index].regdate;
-      this.mapInfo.xintiao = this.getAllDeviceWeb_list[index].heartbeatTime;
-      this.mapInfo.changshan = this.getAllDeviceWeb_list[index].dVName;
-      this.mapInfo.remak = this.getAllDeviceWeb_list[index].remark;
-      this.mapInfo.address = this.getAllDeviceWeb_list[index].installLocation;
-      this.devID = data;
-      // console.log(this.getAllDeviceWeb_list);
-      this.$nextTick(() => {
-        this.map = new AMap.Map("container", {
-          center: [116.397428, 39.90923],
-          resizeEnable: true,
-          zoom: 10,
-          mapStyle: "amap://styles/dcb78e5f043e25116ab6bdeaa6813234",
-        });
-        //输入提示
-        var autoOptions = {
-          input: "tipinput",
-        };
-        var auto = new AMap.Autocomplete(autoOptions);
-        this.placeSearch = new AMap.PlaceSearch({
-          map: this.map,
-        }); //构造地点查询类
+      if (this.utils.powerId == 1000 || rid.indexOf("10003005") != -1) {
+        this.mapInfo.name = this.getAllDeviceWeb_list[index].name;
+        this.mapInfo.type = this.getAllDeviceWeb_list[index].dSName;
+        this.mapInfo.shebei = this.getAllDeviceWeb_list[index].productNumber;
+        this.mapInfo.zhuche = this.getAllDeviceWeb_list[index].regdate;
+        this.mapInfo.xintiao = this.getAllDeviceWeb_list[index].heartbeatTime;
+        this.mapInfo.changshan = this.getAllDeviceWeb_list[index].dVName;
+        this.mapInfo.remak = this.getAllDeviceWeb_list[index].remark;
+        this.mapInfo.address = this.getAllDeviceWeb_list[index].installLocation;
+        this.devID = data;
+        // console.log(this.getAllDeviceWeb_list);
+        this.$nextTick(() => {
+          this.map = new AMap.Map("container", {
+            center: [116.397428, 39.90923],
+            resizeEnable: true,
+            zoom: 10,
+            mapStyle: "amap://styles/dcb78e5f043e25116ab6bdeaa6813234",
+          });
+          //输入提示
+          var autoOptions = {
+            input: "tipinput",
+          };
+          var auto = new AMap.Autocomplete(autoOptions);
+          this.placeSearch = new AMap.PlaceSearch({
+            map: this.map,
+          }); //构造地点查询类
 
-        AMap.event.addListener(auto, "select", this.select); //注册监听，当选中某条记录时会触发
-        AMap.event.addListener(this.placeSearch, "markerClick", (e) => {
-          // console.log(e.data.location.lng, e.data.location.lat); // 经纬度
-          this.lanlat = e.data.location.lng + "," + e.data.location.lat;
-          // console.log(e, 654);
-          this.mapInfo.address = `${e.data.cityname}${e.data.adname}${e.data.address}`;
+          AMap.event.addListener(auto, "select", this.select); //注册监听，当选中某条记录时会触发
+          AMap.event.addListener(this.placeSearch, "markerClick", (e) => {
+            // console.log(e.data.location.lng, e.data.location.lat); // 经纬度
+            this.lanlat = e.data.location.lng + "," + e.data.location.lat;
+            // console.log(e, 654);
+            this.mapInfo.address = `${e.data.cityname}${e.data.adname}${e.data.address}`;
+          });
         });
-      });
+      } else {
+        this.$message.error("暂无权限,请向上级申请");
+      }
     },
     //报警推送
     baojingtuisong() {
@@ -1124,16 +1216,17 @@ export default {
       SetParameterApi(
         this.setValue,
         this.fazhishezhi.SYDL,
-        this.fazhishezhi.AXWD,
-        this.fazhishezhi.BXWD,
-        this.fazhishezhi.CXWD,
-        this.fazhishezhi.NXWD,
         this.fazhishezhi.AXDL,
         this.fazhishezhi.BXDL,
-        this.fazhishezhi.CXDL,
-        this.fazhishezhi.AXDY,
-        this.fazhishezhi.BXDY,
-        this.fazhishezhi.CXDY
+        this.fazhishezhi.AXWD,
+        this.fazhishezhi.NXWD,
+        this.fazhishezhi.CXDL
+        // this.fazhishezhi.AXDL,
+        // this.fazhishezhi.BXDL,
+        // this.fazhishezhi.CXDL,
+        // this.fazhishezhi.AXDY,
+        // this.fazhishezhi.BXDY,
+        // this.fazhishezhi.CXDY
       ).then((res) => {
         if (res.data.status == 1) {
           this.$message.success("设置成功");
@@ -1239,41 +1332,45 @@ export default {
     open(name, devID) {
       const powerId = sessionStorage.getItem("new_role");
       const rid = sessionStorage.getItem("power");
-      this.$confirm(
-        `此操作将永久删除 <span style='color:red'>${name}</span> 设备, 是否继续?`,
+      if (powerId == 1000 || rid.indexOf("10003006") != -1) {
+        this.$confirm(
+          `此操作将永久删除 <span style='color:red'>${name}</span> 设备, 是否继续?`,
 
-        {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          dangerouslyUseHTMLString: true,
-          type: "warning",
-        }
-      )
-        .then(() => {
-          if (powerId == 1000 || rid.indexOf("10003005") != -1) {
-            deleDevice(devID).then((res) => {
-              if (res.data.list[0].status == "true") {
-                this.$message({
-                  type: "success",
-                  message: "删除成功!",
-                });
-                this.getAllDeviceWebFun(
-                  this.handleSizeChangeValue,
-                  this.handleCurrentChangeValue
-                );
-              }
-            });
-          } else {
-            this.$message.error("您的权限不足");
+          {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            dangerouslyUseHTMLString: true,
+            type: "warning",
           }
-        })
-        .catch((err) => {
-          console.log(err);
-          this.$message({
-            type: "info",
-            message: "已取消删除",
+        )
+          .then(() => {
+            if (powerId == 1000 || rid.indexOf("10003005") != -1) {
+              deleDevice(devID).then((res) => {
+                if (res.data.list[0].status == "true") {
+                  this.$message({
+                    type: "success",
+                    message: "删除成功!",
+                  });
+                  this.getAllDeviceWebFun(
+                    this.handleSizeChangeValue,
+                    this.handleCurrentChangeValue
+                  );
+                }
+              });
+            } else {
+              this.$message.error("您的权限不足");
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            this.$message({
+              type: "info",
+              message: "已取消删除",
+            });
           });
-        });
+      } else {
+        this.$message.error("暂无权限,请向上级申请");
+      }
     },
     indexMethod() {},
   },

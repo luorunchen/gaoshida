@@ -59,7 +59,12 @@
       >
       </el-pagination>
     </div>
-    <el-dialog title="功率管理" :visible.sync="dialogVisible" width="30%">
+    <el-dialog
+      title="功率管理"
+      :close-on-click-modal="false"
+      :visible.sync="dialogVisible"
+      width="30%"
+    >
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <span>功率设置</span>
@@ -130,9 +135,13 @@ export default {
   },
   methods: {
     setPowerFun() {
-      setPower(this.maxPower, this.minPower, this.devID).then((res) => {
-        this.$message.success("设置成功");
-      });
+      if (this.maxPower * 1 > this.minPower * 1) {
+        setPower(this.maxPower, this.minPower, this.devID).then((res) => {
+          this.$message.success("设置成功");
+        });
+      } else {
+        this.$message.error("最小功率必须小于最大功率");
+      }
     },
     onSubmit() {
       console.log("submit!");
@@ -163,7 +172,7 @@ export default {
       });
     },
     set(data) {
-      this.devID = data;
+      (this.maxPower = ""), (this.minPower = ""), (this.devID = data);
       this.dialogVisible = true;
     },
   },

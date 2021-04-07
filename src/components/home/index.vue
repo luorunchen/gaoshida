@@ -369,6 +369,14 @@ export default {
         break;
     }
   },
+  watch: {
+    getStoreItem(val) {
+      // console.log(val);
+      if (val == "开") {
+        this.locationFun(this.location);
+      }
+    },
+  },
   computed: {
     classOption() {
       return {
@@ -382,19 +390,28 @@ export default {
         waitTime: 1000, // 单步运动停止的时间(默认值1000ms)
       };
     },
+    getStoreItem() {
+      // console.log(this.$store.state.AlarmStatus);
+      return this.$store.state.AlarmStatus;
+    },
   },
   methods: {
     getLogoFun() {
       getLogo(this.utils.userName).then((res) => {
         console.log(res.data, "=======");
-        this.imagesUrl = `http://${res.data}`;
+        if (res.data != "") {
+          this.imagesUrl = `http://${res.data}`;
+        }
+
         // http://124.71.11.195/image/1000/1615798468172juxing4.png
       });
     },
     handleAvatarSuccess(res, file) {
       // this.imageUrl = URL.createObjectURL(file.raw);
-      console.log(res, file);
-      this.imagesUrl = `http://${res.data[0]}`;
+      if (res.msg.status == "true") {
+        this.imagesUrl = `http://${res.data[0]}`;
+        return this.$message.success("更换成功");
+      }
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);
@@ -425,7 +442,7 @@ export default {
             {
               url: "https://a.amap.com/jsapi_demos/static/images/mass0.png",
               anchor: new AMap.Pixel(6, 6),
-              size: new AMap.Size(30, 30),
+              size: new AMap.Size(20, 20),
             },
           ];
           let a = [];
@@ -474,20 +491,52 @@ export default {
             {
               url: "https://a.amap.com/jsapi_demos/static/images/mass0.png",
               anchor: new AMap.Pixel(6, 6),
-              size: new AMap.Size(30, 30),
+              size: new AMap.Size(20, 20),
+            },
+            {
+              url: "https://a.amap.com/jsapi_demos/static/images/mass0.png",
+              anchor: new AMap.Pixel(6, 6),
+              size: new AMap.Size(20, 20),
             },
           ];
           let a = [];
           let b = [];
           // //console.log(res.data.Company.length);
           for (let i = 0; i < res.data.data.length; i++) {
-            if (res.data.data[i].style == 1) {
+            if (
+              res.data.data[i].alarmType == 1 ||
+              res.data.data[i].alarmType == 2
+            ) {
+              res.data.data[i].style = res.data.data[i].alarmType * 1;
               b.push(res.data.data[i]);
             } else {
+              res.data.data[i].style = res.data.data[i].alarmType * 1;
               a.push(res.data.data[i]);
             }
           }
+          for (let i = 0; i < res.data.share.length; i++) {
+            if (
+              res.data.share[i].alarmType == 1 ||
+              res.data.share[i].alarmType == 2
+            ) {
+              res.data.share[i].lnglat = [
+                res.data.share[i].long_lat.split(",")[0],
+                res.data.share[i].long_lat.split(",")[1],
+              ];
+              res.data.share[i].style = res.data.share[i].alarmType * 1;
+              b.push(res.data.share[i]);
+            } else {
+              res.data.share[i].lnglat = [
+                res.data.share[i].long_lat.split(",")[0],
+                res.data.share[i].long_lat.split(",")[1],
+              ];
+              res.data.share[i].style = res.data.share[i].alarmType * 1;
+              a.push(res.data.share[i]);
+            }
+          }
+
           let c = [...a, ...b];
+          console.log(c);
           this.mass = new AMap.MassMarks(c, {
             opacity: 0.8,
             zIndex: 111,
@@ -872,6 +921,8 @@ export default {
         // });
 
         // if(res.data[typeName])
+
+        //数据为空时,手动添加一条
         if (res.data.length <= 0) {
           res.data.push({ typeName: "欠压预警", num: "0" });
         }
@@ -926,11 +977,27 @@ export default {
           if (el.typeName.indexOf("过压") < 0) {
             res.data.push({ typeName: "过压预警", num: "0" });
           }
+          if (el.typeName.indexOf("功率") < 0) {
+            res.data.push({ typeName: "功率预警", num: "0" });
+          }
         });
-        res.data.forEach((el) => {
+        // res.data.filter((item, index) => {
+        //   return res.data.indexOf(res.data.typeName) === item.typeName;
+        // });
+        console.log(res.data);
+        var arr2 = res.data.filter((x, index, self) => {
+          let arrList = [];
+          res.data.forEach((el) => {
+            arrList.push(el.typeName);
+            // num.push(el.num);
+          });
+          return arrList.indexOf(x.typeName) === index;
+        });
+        arr2.forEach((el) => {
           name.push(el.typeName);
           num.push(el.num);
         });
+        console.log(arr2);
         console.log(res.data);
         // ////console.log(listName);
         myChart_four.setOption({
@@ -1478,7 +1545,7 @@ export default {
       text-align: center;
       img {
         width: 478px;
-        height: 100%;
+        height: 68px;
       }
       // margin: 0 auto;
       .titleName {
