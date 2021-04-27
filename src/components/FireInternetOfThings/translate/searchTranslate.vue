@@ -63,12 +63,24 @@
                 class="olList"
                 v-for="(item, index) in SElec_DetailElecDevice_List_Copy"
                 :key="index"
-                @click="see(item.BH, item.text)"
+                @click="see(item.BH, item.text, item.productNumber)"
               >
                 <div
                   class="location"
                   @click.stop="mapPoints(item.long_lat, item.productNumber)"
                 >
+                  <span v-if="item.productNumber != undefined">
+                    <i
+                      v-if="
+                        (item.start == 1 && item.dSid == '3') ||
+                        (item.devstatus == 0 && item.dSid == '22')
+                      "
+                      style="color: #6dff64"
+                      >●合闸</i
+                    >
+                    <i v-else style="color: red">●分闸</i>
+                  </span>
+
                   <el-button
                     type="primary"
                     icon="el-icon-rank"
@@ -83,8 +95,10 @@
                   <span v-else>设备号:</span> {{ item.text }}
                 </li>
 
-                <li v-if="item.value != null || item.value != undefined">
-                  报警次数:{{ item.value }}
+                <li
+                  v-if="item.productNumber != null || item.value != undefined"
+                >
+                  设备名称:{{ item.device_name }}
                 </li>
                 <li v-else>项目名称:{{ item.device_name }}</li>
 
@@ -181,7 +195,7 @@ export default {
       getDeviceByDevIdList: "",
       shengyu_loudian: "",
       ElecDataList_typeName: "",
-      currentPage4: 4,
+      currentPage4: 1,
       tableData: [],
       getHistoryFault: "",
     };
@@ -263,31 +277,7 @@ export default {
         this.$message.success("修改成功");
       });
     },
-    SetParameterApiFun() {
-      SetParameterApi(
-        this.ElecDataList.DevData[0].productNumber,
-        this.fazhishezhi.SYDL,
-        this.fazhishezhi.AXWD,
-        this.fazhishezhi.BXWD,
-        this.fazhishezhi.CXWD,
-        this.fazhishezhi.NXWD,
-        this.fazhishezhi.AXDL,
-        this.fazhishezhi.BXDL,
-        this.fazhishezhi.CXDL,
-        this.fazhishezhi.AXDY,
-        this.fazhishezhi.BXDY,
-        this.fazhishezhi.CXDY
-      ).then((res) => {
-        if (result.status == 1) {
-          alert("参数设置成功");
-          setTimeout(function () {
-            parent.location.reload();
-          }, 1000);
-        } else {
-          alert("参数设置失败");
-        }
-      });
-    },
+  
     // //提交处置情况
     // management() {
     //   if (this.ElecDataList.DevData == "正常") {
@@ -305,169 +295,9 @@ export default {
     //   );
     // },
     //独立烟感
-    SmartIndependentSmokeSee() {
-      this.$nextTick(() => {
-        let shui_echart = this.$echarts.init(
-          document.querySelector(".SmartIndependentSmoke_echars_one_wapper")
-        );
-        shui_echart.setOption({
-          tooltip: {
-            trigger: "axis",
-          },
-          legend: {
-            data: ["邮件营销", "联盟广告"],
-          },
-          grid: {
-            left: "3%",
-            right: "4%",
-            bottom: "3%",
-            containLabel: true,
-          },
-          toolbox: {
-            feature: {
-              saveAsImage: {},
-            },
-          },
-          xAxis: {
-            type: "category",
-            boundaryGap: false,
-            data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
-          },
-          yAxis: {
-            type: "value",
-          },
-          series: [
-            {
-              name: "邮件营销",
-              type: "line",
-              stack: "总量",
-              data: [120, 132, 101, 134, 90, 230, 210],
-            },
-            {
-              name: "联盟广告",
-              type: "line",
-              stack: "总量",
-              data: [220, 182, 191, 234, 290, 330, 310],
-            },
-          ],
-        });
-      });
-    },
+   
     // 水压表
-    shuiyaSee(data) {
-      // this.seeInfo = data;
-      let max;
-      let name;
-      if (data == "shuiya") {
-        max = 1000;
-        name = "kpa";
-        this.msg = "水压表";
-      } else {
-        this.msg = "液位表";
-        max = 20;
-        name = "m";
-      }
-
-      this.$nextTick(() => {
-        let shui_echart = this.$echarts.init(
-          document.querySelector(".shuiya_echarts")
-        );
-
-        // console.log(option2);
-
-        var option2 = (Math.random() * 1000).toFixed(2) - 0;
-        // option.series[0].data[0].value = (Math.random() * 100).toFixed(2) - 0;
-        // console.log((Math.random() * 100).toFixed(2) - 0);
-        // shui_echart.setOption(option, true);
-        shui_echart.setOption({
-          // tooltip: {
-          //   formatter: "{a} <br/>{b} : {c}m",
-          // },
-
-          series: [
-            {
-              // name: "业务指标",
-              type: "gauge",
-              min: 0,
-              max: max,
-              detail: { formatter: `{value}${name}` },
-              axisLine: {
-                // 坐标轴线
-                lineStyle: {
-                  // 属性lineStyle控制线条样式
-                  color: [
-                    [0.2, "#91c7ae"],
-                    [0.8, "#63869e"],
-                    [1, "#c23531"],
-                  ],
-                },
-              },
-              pointer: {
-                itemStyle: {
-                  color: "auto",
-                },
-              },
-              data: [{ value: option2 }],
-            },
-          ],
-        });
-      });
-      this.$nextTick(() => {
-        let one_echart_left = this.$echarts.init(
-          document.querySelector(".shuju_echarts_wapper")
-        );
-        one_echart_left.setOption({
-          xAxis: {
-            type: "category",
-            data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-            axisLabel: {
-              show: true,
-              textStyle: {
-                color: "#000",
-              },
-            },
-          },
-          grid: {
-            left: "3%",
-            right: "4%",
-            bottom: "3%",
-            containLabel: true,
-          },
-          tooltip: {
-            trigger: "axis",
-            axisPointer: {
-              type: "cross",
-              label: {
-                backgroundColor: "#6a7985",
-              },
-            },
-          },
-          yAxis: {
-            type: "value",
-            axisLabel: {
-              show: true,
-              textStyle: {
-                color: "#000",
-              },
-            },
-          },
-          series: [
-            {
-              data: [820, 932, 901, 934, 1290, 1330, 1320],
-              type: "line",
-              smooth: true,
-              itemStyle: {
-                normal: {
-                  lineStyle: {
-                    color: "red",
-                  },
-                },
-              },
-            },
-          ],
-        });
-      });
-    },
+ 
     equipment(data, num) {
       this.equipmentColor = data;
       getDeviceByPid(this.devicepidData, num, 2, this.utils.userName).then(
@@ -482,9 +312,9 @@ export default {
       this.$refs.publicPopUps.initOff();
       this.$refs.publicPopUps.echart_wapper(data);
     },
-    see(data, text) {
+    see(data, text, productNumber) {
       if (text != undefined) {
-        this.$refs.publicPopUps.see(data);
+        this.$refs.publicPopUps.see(data, productNumber);
       } else {
         this.$refs.publicPopUps.initOff();
         this.$refs.publicPopUps.echart_wapper(data);
@@ -501,25 +331,26 @@ export default {
       console.log("submit!");
     },
     // TabS 切换函数
-    handleClick(tab, event) {
-      console.log(tab, event);
-    },
+ 
+ 
     selectDeviceByNumberFun() {
       var reg = new RegExp("^[0-9]*$");
       let dataInfo = [];
       if (reg.test(this.formInline.user)) {
-        selectDeviceByNumber(this.formInline.user).then((res) => {
-          res.data.forEach((el, index) => {
-            el.text = el.productNumber;
-            el.MC = el.installLocation;
-            el.BH = el.devId;
-          });
-          // console.log(res.data);
-          if (res.data.length <= 0) {
-            return this.$message.error("关键词未查询到相关信息");
+        selectDeviceByNumber(this.formInline.user, this.utils.userName).then(
+          (res) => {
+            res.data.forEach((el, index) => {
+              el.text = el.productNumber;
+              el.MC = el.installLocation;
+              el.BH = el.devId;
+            });
+            // console.log(res.data);
+            if (res.data.length <= 0) {
+              return this.$message.error("关键词未查询到相关信息");
+            }
+            this.SElec_DetailElecDevice_List_Copy = res.data;
           }
-          this.SElec_DetailElecDevice_List_Copy = res.data;
-        });
+        );
       } else {
         console.log(this.DeviceProjectNewData);
         for (let i = 0; i < this.DeviceProjectNewData.length; i++) {
@@ -1206,6 +1037,13 @@ export default {
           right: 10px;
           // top: 10px;
           margin-top: 10px;
+
+          span {
+            width: 50px;
+            text-align: center;
+            display: inline-block;
+            color: red;
+          }
         }
       }
     }

@@ -357,6 +357,7 @@ export function updateShutdown(devices, my_username) {
   })
 }
 //接入设备->报警=>设备设置(阀值设置)接口
+//单项设备
 export function SetParameterApi(devSignature, parNine, parFourteen, parSeventeen, parTen, parThirteen, U_voltage) {
   return service({
     url: `/SetParameterApi.action`,
@@ -365,6 +366,36 @@ export function SetParameterApi(devSignature, parNine, parFourteen, parSeventeen
       // devSignature, parNine, parTen, parEleven,
       // parTwelve, parThirteen, parFourteen, parFifteen, parSixteen, parSeventeen, parEighteen, parNineteen
       devSignature, parNine, parFourteen, parSeventeen, parTen, parThirteen, U_voltage
+    }
+  })
+}
+// 三项设备
+export function SetParameterApi_three(devSignature, parNine, parTen, parEleven,
+  parTwelve, parThirteen, parFourteen, parFifteen, parSixteen, parSeventeen, parEighteen, parNineteen) {
+  return service({
+    url: `/SetParameterApi.action`,
+    method: 'GET',
+    params: {
+      devSignature, parNine, parTen, parEleven,
+      parTwelve, parThirteen, parFourteen, parFifteen, parSixteen, parSeventeen, parEighteen, parNineteen
+    }
+  })
+}
+export function upSwitch(imei, state, content) {
+  return service({
+    url: `/upSwitch.action`,
+    method: 'GET',
+    params: {
+      imei, state, content
+    }
+  })
+}
+export function getDeviceTypeNum(username) {
+  return service({
+    url: `WebProject/getDeviceTypeNum`,
+    method: 'GET',
+    params: {
+      username
     }
   })
 }
@@ -713,12 +744,12 @@ export function getSyslog(my_username) {
 
 
 //设备号搜索
-export function selectDeviceByNumber(number) {
+export function selectDeviceByNumber(number, username) {
   return service({
     url: `/WebProject/selectDeviceByNumber.action`,
     method: 'GET',
     params: {
-      number
+      number, username
     }
   })
 }
@@ -733,25 +764,45 @@ export function getLogo(user_name) {
     }
   })
 }
+//用电规划 查看
+export function getAllTimerDevice(username, imei) {
+  return service({
+    url: `admin/device/getAllTimerDevice.action`,
+    method: 'GET',
+    params: {
+      username, imei
+    }
+  })
+}
+//用电规划 删除
+export function delTimerDevice(username, imei) {
+  return service({
+    url: `admin/device/delTimerDevice.action`,
+    method: 'GET',
+    params: {
+      username, imei
+    }
+  })
+}
 
 
 //用电规划
-export function getDevTime(startTime, endTime, imei, week, state, content, username) {
+export function getDevTime(startTime, endTime, imei, week, state, content, username, type) {
   return service({
     url: `/getDevTime.action`,
     method: 'GET',
     params: {
-      startTime, endTime, imei, week, state, content, username
+      startTime, endTime, imei, week, state, content, username, type
     }
   })
 }
 //分享项目
-export function addRegisterProject(pid, username, ower) {
+export function addRegisterProject(pid, username, ower, power) {
   return service({
     url: `/admin/project/addRegisterProject.action`,
     method: 'GET',
     params: {
-      pid, username, ower
+      pid, username, ower, power
     }
   })
 }
@@ -901,6 +952,18 @@ export function getRoleByid(r_id, region) {
     method: 'GET',
     params: {
       r_id, region
+    }
+  })
+}
+
+
+//获取设备状态
+export function getParaState(username, imei) {
+  return service({
+    url: `/getParaState.action`,
+    method: 'GET',
+    params: {
+      username, imei
     }
   })
 }

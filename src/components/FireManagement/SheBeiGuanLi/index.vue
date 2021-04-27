@@ -88,17 +88,13 @@
         <el-table-column label="操作" width="200">
           <template slot-scope="scope">
             <div class="caozuo">
-              <span
-                @click="
-                  (dialogVisible = true), bj_map(scope.row.devId, scope.$index)
-                "
-                >编辑</span
-              >
+              <span @click="bj_map(scope.row.devId, scope.$index)">编辑</span>
               <span @click="open(scope.row.name, scope.row.devId)">删除</span>
               <!-- <span @click="fenPei(scope.row.pid)">分配</span> -->
               <span
                 @click="
-                  (dialogVisible_set = true), set(scope.row.productNumber)
+                  (dialogVisible_set = true),
+                    set(scope.row.productNumber, scope.row.devId)
                 "
                 >设置</span
               >
@@ -235,31 +231,100 @@
       </el-card>
       <el-card class="box-card" style="margin-top: 30px">
         <div slot="header" class="clearfix">
+          <span>设备状态</span>
+        </div>
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <div
+              v-if="
+                (ParaState.start == 0 && ParaState.dSid == '3') ||
+                (ParaState.devstatus == 1 && ParaState.dSid == '22')
+              "
+              style="
+                background: #3694e4;
+                height: 30px;
+                margin: 10px;
+                line-height: 30px;
+                text-align: center;
+                color: #fff;
+              "
+            >
+              当前状态：分闸
+            </div>
+            <div
+              v-else
+              style="
+                background: #5f5b5b;
+                height: 30px;
+                margin: 10px;
+                line-height: 30px;
+                text-align: center;
+                color: #fff;
+              "
+            >
+              当前状态：合闸
+            </div>
+          </el-col>
+          <el-col :span="8">
+            <div v-for="(item, index) in ElecDataList.DevData" :key="index">
+              <div
+                v-if="item.status == '离线'"
+                style="
+                  background: red;
+                  height: 30px;
+                  margin: 10px;
+                  line-height: 30px;
+                  text-align: center;
+                  color: #fff;
+                "
+              >
+                设备离线
+              </div>
+              <div
+                v-else
+                style="
+                  background: #2ace2a;
+                  height: 30px;
+                  margin: 10px;
+                  line-height: 30px;
+                  text-align: center;
+                  color: #fff;
+                "
+              >
+                设备在线
+              </div>
+            </div>
+          </el-col>
+        </el-row>
+      </el-card>
+      <el-card class="box-card" style="margin-top: 30px">
+        <div slot="header" class="clearfix">
           <span>设备设置</span>
         </div>
         <div class="tabs">
           <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="阀值设置" class="tabs_one" name="first">
-              <el-row :gutter="20">
-                <el-col :span="12">
-                  <!-- <p>剩余电流/mA</p> -->
-                  <p>漏电电流/mA</p>
-                  <el-input
-                    v-model="fazhishezhi.SYDL"
-                    size="mini"
-                    placeholder="请输入内容"
-                  ></el-input>
-                </el-col>
-                <el-col :span="12">
-                  <!-- <p>A相电流/A</p> -->
-                  <p>电流过流/A</p>
-                  <el-input
-                    v-model="fazhishezhi.AXDL"
-                    size="mini"
-                    placeholder="请输入内容"
-                  ></el-input>
-                </el-col>
-                <!-- <el-col :span="12"
+            <template v-if="ParaState.dSid == 3">
+              <el-tab-pane label="阀值设置" class="tabs_one" name="first">
+                <el-row :gutter="20">
+                  <el-col :span="12">
+                    <!-- <p>剩余电流/mA</p> -->
+                    <p>漏电电流/mA</p>
+                    <el-input
+                      v-model="fazhishezhi.SYDL"
+                      size="mini"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-col>
+                  <el-col :span="12">
+                    <!-- <p>A相电流/A</p> -->
+                    <p>电流过流/A</p>
+                    <el-input
+                      v-model="fazhishezhi.AXDL"
+                      size="mini"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-col>
+                  <!-- <el-col :span="12"
                   ><p>A相温度/℃</p>
                   <el-input
                     v-model="fazhishezhi.AXWD"
@@ -267,27 +332,27 @@
                     placeholder="请输入内容"
                   ></el-input
                 ></el-col> -->
-              </el-row>
-              <el-row :gutter="20">
-                <el-col :span="12">
-                  <p>L温度/℃</p>
-                  <el-input
-                    v-model="fazhishezhi.AXWD"
-                    size="mini"
-                    placeholder="请输入内容"
-                  ></el-input>
-                </el-col>
-                <el-col :span="12"
-                  ><p>N温度/℃</p>
-                  <el-input
-                    v-model="fazhishezhi.NXWD"
-                    size="mini"
-                    placeholder="请输入内容"
-                  ></el-input
-                ></el-col>
-              </el-row>
-              <el-row :gutter="20">
-                <!-- <el-col :span="12">
+                </el-row>
+                <el-row :gutter="20">
+                  <el-col :span="12">
+                    <p>L温度/℃</p>
+                    <el-input
+                      v-model="fazhishezhi.AXWD"
+                      size="mini"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-col>
+                  <el-col :span="12"
+                    ><p>N温度/℃</p>
+                    <el-input
+                      v-model="fazhishezhi.NXWD"
+                      size="mini"
+                      placeholder="请输入内容"
+                    ></el-input
+                  ></el-col>
+                </el-row>
+                <el-row :gutter="20">
+                  <!-- <el-col :span="12">
                   <p>N相温度/℃</p>
                   <el-input
                     v-model="fazhishezhi.NXWD"
@@ -295,7 +360,7 @@
                     placeholder="请输入内容"
                   ></el-input>
                 </el-col> -->
-                <!-- <el-col :span="12">
+                  <!-- <el-col :span="12">
                  
                   <p>电流过流/A</p>
                   <el-input
@@ -304,28 +369,28 @@
                     placeholder="请输入内容"
                   ></el-input>
                 </el-col> -->
-              </el-row>
-              <el-row :gutter="20">
-                <el-col :span="12">
-                  <!-- <p>B相电流/A</p> -->
-                  <p>电压过压/V</p>
-                  <el-input
-                    v-model="fazhishezhi.BXDL"
-                    size="mini"
-                    placeholder="请输入内容"
-                  ></el-input>
-                </el-col>
-                <el-col :span="12">
-                  <!-- <p>C相电流/A</p> -->
-                  <p>电压欠压/V</p>
-                  <el-input
-                    v-model="fazhishezhi.CXDL"
-                    size="mini"
-                    placeholder="请输入内容"
-                  ></el-input
-                ></el-col>
-              </el-row>
-              <!-- <el-row :gutter="20">
+                </el-row>
+                <el-row :gutter="20">
+                  <el-col :span="12">
+                    <!-- <p>B相电流/A</p> -->
+                    <p>电压过压/V</p>
+                    <el-input
+                      v-model="fazhishezhi.BXDL"
+                      size="mini"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-col>
+                  <el-col :span="12">
+                    <!-- <p>C相电流/A</p> -->
+                    <p>电压欠压/V</p>
+                    <el-input
+                      v-model="fazhishezhi.CXDL"
+                      size="mini"
+                      placeholder="请输入内容"
+                    ></el-input
+                  ></el-col>
+                </el-row>
+                <!-- <el-row :gutter="20">
                 <el-col :span="12">
                   <p>A相电压/V</p>
                   <el-input
@@ -343,7 +408,7 @@
                   ></el-input
                 ></el-col>
               </el-row> -->
-              <!-- <el-row :gutter="20">
+                <!-- <el-row :gutter="20">
                 <el-col :span="12">
                   <p>C相电压/V</p>
                   <el-input
@@ -353,22 +418,140 @@
                   ></el-input>
                 </el-col>
               </el-row> -->
-              <el-row type="flex" justify="center" style="margin-top: 20px">
-                <el-col :span="4"
-                  ><el-button size="mini" @click="offInfo"
-                    >取消</el-button
-                  ></el-col
-                >
-                <el-col :span="4"
-                  ><el-button
-                    type="primary"
-                    size="mini"
-                    @click="SetParameterApiFun"
-                    >保存</el-button
-                  ></el-col
-                >
-              </el-row>
-            </el-tab-pane>
+                <el-row type="flex" justify="center" style="margin-top: 20px">
+                  <el-col :span="4"
+                    ><el-button size="mini" @click="offInfo"
+                      >取消</el-button
+                    ></el-col
+                  >
+                  <el-col :span="4"
+                    ><el-button
+                      type="primary"
+                      size="mini"
+                      @click="SetParameterApiFun"
+                      >保存</el-button
+                    ></el-col
+                  >
+                </el-row>
+              </el-tab-pane>
+            </template>
+            <template v-else>
+              <el-tab-pane label="阀值设置" class="tabs_one" name="first">
+                <el-row :gutter="20">
+                  <el-col :span="12">
+                    <p>剩余电流/mA</p>
+                    <el-input
+                      v-model="fazhishezhi.SYDL"
+                      size="mini"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-col>
+                  <el-col :span="12"
+                    ><p>A相温度/℃</p>
+                    <el-input
+                      v-model="fazhishezhi.AXWD"
+                      size="mini"
+                      placeholder="请输入内容"
+                    ></el-input
+                  ></el-col>
+                </el-row>
+                <el-row :gutter="20">
+                  <el-col :span="12">
+                    <p>B相温度/℃</p>
+                    <el-input
+                      v-model="fazhishezhi.BXWD"
+                      size="mini"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-col>
+                  <el-col :span="12"
+                    ><p>C相温度/℃</p>
+                    <el-input
+                      v-model="fazhishezhi.CXWD"
+                      size="mini"
+                      placeholder="请输入内容"
+                    ></el-input
+                  ></el-col>
+                </el-row>
+                <el-row :gutter="20">
+                  <el-col :span="12">
+                    <p>N相温度/℃</p>
+                    <el-input
+                      v-model="fazhishezhi.NXWD"
+                      size="mini"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-col>
+                  <el-col :span="12"
+                    ><p>A相电流/A</p>
+                    <el-input
+                      v-model="fazhishezhi.AXDL"
+                      size="mini"
+                      placeholder="请输入内容"
+                    ></el-input
+                  ></el-col>
+                </el-row>
+                <el-row :gutter="20">
+                  <el-col :span="12">
+                    <p>B相电流/A</p>
+                    <el-input
+                      v-model="fazhishezhi.BXDL"
+                      size="mini"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-col>
+                  <el-col :span="12"
+                    ><p>C相电流/A</p>
+                    <el-input
+                      v-model="fazhishezhi.CXDL"
+                      size="mini"
+                      placeholder="请输入内容"
+                    ></el-input
+                  ></el-col>
+                </el-row>
+                <el-row :gutter="20">
+                  <el-col :span="12">
+                    <p>A相电压/V</p>
+                    <el-input
+                      v-model="fazhishezhi.AXDY"
+                      size="mini"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-col>
+                  <el-col :span="12"
+                    ><p>B相电压/V</p>
+                    <el-input
+                      v-model="fazhishezhi.BXDY"
+                      size="mini"
+                      placeholder="请输入内容"
+                    ></el-input
+                  ></el-col>
+                </el-row>
+                <el-row :gutter="20">
+                  <el-col :span="12">
+                    <p>C相电压/V</p>
+                    <el-input
+                      v-model="fazhishezhi.CXDY"
+                      size="mini"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-col>
+                </el-row>
+                <el-row type="flex" justify="center">
+                  <el-col :span="4"
+                    ><el-button size="mini">取消</el-button></el-col
+                  >
+                  <el-col :span="4"
+                    ><el-button
+                      type="primary"
+                      size="mini"
+                      @click="SetParameterApiFun"
+                      >保存</el-button
+                    ></el-col
+                  >
+                </el-row>
+              </el-tab-pane>
+            </template>
             <el-tab-pane
               label="报警推送方式"
               name="second"
@@ -496,7 +679,7 @@
       :close-on-click-modal="false"
       :title="batch_type == '分配' ? '批量分配' : '批量导入'"
       :visible.sync="batch_Visible"
-      width="30%"
+      width="45%"
     >
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item>
@@ -524,20 +707,10 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="单个设备导入" v-if="batch_type == '分配'">
+          <el-input v-model="bacth_value_one"></el-input>
+        </el-form-item>
         <el-form-item label="单个设备导入" v-else>
-          <!-- <el-select
-            v-model="batch_phone_value"
-            filterable
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in batch_phone_list"
-              :key="item.value"
-              :label="item.user_name"
-              :value="item.role + ',' + item.user_name"
-            >
-            </el-option>
-          </el-select> -->
           <el-input v-model="SingleDevice"></el-input>
         </el-form-item>
       </el-form>
@@ -572,12 +745,19 @@ import {
   getSlave,
   shareDevice,
   saveDevice,
+  getParaState,
+  upSwitch,
+  ElecData,
+  SetParameterApi_three,
 } from "@/api/index.js";
 export default {
   data() {
     return {
+      ElecDataList: "",
+      ParaState: "",
       SingleDevice: "",
       batch_phone_value: "",
+      bacth_value_one: "",
       batch_type: "",
       batch_list: [],
       batch_phone_list: [],
@@ -587,7 +767,7 @@ export default {
       activeName: "second",
       DeviceHistory: "",
       dialogVisible_set: false,
-      currentPage4: 4,
+      currentPage4: 1,
       dialogVisible: false,
       formInline: {
         user: "",
@@ -607,66 +787,6 @@ export default {
           value: "智慧用电保护器",
           label: "3",
         },
-        // {
-        //   value: "烟感",
-        //   label: "2",
-        // },
-        // {
-        //   value: "电气",
-        //   label: "3",
-        // },
-        // {
-        //   value: "水压",
-        //   label: "4",
-        // },
-        // {
-        //   value: "消防主机",
-        //   label: "5",
-        // },
-        // {
-        //   value: "无线气感",
-        //   label: "6",
-        // },
-        // {
-        //   value: "粉尘设备",
-        //   label: "7",
-        // },
-        // {
-        //   value: "液位",
-        //   label: "8",
-        // },
-        // {
-        //   value: "录像",
-        //   label: "9",
-        // },
-        // {
-        //   value: "消防门磁",
-        //   label: "10",
-        // },
-        // {
-        //   value: "工业燃气",
-        //   label: "11",
-        // },
-        // {
-        //   value: "电气火灾探测器",
-        //   label: "12",
-        // },
-        // {
-        //   value: "声光报警器",
-        //   label: "15",
-        // },
-        // {
-        //   value: "手动报警",
-        //   label: "16",
-        // },
-        // {
-        //   value: "水浸报警",
-        //   label: "18",
-        // },
-        // {
-        //   value: "紧急报警",
-        //   label: "19",
-        // },
       ],
       optionsValue: "",
       getAllDeviceWeb_list: [],
@@ -715,8 +835,8 @@ export default {
         this.fazhishezhi.NXWD = row.NWenDu;
         this.fazhishezhi.SYDL = row.SYdianliu;
         this.fazhishezhi.AXDL = row.ADianLiu;
-        this.fazhishezhi.BXDL = row.ADianYa;
-        this.fazhishezhi.CXDL = row.u_voltage;
+        this.fazhishezhi.BXDL = row.BDianLiu;
+        this.fazhishezhi.CXDL = row.BDianYa;
         this.fazhishezhi.AXDY = row.ADianYa;
         this.fazhishezhi.BXDY = row.BDianYa;
         this.fazhishezhi.CXDY = row.CDianYa;
@@ -729,14 +849,23 @@ export default {
         Equipment_number.push(el["设备号"]);
       });
 
-      const phone = this.batch_phone_value.split(",");
       if (this.batch_type == "分配") {
-        shareDevice(
-          this.utils.userName,
-          Equipment_number.toString(),
-          phone[0],
-          phone[1]
-        ).then(
+        if (Equipment_number.length <= 0 && this.bacth_value_one == "") {
+          return this.$message.error("请导入设备号");
+        }
+        let data;
+        if (Equipment_number.length <= 0) {
+          data = this.bacth_value_one;
+        } else {
+          data = Equipment_number.toString();
+        }
+
+        if (this.batch_phone_value == "") {
+          return this.$message.error("请选择下级手机号");
+        }
+        const phone = this.batch_phone_value.split(",");
+
+        shareDevice(this.utils.userName, data, phone[0], phone[1]).then(
           (res) => {
             // console.log(res);
             if (res.data.code == 200) {
@@ -751,20 +880,22 @@ export default {
           }
         );
       } else {
-        console.log(this.SingleDevice, "==", Equipment_number, 999);
+        if (Equipment_number.length <= 0 && this.SingleDevice == "") {
+          return this.$message.error("请导入设备号");
+        }
         let data;
         if (Equipment_number.length > 0 && this.SingleDevice == "") {
           data = Equipment_number.toString();
         }
 
-        if (Equipment_number.length == 0 && this.SingleDevice != "") {
-          data == this.SingleDevice;
+        if (Equipment_number.length <= 0 && this.SingleDevice != "") {
+          data = this.SingleDevice;
         }
         if (Equipment_number.length > 0 && this.SingleDevice != "") {
           // this.batch_Visible = false;
           return this.$message.error("只能选择一种模式导入");
         }
-
+        console.log(data, 66666);
         saveDevice(this.utils.userName, data).then(
           (res) => {
             if (res.data.code == 200) {
@@ -852,7 +983,8 @@ export default {
         });
     },
     trueON() {
-      if (this.lanlat.split(",")[0] == "undefined") {
+      console.log(this.lanlat, 69696969696969696);
+      if (this.lanlat.split(",")[0] == "undefined"||this.lanlat=='undefined') {
         return this.$message.error("获取不到修改设备经纬度,请重新选择");
       }
       updateDeviceSim(
@@ -872,7 +1004,7 @@ export default {
         }
       });
     },
-    set(data) {
+    set(data, devId) {
       //获取设备号
       this.setValue = data;
       // console.log(this.setValue);
@@ -885,11 +1017,18 @@ export default {
         this.fazhishezhi.NXWD = row.NWenDu;
         this.fazhishezhi.SYDL = row.SYdianliu;
         this.fazhishezhi.AXDL = row.ADianLiu;
-        this.fazhishezhi.BXDL = row.ADianYa;
-        this.fazhishezhi.CXDL = row.u_voltage;
+        this.fazhishezhi.BXDL = row.BDianLiu;
+        this.fazhishezhi.CXDL = row.BDianYa;
         this.fazhishezhi.AXDY = row.ADianYa;
         this.fazhishezhi.BXDY = row.BDianYa;
         this.fazhishezhi.CXDY = row.CDianYa;
+      });
+      getParaState(this.utils.userName, this.setValue).then((res) => {
+        this.ParaState = res.data.data;
+        console.log(this.ParaState, "==============");
+      });
+      ElecData(devId, "").then((res) => {
+        this.ElecDataList = res.data;
       });
     },
 
@@ -900,236 +1039,302 @@ export default {
       switch (num) {
         //远程断电
         case "1":
-          // if (role == "1000" || power.indexOf("10003003") != -1) {
-          putMessToDeviceOn(
-            this.utils.userName,
-            this.setValue,
-            "poweroff"
-          ).then(
-            (res) => {
-              if (res.data.message == "请求成功") {
-                this.$message.success(res.data.message);
-              } else {
-                this.$message.error(res.data.message);
-              }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
+          if (role == "1000" || power.indexOf("10003003") != -1) {
+            if (this.ParaState.dSid == 3) {
+              putMessToDeviceOn(
+                this.utils.userName,
+                this.setValue,
+                "poweroff"
+              ).then(
+                (res) => {
+                  if (res.data.message == "请求成功") {
+                    getParaState(this.utils.userName, this.setValue).then(
+                      (res) => {
+                        this.ParaState = res.data.data;
+                        console.log(this.ParaState, "==============");
+                      }
+                    );
+                    this.$message.success(res.data.message);
+                  } else {
+                    this.$message.error(res.data.message);
+                  }
+                },
+                () => {
+                  this.$message.error("请稍后重试或联系管理员");
+                }
+              );
+            } else {
+              upSwitch(this.setValue, 1, "").then(
+                (res) => {
+                  if (res.data.code == "200") {
+                    getParaState(this.utils.userName, this.setValue).then(
+                      (res) => {
+                        this.ParaState = res.data.data;
+                        console.log(this.ParaState, "==============");
+                      }
+                    );
+                    this.$message.success("请求成功");
+                  } else {
+                    this.$message.error("请求失败");
+                  }
+                },
+                () => {
+                  this.$message.error("请稍后重试或联系管理员");
+                }
+              );
             }
-          );
-          // } else {
-          //   this.$message.error("暂无权限");
-          // }
+          } else {
+            this.$message.error("暂无权限");
+          }
 
           break;
 
         //远程开机
         case "2":
-          // if (role == "1000" || power.indexOf("10003004") != -1) {
-          putMessToDeviceOn(this.utils.userName, this.setValue, "poweron").then(
-            (res) => {
-              if (res.data.message == "请求成功") {
-                this.$message.success(res.data.message);
-              } else {
-                this.$message.error(res.data.message);
-              }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
+          if (role == "1000" || power.indexOf("10003004") != -1) {
+            if (this.ParaState.dSid == "3") {
+              putMessToDeviceOn(
+                this.utils.userName,
+                this.setValue,
+                "poweron"
+              ).then(
+                (res) => {
+                  if (res.data.message == "请求成功") {
+                    getParaState(this.utils.userName, this.setValue).then(
+                      (res) => {
+                        this.ParaState = res.data.data;
+                        console.log(this.ParaState, "==============");
+                      }
+                    );
+                    this.$message.success(res.data.message);
+                  } else {
+                    this.$message.error(res.data.message);
+                  }
+                },
+                () => {
+                  this.$message.error("请稍后重试或联系管理员");
+                }
+              );
+            } else {
+              upSwitch(this.setValue, 2, "").then(
+                (res) => {
+                  if (res.data.code == "200") {
+                    getParaState(this.utils.userName, this.setValue).then(
+                      (res) => {
+                        this.ParaState = res.data.data;
+                        console.log(this.ParaState, "==============");
+                      }
+                    );
+                    this.$message.success("请求成功");
+                  } else {
+                    this.$message.error("请求失败");
+                  }
+                },
+                () => {
+                  this.$message.error("请稍后重试或联系管理员");
+                }
+              );
             }
-          );
+          } else {
+            this.$message.error("暂无权限");
+          }
           break;
-        // } else {
-        //   this.$message.error("暂无权限");
-        // }
         //远程关机
         case "3":
-          // if (role == "1000" || power.indexOf("10003004") != -1) {
-          putMessToDeviceOn(this.utils.userName, this.setValue, "startup").then(
-            (res) => {
-              if (res.data.message == "请求成功") {
-                this.$message.success(res.data.message);
-              } else {
-                this.$message.error(res.data.message);
+          if (role == "1000" || power.indexOf("10003004") != -1) {
+            putMessToDeviceOn(
+              this.utils.userName,
+              this.setValue,
+              "startup"
+            ).then(
+              (res) => {
+                if (res.data.message == "请求成功") {
+                  this.$message.success(res.data.message);
+                } else {
+                  this.$message.error(res.data.message);
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
               }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
-            }
-          );
-          break;
-          // } else {
-          //   this.message.error("暂无权限");
-          // }
+            );
+            break;
+          } else {
+            this.message.error("暂无权限");
+          }
           break;
         //开启蜂鸣器
         case "4":
-          // if (role == "1000" || power.indexOf("10003004") != -1) {
-          putMessToDeviceOn(this.utils.userName, this.setValue, "voiceon").then(
-            (res) => {
-              if (res.data.message == "请求成功") {
-                this.$message.success(res.data.message);
-              } else {
-                this.$message.error(res.data.message);
+          if (role == "1000" || power.indexOf("10003004") != -1) {
+            putMessToDeviceOn(
+              this.utils.userName,
+              this.setValue,
+              "voiceon"
+            ).then(
+              (res) => {
+                if (res.data.message == "请求成功") {
+                  this.$message.success(res.data.message);
+                } else {
+                  this.$message.error(res.data.message);
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
               }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
-            }
-          );
-          break;
-          // } else {
-          //   this.$message.error("暂无权限");
-          // }
+            );
+            break;
+          } else {
+            this.$message.error("暂无权限");
+          }
           break;
         //关闭蜂鸣器
         case "5":
-          // if (role == "1000" || power.indexOf("10003004") != -1) {
-          putMessToDeviceOn(
-            this.utils.userName,
-            this.setValue,
-            "voiceoff"
-          ).then(
-            (res) => {
-              if (res.data.message == "请求成功") {
-                this.$message.success(res.data.message);
-              } else {
-                this.$message.error(res.data.message);
+          if (role == "1000" || power.indexOf("10003004") != -1) {
+            putMessToDeviceOn(
+              this.utils.userName,
+              this.setValue,
+              "voiceoff"
+            ).then(
+              (res) => {
+                if (res.data.message == "请求成功") {
+                  this.$message.success(res.data.message);
+                } else {
+                  this.$message.error(res.data.message);
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
               }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
-            }
-          );
-          break;
-          // } else {
-          //   this.message.error("暂无权限");
-          // }
+            );
+            break;
+          } else {
+            this.message.error("暂无权限");
+          }
           break;
         //远程消音
         case "6":
-          // if (role == "1000" || power.indexOf("10003001") != -1) {
-          putMessToDeviceOn(this.utils.userName, this.setValue, "mute").then(
-            (res) => {
-              if (res.data.message == "请求成功") {
-                this.$message.success(res.data.message);
-              } else {
-                this.$message.error(res.data.message);
+          if (role == "1000" || power.indexOf("10003001") != -1) {
+            putMessToDeviceOn(this.utils.userName, this.setValue, "mute").then(
+              (res) => {
+                if (res.data.message == "请求成功") {
+                  this.$message.success(res.data.message);
+                } else {
+                  this.$message.error(res.data.message);
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
               }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
-            }
-          );
-          // } else {
-          //   this.$message.error("暂无权限");
-          // }
+            );
+          } else {
+            this.$message.error("暂无权限");
+          }
 
           break;
         //开启流量
         case "7":
-          // if (role == "1000" || power.indexOf("10003004") != -1) {
-          putMessToDeviceOn(
-            this.utils.userName,
-            this.setValue,
-            "openflow"
-          ).then(
-            (res) => {
-              if (res.data.message == "请求成功") {
-                this.$message.success(res.data.message);
-              } else {
-                this.$message.error(res.data.message);
+          if (role == "1000" || power.indexOf("10003004") != -1) {
+            putMessToDeviceOn(
+              this.utils.userName,
+              this.setValue,
+              "openflow"
+            ).then(
+              (res) => {
+                if (res.data.message == "请求成功") {
+                  this.$message.success(res.data.message);
+                } else {
+                  this.$message.error(res.data.message);
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
               }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
-            }
-          );
-          break;
-          // } else {
-          //   this.$message.error("暂无权限");
-          // }
+            );
+            break;
+          } else {
+            this.$message.error("暂无权限");
+          }
           break;
         //远程复位
         case "8":
-          // if (role == "1000" || power.indexOf("10003003") != -1) {
-          putMessToDeviceOn(this.utils.userName, this.setValue, "reset").then(
-            (res) => {
-              if (res.data.status == "1" || res.data.message != "暂无权限") {
-                this.$message.success(res.data.message);
-              } else {
-                this.$message.error(res.data.message);
+          if (role == "1000" || power.indexOf("10003003") != -1) {
+            putMessToDeviceOn(this.utils.userName, this.setValue, "reset").then(
+              (res) => {
+                if (res.data.status == "1" || res.data.message != "暂无权限") {
+                  this.$message.success(res.data.message);
+                } else {
+                  this.$message.error(res.data.message);
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
               }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
-            }
-          );
-          // } else {
-          //   this.$message.error("暂无权限");
-          // }
+            );
+          } else {
+            this.$message.error("暂无权限");
+          }
           break;
         //授权
         case "9":
-          // if (role == "1000" || power.indexOf("10003004") != -1) {
-          insertClouddog(this.setValue).then(
-            (res) => {
-              if (res.data.list[0].status == "true") {
-                this.$message.success(
-                  "授权成功.工作日一天后将授权生效,非工作日将延期"
-                );
-              } else {
-                this.$message.error("授权失败");
+          if (role == "1000" || power.indexOf("10003004") != -1) {
+            insertClouddog(this.setValue).then(
+              (res) => {
+                if (res.data.list[0].status == "true") {
+                  this.$message.success(
+                    "授权成功.工作日一天后将授权生效,非工作日将延期"
+                  );
+                } else {
+                  this.$message.error("授权失败");
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
               }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
-            }
-          );
-          // }
+            );
+          }
           break;
         //开启屏蔽器
         case "10":
-          // if (role == "1000" || power.indexOf("10003013") != -1) {
-          updateShutdown(this.setValue, this.utils, userName).then(
-            (res) => {
-              if (res.data.status == "true") {
-                layer.open({
-                  content: res.mess,
-                });
-                this.$message.success(res.data.mess);
-              } else {
-                this.$message.error(res.data.mess);
+          if (role == "1000" || power.indexOf("10003013") != -1) {
+            updateShutdown(this.setValue, this.utils, userName).then(
+              (res) => {
+                if (res.data.status == "true") {
+                  layer.open({
+                    content: res.mess,
+                  });
+                  this.$message.success(res.data.mess);
+                } else {
+                  this.$message.error(res.data.mess);
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
               }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
-            }
-          );
-          // }
+            );
+          }
           break;
         //下发保险单
         case "11":
           // console.log(6554654);
           // console.log(this.setValue, 789789);
-          // if (role == "1000" || power.indexOf("10003004") != -1) {
-          putMessToDevice(
-            this.utils.userName,
-            this.setValue,
-            this.baoxiandanhao
-          ).then(
-            (res) => {
-              if (res.data.message == "请求成功") {
-                alert("下发保险单号成功");
-              } else {
-                this.$message.error("请稍后重试");
+          if (role == "1000" || power.indexOf("10003004") != -1) {
+            putMessToDevice(
+              this.utils.userName,
+              this.setValue,
+              this.baoxiandanhao
+            ).then(
+              (res) => {
+                if (res.data.message == "请求成功") {
+                  alert("下发保险单号成功");
+                } else {
+                  this.$message.error("请稍后重试");
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
               }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
-            }
-          );
-          // }
+            );
+          }
           // var res = JSON.parse(result);
           // console.log(res);
 
@@ -1138,7 +1343,11 @@ export default {
     },
 
     bj_map(data, index) {
-      if (this.utils.powerId == 1000 || rid.indexOf("10003005") != -1) {
+      if (
+        this.utils.powerId == 1000 ||
+        this.utils.rid.indexOf("10003005") != -1
+      ) {
+        this.dialogVisible = true;
         this.mapInfo.name = this.getAllDeviceWeb_list[index].name;
         this.mapInfo.type = this.getAllDeviceWeb_list[index].dSName;
         this.mapInfo.shebei = this.getAllDeviceWeb_list[index].productNumber;
@@ -1147,6 +1356,7 @@ export default {
         this.mapInfo.changshan = this.getAllDeviceWeb_list[index].dVName;
         this.mapInfo.remak = this.getAllDeviceWeb_list[index].remark;
         this.mapInfo.address = this.getAllDeviceWeb_list[index].installLocation;
+        this.lanlat = this.getAllDeviceWeb_list[index].loopNumber;
         this.devID = data;
         // console.log(this.getAllDeviceWeb_list);
         this.$nextTick(() => {
@@ -1213,27 +1423,55 @@ export default {
       });
     },
     SetParameterApiFun() {
-      SetParameterApi(
-        this.setValue,
-        this.fazhishezhi.SYDL,
-        this.fazhishezhi.AXDL,
-        this.fazhishezhi.BXDL,
-        this.fazhishezhi.AXWD,
-        this.fazhishezhi.NXWD,
-        this.fazhishezhi.CXDL
-        // this.fazhishezhi.AXDL,
-        // this.fazhishezhi.BXDL,
-        // this.fazhishezhi.CXDL,
-        // this.fazhishezhi.AXDY,
-        // this.fazhishezhi.BXDY,
-        // this.fazhishezhi.CXDY
-      ).then((res) => {
-        if (res.data.status == 1) {
-          this.$message.success("设置成功");
-        } else {
-          this.$message.error("设置失败");
-        }
-      });
+      if (this.ParaState.dSid == "3") {
+        SetParameterApi(
+          this.setValue,
+          this.fazhishezhi.SYDL,
+          this.fazhishezhi.AXDL,
+          this.fazhishezhi.BXDL,
+          this.fazhishezhi.AXWD,
+          this.fazhishezhi.NXWD,
+          this.fazhishezhi.CXDL
+          // this.fazhishezhi.AXDL,
+          // this.fazhishezhi.BXDL,
+          // this.fazhishezhi.CXDL,
+          // this.fazhishezhi.AXDY,
+          // this.fazhishezhi.BXDY,
+          // this.fazhishezhi.CXDY
+        ).then((res) => {
+          if (res.data.status == 1) {
+            this.$message.success("设置成功");
+          } else {
+            this.$message.error("设置失败");
+          }
+        });
+      } else {
+        SetParameterApi_three(
+          this.ElecDataList.DevData[0].productNumber,
+          this.fazhishezhi.SYDL,
+          this.fazhishezhi.AXWD,
+          this.fazhishezhi.BXWD,
+          this.fazhishezhi.CXWD,
+          this.fazhishezhi.NXWD,
+          this.fazhishezhi.AXDL,
+          this.fazhishezhi.BXDL,
+          this.fazhishezhi.CXDL,
+          this.fazhishezhi.AXDY,
+          this.fazhishezhi.BXDY,
+          this.fazhishezhi.CXDY
+        ).then(
+          (res) => {
+            if (res.data.status == 1) {
+              this.$message.success("设置成功");
+            } else {
+              this.$message.error("设置失败");
+            }
+          },
+          () => {
+            this.$message.error("请稍后重试或联系管理员");
+          }
+        );
+      }
     },
     //设备历史
     deviceHistory() {

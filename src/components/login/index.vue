@@ -131,11 +131,13 @@ export default {
           if (res.data.region == "null") {
             res.data.region = "";
           }
+          sessionStorage.setItem("role_copy", res.data.role[0]);
           if (res.data.role[0] == 2000) {
             res.data.role[0] = 1000;
           }
           sessionStorage.setItem("userName", username);
           sessionStorage.setItem("role", res.data.role[0]);
+
           sessionStorage.setItem("new_role", res.data.new_role);
           sessionStorage.setItem("region", res.data.region);
           sessionStorage.setItem("power", res.data.power);
@@ -149,13 +151,11 @@ export default {
           // console.log(this.utils.userName, 666);
           this.$router.push({ path: "/" });
           return this.$message({
-            showClose: true,
             message: "登录成功",
             type: "success",
           });
         } else {
           return this.$message({
-            showClose: true,
             message: "账号或密码不正确",
             type: "error",
           });

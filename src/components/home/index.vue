@@ -301,6 +301,7 @@ import {
   updateuserpassword,
   getAllDevicePostion,
   getLogo,
+  getDeviceTypeNum,
 } from "@/api/index.js";
 import md5 from "js-md5";
 import vueSeamlessScroll from "vue-seamless-scroll";
@@ -845,20 +846,18 @@ export default {
         document.querySelector(".threeEchart")
       );
 
-      check_device_type().then((res) => {
+      getDeviceTypeNum(this.utils.userName).then((res) => {
+        console.log(res, "-------------------");
+
         let arr = [];
+        res.data.data.forEach((el) => {
+          arr.push({ name: el.dSName, value: el.count });
+        });
 
-        const data2 = res.data.list[0].values.split(",");
-
-        // for (let i = 0; i < data2.length; i++) {
-        //   const data = res.data.list[0].name.split(",");
-        //   const data2 = res.data.list[0].values.split(",");
-        //   arr.push({ name: data[i], value: data2[i] });
-        // }
-        arr = [
-          { name: "智慧用电保护器", value: "20" },
-          { name: "网关", value: "10" },
-        ];
+        // arr = [
+        //   { name: "智慧用电保护器", value: "20" },
+        //   { name: "网关", value: "10" },
+        // ];
         myChart_three.setOption({
           tooltip: {
             trigger: "item",

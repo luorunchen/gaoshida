@@ -197,7 +197,7 @@ export default {
       // SBCities: [],
       // XMCities: [],
       cityOptions: [
-        { name: "用户密码管理", value: 10001001 },
+        // { name: "用户密码管理", value: 10001001 },
         { name: "用户修改", value: 10001002 },
         { name: "用户新增", value: 10001003 },
         { name: "用户删除", value: 10001004 },
@@ -250,7 +250,10 @@ export default {
     },
     //编辑按钮
     editPowerFun(data) {
-      if (this.utils.powerId == 1000 || this.utils.rid.indexOf("10004002")) {
+      if (
+        this.utils.powerId == 1000 ||
+        this.utils.rid.indexOf("10004002") != -1
+      ) {
         this.title = "编辑";
         // console.log(data);
         this.dialogVisible = true;
@@ -350,13 +353,14 @@ export default {
 
     //新增/编辑确定按钮
     addNewTrue() {
+      // console.log(this.checkedCities.length <= 0, 7777777);
       const p_id =
         this.checkedCities +
-        "," +
+        (this.checkedCities.length <= 0 ? "" : ",") +
         this.checkedCities1 +
-        "," +
+        (this.checkedCities1.length <= 0 ? "" : ",") +
         this.checkedCities2 +
-        "," +
+        (this.checkedCities2.length <= 0 ? "" : ",") +
         this.checkedCities3;
       if (this.title == "新增") {
         givePowerRole(

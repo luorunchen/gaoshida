@@ -52,10 +52,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <div class="caozuo">
-              <span
-                @click="(dialogVisible_bianji = true), childMethod(scope.row)"
-                >编辑</span
-              >
+              <span @click="childMethod(scope.row)">编辑</span>
               <span @click="open(scope.row)">删除</span>
               <!-- <span>禁用</span>
               <span>删除</span> -->
@@ -270,7 +267,10 @@ export default {
     open(data) {
       // console.log(data)\;
 
-      if (this.utils.powerId == 1000 || this.utils.rid.indexOf("10001004")) {
+      if (
+        this.utils.powerId == 1000 ||
+        this.utils.rid.indexOf("10001004") != -1
+      ) {
         this.$confirm(
           `是否确定删除 <span style='color:red'>${data.userName} </span> 用户 `,
           {
@@ -303,7 +303,7 @@ export default {
 
     // 新增用户函数
     submitForm() {
-      let role = sessionStorage.getItem("role");
+      let role = sessionStorage.getItem("role_copy");
       // if(this.addPrope.username)
       const reg = /^[0-9]+.?[0-9]*$/;
 
@@ -362,8 +362,9 @@ export default {
     childMethod(data) {
       if (
         this.utils.powerId == 1000 ||
-        this.utils.rid.indexOf("10001002") != 1
+        this.utils.rid.indexOf("10001002") != -1
       ) {
+        this.dialogVisible_bianji = true;
         this.ruleForm.name = data.userName;
         this.ruleForm.gudingphone = data.company_phone;
         this.ruleForm.address = data.address;

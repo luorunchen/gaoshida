@@ -124,7 +124,7 @@ export default {
         resource: "",
         desc: "",
       },
-      currentPage4: 4,
+      currentPage4: 1,
       //新增弹窗
       dialogVisible: false,
       btnInfo: "用户管理",

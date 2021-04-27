@@ -40,8 +40,13 @@
         <el-table-column prop="address" label="操作">
           <template slot-scope="scope">
             <div class="caozuo">
+              <span
+                @click="set(scope.row.devId, scope.row.productNumber)"
+                style="margin-right: 20px"
+                >添加计划</span
+              >
               <span @click="set(scope.row.devId, scope.row.productNumber)"
-                >设置</span
+                >修改计划</span
               >
             </div>
           </template>
@@ -64,58 +69,24 @@
       title="定时设置"
       :close-on-click-modal="false"
       :visible.sync="dialogVisible"
-      width="30%"
+      width="32%"
     >
-      <div class="time">
-        <h3 class="demonstration">定时设置</h3>
-        <el-date-picker
-          v-model="timeValue"
-          type="datetimerange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          value-format="yyyy-MM-dd HH:mm:ss"
-        >
-        </el-date-picker>
-      </div>
-      <h3>重复</h3>
-      <el-checkbox-group v-model="checkList">
-        <el-row>
-          <el-col :span="6">
-            <el-checkbox label="1" border>星期一</el-checkbox></el-col
-          >
-          <el-col :span="6"
-            ><el-checkbox label="2" border>星期二</el-checkbox></el-col
-          >
-        </el-row>
-        <el-row>
-          <el-col :span="6">
-            <el-checkbox label="3" border>星期三</el-checkbox></el-col
-          >
-          <el-col :span="6"
-            ><el-checkbox label="4" border>星期四</el-checkbox></el-col
-          >
-        </el-row>
-        <el-row>
-          <el-col :span="6">
-            <el-checkbox label="5" border>星期五</el-checkbox></el-col
-          >
-          <el-col :span="6"
-            ><el-checkbox label="6" border>星期六</el-checkbox></el-col
-          >
-        </el-row>
-        <el-row>
-          <el-col :span="6">
-            <el-checkbox label="7" border>星期日</el-checkbox></el-col
-          >
-        </el-row>
+      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form-item label="计划名称">
+          <el-input v-model="formInline.user" placeholder="计划名称"></el-input>
+        </el-form-item>
 
-        <!-- <el-checkbox label="星期三" border></el-checkbox>
-        <el-checkbox label="星期四" border></el-checkbox>
-        <el-checkbox label="星期五" border></el-checkbox>
-        <el-checkbox label="星期六" border></el-checkbox>
-        <el-checkbox label="星期天" border></el-checkbox> -->
-      </el-checkbox-group>
+        <el-form-item>
+          <el-button type="primary" @click="innerVisible = true"
+            >设置时间</el-button
+          >
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="devVisible = true"
+            >选择设备</el-button
+          >
+        </el-form-item>
+      </el-form>
 
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -124,18 +95,112 @@
         >
       </span>
     </el-dialog>
+    <el-dialog
+      width="32%"
+      title="设置时间"
+      :visible.sync="innerVisible"
+      append-to-body
+    >
+      <div>
+        <el-radio-group v-model="radio1">
+          <el-radio-button label="每天"></el-radio-button>
+          <el-radio-button label="周一"></el-radio-button>
+          <el-radio-button label="周二"></el-radio-button>
+          <el-radio-button label="周三"></el-radio-button>
+          <el-radio-button label="周四"></el-radio-button>
+          <el-radio-button label="周五"></el-radio-button>
+          <el-radio-button label="周六"></el-radio-button>
+          <el-radio-button label="周日"></el-radio-button>
+        </el-radio-group>
+      </div>
+
+      <el-row :gutter="20">
+        <el-col :span="17">
+          <h3 style="margin-top: 30px">时间段选择:</h3>
+          <el-time-picker
+            is-range
+            style="margin-top: 10px"
+            v-model="timeValue"
+            range-separator="至"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+            placeholder="选择时间范围"
+          >
+          </el-time-picker>
+          <el-time-picker
+            style="margin-top: 10px"
+            is-range
+            v-model="timeValue"
+            range-separator="至"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+            placeholder="选择时间范围"
+          >
+          </el-time-picker>
+          <el-time-picker
+            is-range
+            style="margin-top: 10px"
+            v-model="timeValue"
+            range-separator="至"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+            placeholder="选择时间范围"
+          >
+          </el-time-picker>
+          <el-time-picker
+            is-range
+            style="margin-top: 10px"
+            v-model="timeValue"
+            range-separator="至"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+            placeholder="选择时间范围"
+          >
+          </el-time-picker>
+        </el-col>
+        <!-- <el-col :span="7">
+          <h3 style="margin-top: 30px">模式选择:</h3>
+
+          <el-radio-group v-model="radio1" style="margin-top: 10px">
+            <el-radio label="先开后关"></el-radio>
+            <el-radio label="先关后开"></el-radio>
+          </el-radio-group>
+        </el-col> -->
+      </el-row>
+    </el-dialog>
+
+    <el-dialog
+      width="32%"
+      title="选择设备"
+      :visible.sync="devVisible"
+      append-to-body
+    >
+      <!-- <h3>项目名称:</h3>
+      <div>选择设备:</div> -->
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getDeviceStatus, getDevTime } from "@/api/index.js";
+import {
+  getDeviceStatus,
+  getDevTime,
+  delTimerDevice,
+  getAllProjecForState,
+  getAllTimerDevice,
+} from "@/api/index.js";
 export default {
   data() {
     return {
+      devVisible: false,
+      radio1: "每天",
+      innerVisible: false,
       formInline: {
         proName: "",
         imei: "",
       },
+      DeviceTime: "",
+      TypeRadio: "1",
       currentPage4: 1,
       checkList: [],
       timeValue: "",
@@ -147,51 +212,12 @@ export default {
     };
   },
   mounted() {
-    this.getDeviceStatusFun();
+    this.getAllProjecForStateFun(10,1);
   },
   methods: {
-    setTrue() {
-      // console.log(this.timeValue);
-      console.log(this.checkList);
-      var start = this.$moment(this.timeValue[0]).day();
-      console.log(start);
-      var end = this.$moment(this.timeValue[1]).day();
-      console.log(end);
-
-      let time = this.$moment(this.timeValue[1]).diff(
-        this.$moment(this.timeValue[0]),
-        "days"
-      );
-
-      if (time < 7 && this.checkList.length >= 7) {
-        return this.$message.error("shibai");
-      }
-      console.log(time);
-
-      getDevTime(
-        this.timeValue[0],
-        this.timeValue[1],
-        this.productNumber,
-        this.checkList.toString(),
-        "0",
-        "default",
-        this.utils.userName
-      ).then(
-        (res) => {
-          if (res.data.status == "true") {
-            this.$message.success("设置成功");
-          } else {
-            this.$message.error("设置失败");
-          }
-        },
-        () => {
-          this.$message.error("请稍后重试或联系管理员");
-        }
-      );
-    },
     onSubmit() {
       console.log("submit!");
-      this.getDeviceStatusFun();
+      // this.getDeviceStatusFun();
     },
     handleSizeChange(val) {
       this.current = val;
@@ -203,25 +229,53 @@ export default {
       this.size = val;
       this.getDeviceStatusFun();
     },
-    getDeviceStatusFun() {
-      getDeviceStatus(
+    // getDeviceStatusFun() {
+    //   getDeviceStatus(
+    //     this.utils.userName,
+    //     this.size,
+    //     "",
+    //     this.current,
+    //     this.formInline.imei || this.formInline.proName,
+    //     3,
+    //     this.utils.userName,
+    //     1 //在线:1 离线:0
+    //   ).then((res) => {
+    //     this.tableData = res.data.list;
+    //     this.totals = res.data.total * 1;
+    //   });
+    // },
+
+     getAllProjecForStateFun(ls, cp) {
+      let col = "";
+      let kw = "";
+      let state = 0;
+      // let ls = 10;
+      // let cp = 1;
+      getAllProjecForState(
         this.utils.userName,
-        this.size,
-        "",
-        this.current,
-        this.formInline.imei || this.formInline.proName,
-        3,
-        this.utils.userName,
-        1 //在线:1 离线:0
+        cp,
+        col,
+        state,
+        kw,
+        ls,
+        this.formInline.user
       ).then((res) => {
-        this.tableData = res.data.list;
-        this.totals = res.data.total * 1;
+        this.tableData = res.data.list[0].allObj;
+        console.log(this.tableData);
+        this.total = res.data.list[0].count;
       });
     },
+
+
     set(dev, num) {
       this.timeValue = "";
       this.dialogVisible = true;
       this.productNumber = num;
+      getAllTimerDevice(this.utils.userName, num).then((res) => {
+        console.log(res.data.data);
+        this.DeviceTime = res.data.data[0];
+        console.log(this.DeviceTime);
+      });
     },
   },
 };
@@ -237,5 +291,16 @@ export default {
     bottom: 30px;
     right: 50px;
   }
+
+  h3 {
+    margin-top: 20px;
+  }
+}
+
+/deep/.el-dialog__header {
+  background: #1071e2;
+}
+/deep/.el-dialog__title {
+  color: #fff;
 }
 </style>

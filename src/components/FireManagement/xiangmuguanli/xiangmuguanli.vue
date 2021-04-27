@@ -41,6 +41,7 @@
         style="width: 100%"
         height="650px"
         border
+        @row-dblclick="rowClick"
       >
         <el-table-column type="index" width="50"> </el-table-column>
         <el-table-column label="项目名称" width="120">
@@ -71,12 +72,7 @@
         <el-table-column label="操作" show-overflow-tooltip>
           <template slot-scope="scope">
             <div class="caozuo">
-              <span
-                @click="
-                  (dialogVisible = true), bj_map(scope.row.devId, scope.row)
-                "
-                >编辑</span
-              >
+              <span @click="bj_map(scope.row.devId, scope.row)">编辑</span>
               <span @click="open(scope.row.pid, scope.row.name)">删除</span>
               <span @click="newClick(scope.row.pid, scope.row)">新增设备</span>
               <span @click="fenxiangClick(scope.row.pid)">分享</span>
@@ -468,6 +464,8 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+
+    <PublicPopUps ref="publicPopUps" :pagetype="pagetype" />
   </div>
 </template>
 
@@ -487,9 +485,12 @@ import {
   getShareProject,
   delShareProject,
 } from "@/api/index.js";
+import PublicPopUps from "./../../FireInternetOfThings/translate/publicPopUps";
 export default {
   data() {
     return {
+      radio: "1",
+      pagetype: 2,
       gridData: [],
       ShareTtemViewVisible: false,
       regionList_list: [],
@@ -542,10 +543,11 @@ export default {
           value: "网关",
           label: "1",
         },
-        // {
-        //   value: "烟感",
-        //   label: "2",
-        // },
+
+        {
+          value: "智慧用电断路器",
+          label: "22",
+        },
         // {
         //   value: "电气",
         //   label: "3",
@@ -611,6 +613,11 @@ export default {
   },
 
   methods: {
+    rowClick(row, column, event) {
+      console.log(row, column, event);
+      this.$refs.publicPopUps.initOff();
+      this.$refs.publicPopUps.echart_wapper(row.pid);
+    },
     //取消分享
     offShare(pid, name) {
       // console.log(pid, name);
@@ -650,35 +657,56 @@ export default {
     },
     //分享按钮
     fenxiangClick(pid) {
-      this.$prompt("请输入分享的账号", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-        // inputErrorMessage: "邮箱格式不正确",
-      })
-        .then(({ value }) => {
-          addRegisterProject(pid, value, this.utils.userName).then(
-            (res) => {
-              if (res.data.list[0].status == "true") {
-                this.$message({
-                  type: "success",
-                  message: "分享成功,您分享的账号是: " + value,
-                });
-              } else {
-                this.$message.error(res.data.list[0].mess);
+      if (
+        this.utils.powerId == 1000 ||
+        this.utils.rid.indexOf("10002007") != -1
+      ) {
+        this.$prompt(
+          '<h4>设备控制权限</h4> <form><label style="margin-right:20px"><input type="radio" name="sex" value="1">是</label><label><input type="radio" name="sex" value="0">否</label></form>',
+          "请输入分享的账号",
+          {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            dangerouslyUseHTMLString: true,
+            // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+            // inputErrorMessage: "邮箱格式不正确",
+          }
+        )
+          .then(({ value }) => {
+            let inp = document.getElementsByName("sex");
+            console.log(inp);
+            let state;
+            inp.forEach((element) => {
+              if (element.checked) {
+                //
+                state = element.value;
               }
-            },
-            () => {
-              this.$message.error("请稍后重试或联系管理员");
-            }
-          );
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "取消输入",
+            });
+            addRegisterProject(pid, value, this.utils.userName, state).then(
+              (res) => {
+                if (res.data.list[0].status == "true") {
+                  this.$message({
+                    type: "success",
+                    message: "分享成功,您分享的账号是: " + value,
+                  });
+                } else {
+                  this.$message.error(res.data.list[0].mess);
+                }
+              },
+              () => {
+                this.$message.error("请稍后重试或联系管理员");
+              }
+            );
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "取消输入",
+            });
           });
-        });
+      } else {
+        this.$message.error("暂无权限,请向上级申请");
+      }
     },
     //删除防火员和责任人
     deletegalFireManFun() {
@@ -1166,6 +1194,7 @@ export default {
       // console.log(event);
       getLegalFireMan(status, obj).then((res) => {
         // console.log(res.data.mess);
+
         let arr = JSON.parse(res.data.mess);
         console.log(arr);
         arr.map((element) => {
@@ -1179,7 +1208,11 @@ export default {
     },
     // 编辑弹窗点击函数
     bj_map(data, row) {
-      if (this.utils.powerId || this.utils.rid.indexOf("10002002")) {
+      if (
+        this.utils.powerId == 1000 ||
+        this.utils.rid.indexOf("10002002") != -1
+      ) {
+        this.dialogVisible = true;
         this.addNewOpenFun("编辑");
         console.log(row);
         this.mapInfo.projectname = row.name;
@@ -1298,7 +1331,7 @@ export default {
     newClick(pid, row) {
       if (
         this.utils.powerId == 1000 ||
-        this.utils.rid.indexOf("10002001") != -1
+        this.utils.rid.indexOf("10003006") != -1
       ) {
         this.addNewSheBeiVisible = true;
         this.mapFun();
@@ -1337,7 +1370,7 @@ export default {
         superiorEquipme,
         loopNumber,
         devId,
-        devRemark,
+        this.mapInfo.reamrk,
         this.mapInfo.duanxin //短信推送
       ).then(
         (res) => {
@@ -1353,6 +1386,9 @@ export default {
         }
       );
     },
+  },
+  components: {
+    PublicPopUps,
   },
 };
 </script>

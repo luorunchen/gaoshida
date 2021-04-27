@@ -8,7 +8,8 @@ export default new Vuex.Store({
     initStatus: '',
     map_lnglat: [116.397428, 39.90923],
     SoundSwitch: "开",
-    AlarmStatus: "关"
+    AlarmStatus: "关",
+
   },
   mutations: {
     changeStatus(state, status) {  //  重复赋值
@@ -23,6 +24,7 @@ export default new Vuex.Store({
     AlarmStatusFun(state, status) {  //  重复赋值
       state.AlarmStatus = status;
     },
+
   },
   actions: {
   },

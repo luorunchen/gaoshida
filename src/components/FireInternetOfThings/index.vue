@@ -217,8 +217,9 @@ export default {
 
     switch (this.$route.path) {
       case "/FireInternetOfThings":
+        this.pagetype = "2";
         this.DeviceProjectNewFun("3");
-        this.echart();
+        // this.echart();
         break;
       case "/FireInternetOfThings/electricalFire":
         this.btnInfo = "电气火灾隐患";
@@ -288,7 +289,7 @@ export default {
         case "隐患整改进度":
           this.mass.setMap(null);
           this.DeviceProjectNewFun("3");
-
+          this.pagetype = "2";
           break;
         case "电气火灾隐患":
           this.DeviceProjectNewFun("3");
@@ -571,8 +572,8 @@ export default {
     DeviceProjectNewFun(data) {
       // console.log(this.$refs.publicPopUps.initOff());
       this.loading_map = true;
-
-      DeviceProjectNew(this.utils.userName, data, 1).then((res) => {
+      const region = sessionStorage.getItem("region");
+      DeviceProjectNew(this.utils.userName, data, region).then((res) => {
         // this.DeviceProjectNewData = res.data.Company;
 
         if (res.data == [] || res.data == "") {
@@ -604,7 +605,7 @@ export default {
               size: new AMap.Size(11, 11),
             },
           ];
-          // console.log(this.DeviceProjectNewData, 987987);
+          console.log(this.DeviceProjectNewData, 987987);
 
           this.mass = new AMap.MassMarks(this.DeviceProjectNewData, {
             opacity: 0.8,

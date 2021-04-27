@@ -169,6 +169,7 @@ export default {
             }
           }
           let c = [...a, ...b];
+          this.DeviceProjectNewData = [...a, ...b];
           this.mass = new AMap.MassMarks(c, {
             opacity: 0.8,
             zIndex: 111,
@@ -246,6 +247,7 @@ export default {
           }
           let c = [...a, ...b];
           // console.log(c);
+          this.DeviceProjectNewData = [...a, ...b];
           this.mass = new AMap.MassMarks(c, {
             opacity: 0.8,
             zIndex: 111,
@@ -290,7 +292,7 @@ export default {
           defaultType: 0, //0代表默认，1代表卫星
         })
       );
-      this.map.setZoomAndCenter(4, [116.397428, 39.90923]);
+      this.map.setZoomAndCenter(5, [116.397428, 30.90923]);
       // const region = sessionStorage.getItem("region");
       // DeviceProjectNew(this.utils.userName, "3", region).then((res) => {
       //   // this.DeviceProjectNewData = res.data.Company;

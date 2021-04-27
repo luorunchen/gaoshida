@@ -173,7 +173,7 @@ export default {
       outerVisible: false,
       equipmentColor: "police",
 
-      currentPage4: 4,
+      currentPage4: 1,
 
       btnInfo: "电气火灾隐患",
     };
