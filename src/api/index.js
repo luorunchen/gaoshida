@@ -489,32 +489,32 @@ export function getAllProjecForState(username, cp, col, state, kw, ls, pname) {
   })
 }
 //编辑设备
-export function updateDeviceSim(devId, remark, long_lat, my_username, installLocation) {
+export function updateDeviceSim(devId, remark, long_lat, my_username, installLocation, pids) {
   return service({
     url: `/admin/device/check/updateDeviceSim.action`,
     method: 'GET',
     params: {
-      devId, remark, long_lat, my_username, installLocation
+      devId, remark, long_lat, my_username, installLocation, pids
     }
   })
 }
 //删除设备
-export function deleDevice(devId, username) {
+export function deleDevice(devId, username, pids) {
   return service({
     url: `/admin/device/check/deleDevice.action`,
     method: 'GET',
     params: {
-      devId, username
+      devId, username, pids
     }
   })
 }
 //删除项目
-export function deleProject(pid, username) {
+export function deleProject(pid, username, sharestatus) {
   return service({
     url: `/admin/project/check/deleProject.action`,
     method: 'GET',
     params: {
-      pid, username
+      pid, username, sharestatus
     }
   })
 }
@@ -964,6 +964,29 @@ export function getParaState(username, imei) {
     method: 'GET',
     params: {
       username, imei
+    }
+  })
+}
+
+
+//推送方式回显
+export function getDevicePush(username, device) {
+  return service({
+    url: `/WebProject/getDevicePush.action `,
+    method: 'GET',
+    params: {
+      username, device
+    }
+  })
+}
+
+//推送方式回显
+export function getDevicePower(username, device) {
+  return service({
+    url: `/getDevicePower.action `,
+    method: 'GET',
+    params: {
+      username, device
     }
   })
 }

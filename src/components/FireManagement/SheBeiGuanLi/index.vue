@@ -65,7 +65,8 @@
         <el-table-column prop="regdate" label="注册时间"> </el-table-column>
         <el-table-column prop="heartbeatTime" label="心跳时间">
         </el-table-column>
-        <el-table-column prop="dVName" label="设备厂商"> </el-table-column>
+        <el-table-column prop="dVName456456" label="设备厂商">
+        </el-table-column>
         <el-table-column prop="address" label="是否授权">
           <template slot-scope="scope">
             <p v-if="scope.row.authorize == 1">已授权</p>
@@ -88,14 +89,14 @@
         <el-table-column label="操作" width="200">
           <template slot-scope="scope">
             <div class="caozuo">
-              <span @click="bj_map(scope.row.devId, scope.$index)">编辑</span>
-              <span @click="open(scope.row.name, scope.row.devId)">删除</span>
+              <span @click="bj_map(scope.row.devId, scope.$index, scope.row)"
+                >编辑</span
+              >
+              <span @click="open(scope.row.name, scope.row.devId, scope.row)"
+                >删除</span
+              >
               <!-- <span @click="fenPei(scope.row.pid)">分配</span> -->
-              <span
-                @click="
-                  (dialogVisible_set = true),
-                    set(scope.row.productNumber, scope.row.devId)
-                "
+              <span @click="set(scope.row.productNumber, scope.row.devId)"
                 >设置</span
               >
             </div>
@@ -558,7 +559,10 @@
               style="text-align: center"
             >
               <p>设备状态</p>
-              <el-checkbox-group v-model="checkList">
+              <el-checkbox-group
+                v-model="checkList"
+                style="margin-bottom: 30px"
+              >
                 <el-checkbox label="App">App</el-checkbox>
                 <el-checkbox label="短信">短信</el-checkbox>
                 <el-checkbox label="电话">电话</el-checkbox>
@@ -749,6 +753,8 @@ import {
   upSwitch,
   ElecData,
   SetParameterApi_three,
+  getDevicePush,
+  getDevicePower,
 } from "@/api/index.js";
 export default {
   data() {
@@ -822,8 +828,34 @@ export default {
     // console.log(123123);
     this.getAllDeviceWebFun(10, 1);
     // this.bj_map();
+    this.getDevicePowerFun();
   },
   methods: {
+    //设备是否有权限打开设备设置
+    async getDevicePowerFun() {
+      await getDevicePower(this.utils.userName, this.setValue).then((res) => {
+        console.log(res.data.power, 6666666);
+        this.powerState = res.data.power;
+      });
+    },
+    //报警推送回显
+    getDevicePushFun() {
+      this.checkList = [];
+      getDevicePush(this.utils.userName, this.setValue).then((res) => {
+        res.data.data.forEach((el) => {
+          if (el.app == "1") {
+            this.checkList.push("App");
+          }
+          if (el.phone == "1") {
+            this.checkList.push("电话");
+          }
+          if (el.sms == "1") {
+            this.checkList.push("短信");
+          }
+        });
+        console.log(this.checkList);
+      });
+    },
     //阀值设置取消按钮
     offInfo() {
       ReadParameterApi(this.setValue).then((res) => {
@@ -984,7 +1016,10 @@ export default {
     },
     trueON() {
       console.log(this.lanlat, 69696969696969696);
-      if (this.lanlat.split(",")[0] == "undefined"||this.lanlat=='undefined') {
+      if (
+        this.lanlat.split(",")[0] == "undefined" ||
+        this.lanlat == "undefined"
+      ) {
         return this.$message.error("获取不到修改设备经纬度,请重新选择");
       }
       updateDeviceSim(
@@ -992,7 +1027,8 @@ export default {
         this.mapInfo.remak,
         this.lanlat,
         this.utils.userName,
-        this.mapInfo.address
+        this.mapInfo.address,
+        this.mapInfo.pids
       ).then((res) => {
         if (res.data.list[0].status == "true") {
           this.$message.success("设备更新成功");
@@ -1001,35 +1037,44 @@ export default {
             this.handleSizeChangeValue,
             this.handleCurrentChangeValue
           );
+        } else {
+          this.$message.error(res.data.list[0].mess);
         }
       });
     },
-    set(data, devId) {
-      //获取设备号
+    async set(data, devId) {
       this.setValue = data;
-      // console.log(this.setValue);
-      ReadParameterApi(this.setValue).then((res) => {
-        console.log(res.data.row);
-        const row = res.data.row;
-        this.fazhishezhi.AXWD = row.AWenDu;
-        this.fazhishezhi.BXWD = row.BWenDu;
-        this.fazhishezhi.CXWD = row.CWenDu;
-        this.fazhishezhi.NXWD = row.NWenDu;
-        this.fazhishezhi.SYDL = row.SYdianliu;
-        this.fazhishezhi.AXDL = row.ADianLiu;
-        this.fazhishezhi.BXDL = row.BDianLiu;
-        this.fazhishezhi.CXDL = row.BDianYa;
-        this.fazhishezhi.AXDY = row.ADianYa;
-        this.fazhishezhi.BXDY = row.BDianYa;
-        this.fazhishezhi.CXDY = row.CDianYa;
-      });
-      getParaState(this.utils.userName, this.setValue).then((res) => {
-        this.ParaState = res.data.data;
-        console.log(this.ParaState, "==============");
-      });
-      ElecData(devId, "").then((res) => {
-        this.ElecDataList = res.data;
-      });
+      await this.getDevicePowerFun();
+      if (this.powerState == "1") {
+        //获取设备号
+        this.dialogVisible_set = true;
+
+        // console.log(this.setValue);
+        ReadParameterApi(this.setValue).then((res) => {
+          console.log(res.data.row);
+          const row = res.data.row;
+          this.fazhishezhi.AXWD = row.AWenDu;
+          this.fazhishezhi.BXWD = row.BWenDu;
+          this.fazhishezhi.CXWD = row.CWenDu;
+          this.fazhishezhi.NXWD = row.NWenDu;
+          this.fazhishezhi.SYDL = row.SYdianliu;
+          this.fazhishezhi.AXDL = row.ADianLiu;
+          this.fazhishezhi.BXDL = row.BDianLiu;
+          this.fazhishezhi.CXDL = row.BDianYa;
+          this.fazhishezhi.AXDY = row.ADianYa;
+          this.fazhishezhi.BXDY = row.BDianYa;
+          this.fazhishezhi.CXDY = row.CDianYa;
+        });
+        getParaState(this.utils.userName, this.setValue).then((res) => {
+          this.ParaState = res.data.data;
+          console.log(this.ParaState, "==============");
+        });
+        ElecData(devId, "").then((res) => {
+          this.ElecDataList = res.data;
+        });
+      } else {
+        this.$message.error("暂无权限,请向上级申请");
+      }
     },
 
     //设备设置按钮
@@ -1342,7 +1387,7 @@ export default {
       }
     },
 
-    bj_map(data, index) {
+    bj_map(data, index, row) {
       if (
         this.utils.powerId == 1000 ||
         this.utils.rid.indexOf("10003005") != -1
@@ -1358,6 +1403,7 @@ export default {
         this.mapInfo.address = this.getAllDeviceWeb_list[index].installLocation;
         this.lanlat = this.getAllDeviceWeb_list[index].loopNumber;
         this.devID = data;
+        this.mapInfo.pids = row.pid;
         // console.log(this.getAllDeviceWeb_list);
         this.$nextTick(() => {
           this.map = new AMap.Map("container", {
@@ -1516,6 +1562,9 @@ export default {
           this.caozuojilv = res.data;
         });
       }
+      if (tab.label === "报警推送方式") {
+        this.getDevicePushFun();
+      }
     },
 
     //展示数据方法接口
@@ -1567,7 +1616,7 @@ export default {
         this.handleCurrentChangeValue
       );
     },
-    open(name, devID) {
+    open(name, devID, row) {
       const powerId = sessionStorage.getItem("new_role");
       const rid = sessionStorage.getItem("power");
       if (powerId == 1000 || rid.indexOf("10003006") != -1) {
@@ -1582,22 +1631,20 @@ export default {
           }
         )
           .then(() => {
-            if (powerId == 1000 || rid.indexOf("10003005") != -1) {
-              deleDevice(devID).then((res) => {
-                if (res.data.list[0].status == "true") {
-                  this.$message({
-                    type: "success",
-                    message: "删除成功!",
-                  });
-                  this.getAllDeviceWebFun(
-                    this.handleSizeChangeValue,
-                    this.handleCurrentChangeValue
-                  );
-                }
-              });
-            } else {
-              this.$message.error("您的权限不足");
-            }
+            deleDevice(devID, this.utils.userName, row.pid).then((res) => {
+              if (res.data.list[0].status == "true") {
+                this.$message({
+                  type: "success",
+                  message: "删除成功!",
+                });
+                this.getAllDeviceWebFun(
+                  this.handleSizeChangeValue,
+                  this.handleCurrentChangeValue
+                );
+              } else {
+                this.$message.error(res.data.list[0].mess);
+              }
+            });
           })
           .catch((err) => {
             console.log(err);

@@ -21,7 +21,7 @@
         </div>
       </div>
       <div class="titleIMG">
-        <p class="titleName">智慧安全系统平台</p>
+        <p class="titleName">智慧用电预警平台</p>
 
         <el-upload
           :show-file-list="false"
@@ -203,7 +203,7 @@
         <div class="threeEchart"></div>
       </div>
       <div class="four">
-        <p>报警数量统计</p>
+        <p>未处理报警数量统计</p>
         <div class="fourEchart"></div>
       </div>
     </div>
@@ -967,8 +967,8 @@ export default {
           if (el.typeName.indexOf("气体") < 0) {
             res.data.push({ typeName: "气体预警", num: "0" });
           }
-          if (el.typeName.indexOf("老化") < 0) {
-            res.data.push({ typeName: "老化线路", num: "0" });
+          if (el.typeName.indexOf("电弧") < 0) {
+            res.data.push({ typeName: "电弧预警", num: "0" });
           }
           if (el.typeName.indexOf("温度") < 0) {
             res.data.push({ typeName: "温度预警", num: "0" });

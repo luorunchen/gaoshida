@@ -73,9 +73,14 @@
           <template slot-scope="scope">
             <div class="caozuo">
               <span @click="bj_map(scope.row.devId, scope.row)">编辑</span>
-              <span @click="open(scope.row.pid, scope.row.name)">删除</span>
+              <span
+                @click="
+                  open(scope.row.pid, scope.row.name, scope.row.sharestate)
+                "
+                >删除</span
+              >
               <span @click="newClick(scope.row.pid, scope.row)">新增设备</span>
-              <span @click="fenxiangClick(scope.row.pid)">分享</span>
+              <span @click="fenxiangClick(scope.row.pid, scope.row)">分享</span>
             </div></template
           >
         </el-table-column>
@@ -656,10 +661,10 @@ export default {
       this.mapInfo.code = val;
     },
     //分享按钮
-    fenxiangClick(pid) {
+    fenxiangClick(pid, row) {
       if (
-        this.utils.powerId == 1000 ||
-        this.utils.rid.indexOf("10002007") != -1
+        (this.utils.powerId == 1000 && row.sharestate == 0) ||
+        (this.utils.rid.indexOf("10002007") != -1 && row.sharestate == 0)
       ) {
         this.$prompt(
           '<h4>设备控制权限</h4> <form><label style="margin-right:20px"><input type="radio" name="sex" value="1">是</label><label><input type="radio" name="sex" value="0">否</label></form>',
@@ -849,22 +854,22 @@ export default {
     },
     //添加人员打开弹窗
     addNewOpenFun(type) {
-      console.log(this.utils.powerId);
-      console.log(this.utils);
+      this.newType = type;
+      if (type == "新增") {
+        if (
+          this.utils.powerId == 1000 ||
+          this.utils.rid.indexOf("10002001") != -1
+        ) {
+          //判断新增还是编辑
+          // console.log(type);
 
-      if (
-        this.utils.powerId == 1000 ||
-        this.utils.rid.indexOf("10002001") != -1
-      ) {
-        //判断新增还是编辑
-        // console.log(type);
-        this.newType = type;
-        // console.log(this.mapInfo.newType);
-        this.dialogVisible = true;
-        this.mapInfo = [];
-        this.mapFun();
-      } else {
-        return this.$message.error("暂无权限,请向上级申请");
+          // console.log(this.mapInfo.newType);
+          this.dialogVisible = true;
+          this.mapInfo = [];
+          this.mapFun();
+        } else {
+          return this.$message.error("暂无权限,请向上级申请");
+        }
       }
     },
     //新增人员
@@ -1085,7 +1090,7 @@ export default {
       }
     },
     //删除项目
-    open(pid, name) {
+    open(pid, name, sharestate) {
       const powerId = sessionStorage.getItem("new_role");
       const rid = sessionStorage.getItem("power");
       if (powerId == 1000 || rid.indexOf("10002003") != -1) {
@@ -1100,24 +1105,20 @@ export default {
           }
         )
           .then(() => {
-            if (powerId == 1000 || rid.indexOf("10003005") != -1) {
-              deleProject(pid, this.utils.userName).then((res) => {
-                if (res.data.list[0].status == "true") {
-                  this.$message({
-                    type: "success",
-                    message: "删除成功!",
-                  });
-                  this.getAllProjecForStateFun(
-                    this.handleSizeChangeValue,
-                    this.handleCurrentChangeValue
-                  );
-                } else {
-                  this.$message.error(res.data.list[0].mess);
-                }
-              });
-            } else {
-              this.$message.error("您的权限不足");
-            }
+            deleProject(pid, this.utils.userName, sharestate).then((res) => {
+              if (res.data.list[0].status == "true") {
+                this.$message({
+                  type: "success",
+                  message: "删除成功!",
+                });
+                this.getAllProjecForStateFun(
+                  this.handleSizeChangeValue,
+                  this.handleCurrentChangeValue
+                );
+              } else {
+                this.$message.error(res.data.list[0].mess);
+              }
+            });
           })
           .catch((err) => {
             console.log(err);
@@ -1209,8 +1210,8 @@ export default {
     // 编辑弹窗点击函数
     bj_map(data, row) {
       if (
-        this.utils.powerId == 1000 ||
-        this.utils.rid.indexOf("10002002") != -1
+        (this.utils.powerId == 1000 && row.sharestate == 0) ||
+        (this.utils.rid.indexOf("10002002") != -1 && row.sharestate == 0)
       ) {
         this.dialogVisible = true;
         this.addNewOpenFun("编辑");
@@ -1330,8 +1331,8 @@ export default {
     // 新增设备
     newClick(pid, row) {
       if (
-        this.utils.powerId == 1000 ||
-        this.utils.rid.indexOf("10003006") != -1
+        (this.utils.powerId == 1000 && row.sharestate == 0) ||
+        (this.utils.rid.indexOf("10003006") != -1 && row.sharestate == 0)
       ) {
         this.addNewSheBeiVisible = true;
         this.mapFun();

@@ -7,7 +7,7 @@
         </div>
       </div>
       <div class="xiaofangInfo">
-        <p>智慧安全用电系统</p>
+        <p>智慧用电预警平台</p>
 
         <p>-{{ btnInfo }}</p>
       </div>

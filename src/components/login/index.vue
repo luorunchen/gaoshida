@@ -3,7 +3,7 @@
     <div class="title">
       <img class="titleIMG" src="../../assets/images/juxing4.png" alt="" />
     </div>
-    <div class="titleFZ">智慧安全系统平台</div>
+    <div class="titleFZ">智慧用电预警平台</div>
 
     <!-- <el-upload
       ref="upload"
@@ -99,13 +99,11 @@ export default {
       fileList: [
         {
           name: "food.jpeg",
-          url:
-            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
+          url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
         },
         {
           name: "food2.jpeg",
-          url:
-            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
+          url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
         },
       ],
       rules: {

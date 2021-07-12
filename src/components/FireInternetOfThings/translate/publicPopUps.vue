@@ -397,9 +397,7 @@
       :modal-append-to-body="false"
     >
       <el-row
-        ><el-button type="primary " @click="innerVisible_shebei = true"
-          >设备设置</el-button
-        >
+        ><el-button type="primary " @click="devicesSetting">设备设置</el-button>
         <el-button
           type="primary"
           @click="(innerVisible_lishi = true), Historical_alarm()"
@@ -549,133 +547,6 @@
                     (item.info == '0' && item.type.indexOf('剩余') != -1)
                   "
                 >
-                  <!-- 三项设备 报警信息 ----------------------------->
-                  <!-- <el-col :span="8"
-                  ><div class="grid-content bg-purple">
-                    <div class="imgWapper">
-                      <el-row>
-                        <template>
-                          <el-col :span="6">
-                            <div class="imgWapper_img">
-                              <img src="../../../assets/images/dianliu.png" />
-                              <p>{{ shengyu_loudian.oneAlarm }}A</p>
-                              <p>{{ shengyu_loudian.oneDianLiu }}A</p>
-                            </div>
-                          </el-col>
-                          <el-col :span="6">
-                            <div class="imgWapper_img">
-                              <img src="../../../assets/images/dianliu.png" />
-                              <p>{{ shengyu_loudian.twoAlarm }}A</p>
-                              <p>{{ shengyu_loudian.twoDianLiu }}A</p>
-                            </div>
-                          </el-col>
-                          <el-col :span="6">
-                            <div class="imgWapper_img">
-                              <img src="../../../assets/images/dianliu.png" />
-                              <p>{{ shengyu_loudian.threeAlarm }}A</p>
-                              <p>{{ shengyu_loudian.threeDianLiu }}A</p>
-                            </div>
-                          </el-col>
-                          <el-col :span="6">
-                            <div class="imgWapper_img">
-                              <img src="../../../assets/images/dianliu.png" />
-                              <p>{{ shengyu_loudian.fourAlarm }}mA</p>
-                              <p>{{ shengyu_loudian.fourDianLiu }}mA</p>
-                            </div>
-                          </el-col>
-                        </template>
-                      </el-row>
-                      <ul>
-                        <li>
-                          报警状态: <span>{{ item.type }}</span>
-                        </li>
-                        <li>
-                          报警值:
-                          <span>{{ item.leakageAlarmCurrentValue }}mA</span>
-                        </li>
-                        <li>
-                          报警时间: <span>{{ item.regdate }}</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div></el-col
-                >
-                <el-col :span="8"
-                  ><div class="grid-content bg-purple">
-                    <div class="imgWapper">
-                      <el-row>
-                        <el-col :span="8">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/dianya.png" />
-                            <p>{{ shengyu_loudian.oneVolatage }}V</p>
-                            <p>{{ shengyu_loudian.oneDianYa }}V</p>
-                          </div>
-                        </el-col>
-                        <el-col :span="8">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/dianya.png" />
-                            <p>{{ shengyu_loudian.twoVolatage }}V</p>
-                            <p>{{ shengyu_loudian.twoDianYa }}V</p>
-                          </div>
-                        </el-col>
-                        <el-col :span="8">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/dianya.png" />
-                            <p>{{ shengyu_loudian.twoVolatage }}V</p>
-                            <p>{{ shengyu_loudian.twoDianYa }}V</p>
-                          </div>
-                        </el-col>
-                      </el-row>
-                      <ul>
-                        <li>报警状态:无</li>
-                        <li>报警值:无</li>
-                        <li>报警时间:无</li>
-                      </ul>
-                    </div>
-                  </div></el-col
-                >
-                <el-col :span="8"
-                  ><div class="grid-content bg-purple">
-                    <div class="imgWapper">
-                      <el-row>
-                        <el-col :span="6">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/wenduji.png" />
-                            <p>{{ shengyu_loudian.oneTempera }}℃</p>
-                            <p>{{ shengyu_loudian.oneWenDu }}℃</p>
-                          </div>
-                        </el-col>
-                        <el-col :span="6">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/wenduji.png" />
-                            <p>{{ shengyu_loudian.twoTempera }}℃</p>
-                            <p>{{ shengyu_loudian.twoWenDu }}℃</p>
-                          </div>
-                        </el-col>
-                        <el-col :span="6">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/wenduji.png" />
-                            <p>{{ shengyu_loudian.threeTempera }}℃</p>
-                            <p>{{ shengyu_loudian.threeWenDu }}℃</p>
-                          </div>
-                        </el-col>
-                        <el-col :span="6">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/wenduji.png" />
-                            <p>{{ shengyu_loudian.fourTempera }}℃</p>
-                            <p>{{ shengyu_loudian.fourWenDu }}℃</p>
-                          </div>
-                        </el-col>
-                      </el-row>
-                      <ul>
-                        <li>报警状态:无</li>
-                        <li>报警值:无</li>
-                        <li>报警时间:无</li>
-                      </ul>
-                    </div>
-                  </div></el-col
-                > -->
-                  <!-- 三项设备 报警信息 ------------------------------>
                   <!-- 单项设备 报警信息------------------------------------------------------------------ -->
                   <el-row
                     :gutter="20"
@@ -732,7 +603,8 @@
                                 <img src="../../../assets/images/dianya.png" />
 
                                 <p>{{ item.noVoltageAlarmAValue }}V</p>
-                                <p>{{ shengyu_loudian.oneDianYa }}V</p>
+
+                                <p>{{ shengyu_loudian.twoDianYa }}V</p>
                               </div>
                             </el-col>
                             <el-col :span="8">
@@ -1284,7 +1156,7 @@
                                 <img src="../../../assets/images/dianya.png" />
 
                                 <p>{{ item.noVoltageAlarmAValue }}V</p>
-                                <p>{{ shengyu_loudian.oneDianYa }}V</p>
+                                <p>{{ shengyu_loudian.twoDianYa }}V</p>
                               </div>
                             </el-col>
                             <el-col :span="8">
@@ -1537,7 +1409,8 @@
                                 <img src="../../../assets/images/dianya.png" />
 
                                 <p>{{ item.noVoltageAlarmAValue }}V</p>
-                                <p>{{ shengyu_loudian.oneDianYa }}V</p>
+
+                                <p>{{ shengyu_loudian.twoDianYa }}V</p>
                               </div>
                             </el-col>
                             <el-col :span="8">
@@ -1656,7 +1529,7 @@
                             <img src="../../../assets/images/dianya.png" />
 
                             <p>{{ shengyu_loudian.oneVolatage }}V</p>
-                            <p>{{ shengyu_loudian.oneDianYa }}V</p>
+                            <p>{{ shengyu_loudian.twoDianYa }}V</p>
                             <!-- <p>{{ shengyu_loudian.oneVolatage }}V</p>
                           <p>{{ shengyu_loudian.oneDianYa }}V</p> -->
                           </div>
@@ -1665,7 +1538,7 @@
                           <div class="imgWapper_img">
                             <img src="../../../assets/images/dianya.png" />
                             <p>{{ shengyu_loudian.threeAlarm }}V</p>
-                            <p>{{ shengyu_loudian.louDianvoltage }}V</p>
+                            <p>{{ shengyu_loudian.twoDianLiu }}V</p>
                             <!-- <p>{{ shengyu_loudian.twoVolatage }}V</p>
                           <p>{{ shengyu_loudian.twoDianYa }}V</p> -->
                           </div>
@@ -3484,6 +3357,8 @@ import {
   getParaState,
   SetParameterApi_three,
   upSwitch,
+  getDevicePush,
+  getDevicePower,
 } from "@/api/index.js";
 
 import EZUIKit from "ezuikit-js";
@@ -3579,12 +3454,10 @@ export default {
           item.removeChild(item.firstChild);
         }
 
-        const deviceSerial = this.GetMapDataList.mess[
-          index
-        ].productNumber.split("_")[0];
-        const deviceSerial2 = this.GetMapDataList.mess[
-          index
-        ].productNumber.split("_")[1];
+        const deviceSerial =
+          this.GetMapDataList.mess[index].productNumber.split("_")[0];
+        const deviceSerial2 =
+          this.GetMapDataList.mess[index].productNumber.split("_")[1];
 
         var ezuikitTalkData = {
           accessToken: global.accessToken, // 应用accessToken
@@ -3717,45 +3590,53 @@ export default {
                   // console.log(this.getDeviceByDevIdList, 7899987978);
 
                   this.shengyu_loudian = {
-                    oneAlarm: this.getDeviceByDevIdList.mess2[0]
-                      .noLeakageAlarmACurrentValue,
-                    twoAlarm: this.getDeviceByDevIdList.mess2[0]
-                      .noLeakageAlarmBCurrentValue,
-                    threeAlarm: this.getDeviceByDevIdList.mess2[0]
-                      .noLeakageAlarmCCurrentValue,
-                    fourAlarm: this.getDeviceByDevIdList.mess2[0]
-                      .leakageAlarmCurrentValue,
+                    oneAlarm:
+                      this.getDeviceByDevIdList.mess2[0]
+                        .noLeakageAlarmACurrentValue,
+                    twoAlarm:
+                      this.getDeviceByDevIdList.mess2[0]
+                        .noLeakageAlarmBCurrentValue,
+                    threeAlarm:
+                      this.getDeviceByDevIdList.mess2[0]
+                        .noLeakageAlarmCCurrentValue,
+                    fourAlarm:
+                      this.getDeviceByDevIdList.mess2[0]
+                        .leakageAlarmCurrentValue,
                     oneDianLiu: res.data.row.ADianLiu,
                     twoDianLiu: res.data.row.BDianLiu,
                     threeDianLiu: res.data.row.CDianLiu,
                     fourDianLiu: res.data.row.SYdianliu,
-                    oneVolatage: this.getDeviceByDevIdList.mess2[0]
-                      .noVoltageAlarmAValue,
-                    twoVolatage: this.getDeviceByDevIdList.mess2[0]
-                      .noVoltageAlarmBValue,
-                    threeVolatage: this.getDeviceByDevIdList.mess2[0]
-                      .noVoltageAlarmCValue,
+                    oneVolatage:
+                      this.getDeviceByDevIdList.mess2[0].noVoltageAlarmAValue,
+                    twoVolatage:
+                      this.getDeviceByDevIdList.mess2[0].noVoltageAlarmBValue,
+                    threeVolatage:
+                      this.getDeviceByDevIdList.mess2[0].noVoltageAlarmCValue,
                     oneDianYa: res.data.row.BDianLiu,
                     twoDianYa: res.data.row.BDianYa,
                     threeDianYa: res.data.row.CDianYa,
-                    oneTempera: this.getDeviceByDevIdList.mess2[0]
-                      .noAlarmATemperatureValue,
-                    twoTempera: this.getDeviceByDevIdList.mess2[0]
-                      .noAlarmBTemperatureValue,
-                    threeTempera: this.getDeviceByDevIdList.mess2[0]
-                      .noAlarmCTemperatureValue,
-                    fourTempera: this.getDeviceByDevIdList.mess2[0]
-                      .noAlarmNTemperatureValue,
+                    oneTempera:
+                      this.getDeviceByDevIdList.mess2[0]
+                        .noAlarmATemperatureValue,
+                    twoTempera:
+                      this.getDeviceByDevIdList.mess2[0]
+                        .noAlarmBTemperatureValue,
+                    threeTempera:
+                      this.getDeviceByDevIdList.mess2[0]
+                        .noAlarmCTemperatureValue,
+                    fourTempera:
+                      this.getDeviceByDevIdList.mess2[0]
+                        .noAlarmNTemperatureValue,
                     oneWenDu: res.data.row.AWenDu,
                     twoWenDu: res.data.row.BWenDu,
                     threeWenDu: res.data.row.CWenDu,
                     fourWenDu: res.data.row.NWenDu,
-                    Lwendu: this.getDeviceByDevIdList.mess2[0]
-                      .temperatureAlarmAvalue,
-                    Nwendu: this.getDeviceByDevIdList.mess2[0]
-                      .temperatureAlarmNvalue,
+                    Lwendu:
+                      this.getDeviceByDevIdList.mess2[0].temperatureAlarmAvalue,
+                    Nwendu:
+                      this.getDeviceByDevIdList.mess2[0].temperatureAlarmNvalue,
                     louDianDianLiu: res.data.row.SYdianliu,
-                    louDianvoltage: res.data.row.BDianYa,
+                    louDianvoltage: res.data.row.ADianYa,
                   };
                   // console.log(this.shengyu_loudian);
                 }
@@ -4145,6 +4026,7 @@ export default {
       this.innerVisible = true;
       this.productNumber = productNumber;
       this.echarts_loading = true;
+      this.getDevicePowerFun(productNumber);
       await getDeviceByDevId(devId).then(
         (res) => {
           if (res.data == null || res.data == undefined) {
@@ -4205,35 +4087,35 @@ export default {
             // console.log(this.getDeviceByDevIdList, 7899987978);
 
             this.shengyu_loudian = {
-              oneAlarm: this.getDeviceByDevIdList.mess2[0]
-                .noLeakageAlarmACurrentValue,
-              twoAlarm: this.getDeviceByDevIdList.mess2[0]
-                .noLeakageAlarmBCurrentValue,
-              threeAlarm: this.getDeviceByDevIdList.mess2[0]
-                .noLeakageAlarmCCurrentValue,
-              fourAlarm: this.getDeviceByDevIdList.mess2[0]
-                .leakageAlarmCurrentValue,
+              oneAlarm:
+                this.getDeviceByDevIdList.mess2[0].noLeakageAlarmACurrentValue,
+              twoAlarm:
+                this.getDeviceByDevIdList.mess2[0].noLeakageAlarmBCurrentValue,
+              threeAlarm:
+                this.getDeviceByDevIdList.mess2[0].noLeakageAlarmCCurrentValue,
+              fourAlarm:
+                this.getDeviceByDevIdList.mess2[0].leakageAlarmCurrentValue,
               oneDianLiu: res.data.row.ADianLiu,
               twoDianLiu: res.data.row.BDianLiu,
               threeDianLiu: res.data.row.CDianLiu,
               fourDianLiu: res.data.row.SYdianliu,
-              oneVolatage: this.getDeviceByDevIdList.mess2[0]
-                .noVoltageAlarmAValue,
-              twoVolatage: this.getDeviceByDevIdList.mess2[0]
-                .noVoltageAlarmBValue,
-              threeVolatage: this.getDeviceByDevIdList.mess2[0]
-                .noVoltageAlarmCValue,
-              oneDianYa: res.data.row.BDianLiu,
+              oneVolatage:
+                this.getDeviceByDevIdList.mess2[0].noVoltageAlarmAValue,
+              twoVolatage:
+                this.getDeviceByDevIdList.mess2[0].noVoltageAlarmBValue,
+              threeVolatage:
+                this.getDeviceByDevIdList.mess2[0].noVoltageAlarmCValue,
+              oneDianYa: res.data.row.ADianYa,
               twoDianYa: res.data.row.BDianYa,
               threeDianYa: res.data.row.CDianYa,
-              oneTempera: this.getDeviceByDevIdList.mess2[0]
-                .noAlarmATemperatureValue,
-              twoTempera: this.getDeviceByDevIdList.mess2[0]
-                .noAlarmBTemperatureValue,
-              threeTempera: this.getDeviceByDevIdList.mess2[0]
-                .noAlarmCTemperatureValue,
-              fourTempera: this.getDeviceByDevIdList.mess2[0]
-                .noAlarmNTemperatureValue,
+              oneTempera:
+                this.getDeviceByDevIdList.mess2[0].noAlarmATemperatureValue,
+              twoTempera:
+                this.getDeviceByDevIdList.mess2[0].noAlarmBTemperatureValue,
+              threeTempera:
+                this.getDeviceByDevIdList.mess2[0].noAlarmCTemperatureValue,
+              fourTempera:
+                this.getDeviceByDevIdList.mess2[0].noAlarmNTemperatureValue,
               oneWenDu: res.data.row.AWenDu,
               twoWenDu: res.data.row.BWenDu,
               threeWenDu: res.data.row.CWenDu,
@@ -4241,7 +4123,7 @@ export default {
               Lwendu: this.getDeviceByDevIdList.mess2[0].temperatureAlarmAvalue,
               Nwendu: this.getDeviceByDevIdList.mess2[0].temperatureAlarmNvalue,
               louDianDianLiu: res.data.row.SYdianliu,
-              louDianvoltage: res.data.row.BDianYa,
+              louDianvoltage: res.data.row.ADianYa,
             };
             // console.log(this.shengyu_loudian);
           });
@@ -4551,6 +4433,21 @@ export default {
           });
         });
       }
+    },
+    devicesSetting() {
+      if (this.powerState == "1") {
+        this.innerVisible_shebei = true;
+        this.getDevicePushFun();
+      } else {
+        this.$message.error("暂无权限,请向上级申请");
+      }
+    },
+    //设备是否有权限打开设备设置
+    getDevicePowerFun(productNumber) {
+      getDevicePower(this.utils.userName, productNumber).then((res) => {
+        console.log(res.data.power, 6666666);
+        this.powerState = res.data.power;
+      });
     },
 
     //设备设置按钮
@@ -4917,6 +4814,28 @@ export default {
         }
       );
     },
+    //报警推送方式回显
+    getDevicePushFun() {
+      this.checkList = [];
+      getDevicePush(
+        this.utils.userName,
+        this.ElecDataList.DevData[0].productNumber
+      ).then((res) => {
+        res.data.data.forEach((el) => {
+          if (el.app == "1") {
+            this.checkList.push("App");
+          }
+          if (el.phone == "1") {
+            this.checkList.push("电话");
+          }
+          if (el.sms == "1") {
+            this.checkList.push("短信");
+          }
+        });
+        console.log(this.checkList);
+      });
+    },
+
     // TabS 切换函数
     handleClick(tab, event) {
       // console.log(tab.label);
@@ -4925,6 +4844,18 @@ export default {
           (res) => {
             console.log(res.data.row);
             const row = res.data.row;
+            // this.fazhishezhi.AXWD = row.AWenDu;
+            // this.fazhishezhi.BXWD = row.BWenDu;
+            // this.fazhishezhi.CXWD = row.CWenDu;
+            // this.fazhishezhi.NXWD = row.NWenDu;
+            // this.fazhishezhi.SYDL = row.SYdianliu;
+            // this.fazhishezhi.AXDL = row.ADianLiu;
+            // this.fazhishezhi.BXDL = row.BDianLiu;
+            // this.fazhishezhi.CXDL = row.BDianYa;
+            // this.fazhishezhi.AXDY = row.ADianYa;
+            // this.fazhishezhi.BXDY = row.BDianYa;
+            // this.fazhishezhi.CXDY = row.CDianYa;
+
             this.fazhishezhi.AXWD = row.AWenDu;
             this.fazhishezhi.BXWD = row.BWenDu;
             this.fazhishezhi.CXWD = row.CWenDu;
@@ -4938,6 +4869,9 @@ export default {
             this.fazhishezhi.CXDY = row.CDianYa;
           }
         );
+      }
+      if (tab.label === "报警推送方式") {
+        this.getDevicePushFun();
       }
       if (tab.label === "设备历史故障") {
         getHistoryFault(
