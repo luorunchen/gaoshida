@@ -77,20 +77,16 @@
           <p>电量统计</p>
         </div>
         <div
-          :class="
-            btnInfo == '线路老化预警' ? 'infoBtn infoBtnClick' : 'infoBtn'
-          "
-          @click="getInfo('线路老化预警')"
+          :class="btnInfo == '故障电弧' ? 'infoBtn infoBtnClick' : 'infoBtn'"
+          @click="getInfo('故障电弧')"
         >
-          <p>线路老化预警</p>
+          <p>故障电弧</p>
         </div>
         <div
-          :class="
-            btnInfo == '烟雾火灾预警' ? 'infoBtn infoBtnClick' : 'infoBtn'
-          "
-          @click="getInfo('烟雾火灾预警')"
+          :class="btnInfo == '过欠压预警' ? 'infoBtn infoBtnClick' : 'infoBtn'"
+          @click="getInfo('过欠压预警')"
         >
-          <p>烟雾火灾预警</p>
+          <p>过欠压预警</p>
         </div>
         <div
           :class="btnInfo == '短路预警' ? 'infoBtn infoBtnClick' : 'infoBtn'"
@@ -103,6 +99,26 @@
           @click="getInfo('漏电预警')"
         >
           <p>漏电预警</p>
+        </div>
+        <div
+          :class="btnInfo == '过流预警' ? 'infoBtn infoBtnClick' : 'infoBtn'"
+          @click="getInfo('过流预警')"
+        >
+          <p>过流预警</p>
+        </div>
+        <div
+          :class="btnInfo == '温度预警' ? 'infoBtn infoBtnClick' : 'infoBtn'"
+          @click="getInfo('温度预警')"
+        >
+          <p>温度预警</p>
+        </div>
+        <div
+          :class="
+            btnInfo == '烟雾火灾预警' ? 'infoBtn infoBtnClick' : 'infoBtn'
+          "
+          @click="getInfo('烟雾火灾预警')"
+        >
+          <p>烟雾火灾预警</p>
         </div>
       </div>
     </div>
@@ -137,7 +153,7 @@
       <template v-if="this.btnInfo == '电量统计'">
         <DianLiangTongJi />
       </template>
-      <template v-if="this.btnInfo == '线路老化预警'">
+      <template v-if="this.btnInfo == '故障电弧'">
         <XianLvLaoHuaYuJing />
       </template>
       <template v-if="this.btnInfo == '烟雾火灾预警'">
@@ -148,6 +164,15 @@
       </template>
       <template v-if="this.btnInfo == '漏电预警'">
         <LouDianYuJing />
+      </template>
+      <template v-if="this.btnInfo == '过流预警'">
+        <GuoLiuYuJing />
+      </template>
+      <template v-if="this.btnInfo == '过欠压预警'">
+        <GuoQianYa />
+      </template>
+      <template v-if="this.btnInfo == '温度预警'">
+        <WenDuYuJing />
       </template>
     </div>
   </div>
@@ -167,6 +192,9 @@ import YanWuHuoZaiYuJing from "./YanWuHuoZaiYuJing";
 import DuanLvYuJing from "./DuanLvYuJing";
 import LouDianYuJing from "./LouDianYuJing";
 import DianQiHuoZhai from "./DianQiHuoZhai";
+import GuoLiuYuJing from "./GuoLiuYuJing";
+import GuoQianYa from "./GuoQianYa";
+import WenDuYuJing from "./WenDuYuJing";
 export default {
   data() {
     return {
@@ -207,6 +235,8 @@ export default {
     },
   },
   components: {
+    WenDuYuJing,
+    GuoQianYa,
     XiangMuGuanLi,
     SheBeiGuanLi,
     BaoJingGuZhang,
@@ -219,8 +249,10 @@ export default {
     DuanLvYuJing,
     LouDianYuJing,
     DianQiHuoZhai,
+    GuoLiuYuJing,
   },
   mounted() {
+    console.log(window.name);
     if (window.name == "") {
       this.btnInfo = "电气火灾隐患";
     } else if (window.name != "") {
@@ -245,11 +277,12 @@ export default {
 /deep/.el-dialog__header {
   background: #1071e2;
 
-  /deep/.el-dialog__title {
+  .el-dialog__title {
     color: #fff;
   }
-  /deep/.el-dialog__headerbtn .el-dialog__close {
+  .el-dialog__headerbtn .el-dialog__close {
     color: #fff;
+    font-weight: 900;
   }
 }
 #app {

@@ -23,11 +23,11 @@
 
       <el-form-item>
         <el-button type="primary" @click="onSubmit">查询</el-button>
-        <el-button
+        <!-- <el-button
           type="primary"
           @click="(batch_Visible = true), batchFun('分配')"
           >批量分配</el-button
-        >
+        > -->
         <el-button
           v-if="
             this.utils.userName == '13076920054' ||
@@ -238,11 +238,12 @@
           <el-col :span="8">
             <div
               v-if="
-                (ParaState.start == 0 && ParaState.dSid == '3') ||
-                (ParaState.devstatus == 1 && ParaState.dSid == '22')
+                (ParaState.devstatus == 1 && ParaState.dSid == '3') ||
+                (ParaState.start == 0 && ParaState.dSid == '22')
               "
               style="
-                background: #3694e4;
+                background: #5f5b5b;
+
                 height: 30px;
                 margin: 10px;
                 line-height: 30px;
@@ -255,7 +256,7 @@
             <div
               v-else
               style="
-                background: #5f5b5b;
+                background: #3694e4;
                 height: 30px;
                 margin: 10px;
                 line-height: 30px;
@@ -900,11 +901,11 @@ export default {
         shareDevice(this.utils.userName, data, phone[0], phone[1]).then(
           (res) => {
             // console.log(res);
-            if (res.data.code == 200) {
+            if (res.data.code == 200 || res.data.code == 501) {
               this.$message.success("分配成功");
               this.batch_Visible = false;
             } else {
-              this.$message.error("分配失败");
+              this.$message.error(res.data.msg);
             }
           },
           () => {
@@ -1059,8 +1060,8 @@ export default {
           this.fazhishezhi.NXWD = row.NWenDu;
           this.fazhishezhi.SYDL = row.SYdianliu;
           this.fazhishezhi.AXDL = row.ADianLiu;
-          this.fazhishezhi.BXDL = row.BDianLiu;
-          this.fazhishezhi.CXDL = row.BDianYa;
+          this.fazhishezhi.BXDL = row.ADianYa;
+          this.fazhishezhi.CXDL = row.u_voltage;
           this.fazhishezhi.AXDY = row.ADianYa;
           this.fazhishezhi.BXDY = row.BDianYa;
           this.fazhishezhi.CXDY = row.CDianYa;

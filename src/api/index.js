@@ -164,6 +164,23 @@ export function getAlarmDevice(username, PageNo, alarm, PageSize, object, typeNa
     }
   })
 }
+//接入设备报警查看接口
+export function getHistoryAlarm(deviceName, pageNum, alarm, pageSize, proName, typeName) {
+  return service({
+    url: `/getHistoryAlarm.action`,
+    method: 'GET',
+    params: {
+      deviceName,
+      pageNum,
+      alarm,
+      pageSize,
+      proName,
+      typeName,
+
+    }
+  })
+}
+
 //接入设备在线设备查看接口
 export function getDeviceStatus(my_username, PageNo, alarm, PageSize, object, type, username, status) {
   return service({
@@ -539,12 +556,12 @@ export function deletegalFireMan(pid) {
   })
 }
 //新增设备
-export function addDevice(projName, devSignature, username, installLocation, long_lat, devtype, device_name, place, superiorEquipme, loopNumber, devId, devRemark, sms) {
+export function addDevice(projName, devSignature, username, installLocation, long_lat, devtype, device_name, place, superiorEquipme, loopNumber, devId, devRemark, sms, phone) {
   return service({
     url: `/admin/device/check/addDevice.action`,
     method: 'GET',
     params: {
-      projName, devSignature, username, installLocation, long_lat, devtype, device_name, place, superiorEquipme, loopNumber, devId, devRemark, sms
+      projName, devSignature, username, installLocation, long_lat, devtype, device_name, place, superiorEquipme, loopNumber, devId, devRemark, sms, phone
     }
   })
 }
@@ -972,7 +989,7 @@ export function getParaState(username, imei) {
 //推送方式回显
 export function getDevicePush(username, device) {
   return service({
-    url: `/WebProject/getDevicePush.action `,
+    url: `/WebProject/getDevicePush.action`,
     method: 'GET',
     params: {
       username, device
@@ -983,10 +1000,112 @@ export function getDevicePush(username, device) {
 //推送方式回显
 export function getDevicePower(username, device) {
   return service({
-    url: `/getDevicePower.action `,
+    url: `/getDevicePower.action`,
     method: 'GET',
     params: {
       username, device
+    }
+  })
+}
+//用电规划
+export function addTask(username, task_name, pid, type) {
+  return service({
+    url: `/addTask.action`,
+    method: 'GET',
+    params: {
+      username, task_name, pid, type
+    }
+  })
+}
+//用电规划
+export function getAllDevice(pid, tid) {
+  return service({
+    url: `/getAllDevice.action`,
+    method: 'GET',
+    params: {
+      pid, tid
+    }
+  })
+}
+//用电规划
+export function addTaskTime(device, time, week, tid) {
+  return service({
+    url: `/addTaskTime.action`,
+    method: 'GET',
+    params: {
+      device, time, week, tid
+    }
+  })
+}
+//用电规划
+export function getTaskName(pid, type) {
+  return service({
+    url: `/getTaskName.action`,
+    method: 'GET',
+    params: {
+      pid, type
+    }
+  })
+}
+//用电规划
+export function getTaskTime(tid) {
+  return service({
+    url: `/getTaskTime.action`,
+    method: 'GET',
+    params: {
+      tid
+    }
+  })
+}
+//用电规划
+export function sendTime(tid) {
+  return service({
+    url: `/sendTime.action`,
+    method: 'GET',
+    params: {
+      tid
+    }
+  })
+}
+//用电规划
+export function deleteTask(tid) {
+  return service({
+    url: `/deleteTask.action`,
+    method: 'GET',
+    params: {
+      tid
+    }
+  })
+}
+//用电规划
+export function addDeviceTask(imei, tid) {
+  return service({
+    url: `/addDeviceTask.action`,
+    method: 'GET',
+    params: {
+      imei, tid
+    }
+  })
+}
+
+
+//用电规划
+export function updateTask(id, time, week) {
+  return service({
+    url: `/updateTask.action`,
+    method: 'GET',
+    params: {
+      id, time, week
+    }
+  })
+}
+//用电规划
+export function delTaskDevice(id, type) {
+  return service({
+    url: `/delTaskDevice.action`,
+    method: 'GET',
+    params: {
+      id, type
     }
   })
 }

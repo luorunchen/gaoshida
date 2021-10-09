@@ -72,13 +72,13 @@
                   <span v-if="item.productNumber != undefined">
                     <i
                       v-if="
-                        (item.start == 1 && item.dSid == '3') ||
-                        (item.devstatus == 0 && item.dSid == '22')
+                        (item.devstatus == 1 && item.dSid == '3') ||
+                        (item.start == 0 && item.dSid == '22')
                       "
-                      style="color: #6dff64"
-                      >●合闸</i
+                      style="color: red"
+                      >●分闸</i
                     >
-                    <i v-else style="color: red">●分闸</i>
+                    <i v-else style="color: #6dff64">●合闸</i>
                   </span>
 
                   <el-button
@@ -109,7 +109,7 @@
         </template>
       </div>
     </div>
-    <PublicPopUps ref="publicPopUps" :pagetype="pagetype" />
+    <PublicPopUps ref="publicPopUps" :pagetype="pagetype" :popUps="yes" />
     <!-- 搜索内容弹窗 -->
   </div>
 </template>
@@ -137,6 +137,7 @@ export default {
   props: ["SElec_DetailElecDevice_List", "pagetype", "DeviceProjectNewData"],
   data() {
     return {
+      yes: "yes",
       location: "项目点位",
       DeviceHistory: "",
       SElec_DetailElecDevice_List_Copy: "",
@@ -277,7 +278,7 @@ export default {
         this.$message.success("修改成功");
       });
     },
-  
+
     // //提交处置情况
     // management() {
     //   if (this.ElecDataList.DevData == "正常") {
@@ -295,9 +296,9 @@ export default {
     //   );
     // },
     //独立烟感
-   
+
     // 水压表
- 
+
     equipment(data, num) {
       this.equipmentColor = data;
       getDeviceByPid(this.devicepidData, num, 2, this.utils.userName).then(
@@ -331,8 +332,7 @@ export default {
       console.log("submit!");
     },
     // TabS 切换函数
- 
- 
+
     selectDeviceByNumberFun() {
       var reg = new RegExp("^[0-9]*$");
       let dataInfo = [];
@@ -360,12 +360,10 @@ export default {
             ) >= 0
           ) {
             // console.log(data[i].address, 99999)
-            this.DeviceProjectNewData[
-              i
-            ].device_name = this.DeviceProjectNewData[i].name;
-            this.DeviceProjectNewData[i].MC = this.DeviceProjectNewData[
-              i
-            ].address;
+            this.DeviceProjectNewData[i].device_name =
+              this.DeviceProjectNewData[i].name;
+            this.DeviceProjectNewData[i].MC =
+              this.DeviceProjectNewData[i].address;
             this.DeviceProjectNewData[i].BH = this.DeviceProjectNewData[i].pid;
             dataInfo.push(this.DeviceProjectNewData[i]);
           }

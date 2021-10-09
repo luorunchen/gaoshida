@@ -121,7 +121,11 @@
            
             <el-button slot="append">新增</el-button></el-input
           > -->
-          <el-select
+
+          <el-input v-model="mapInfo.huilulist"> </el-input>
+
+          <!-- 暂时注释,后期修改 -->
+          <!-- <el-select
             @focus="inputClick('防火员')"
             v-model="mapInfo.huilulist"
             filterable
@@ -136,9 +140,9 @@
               :label="item.user_name + item.phone"
               :value="parseInt(item.pid)"
             >
-              <!-- {{ item.user_name + item.phone }} -->
+            
             </el-option>
-          </el-select>
+          </el-select> -->
         </el-form-item>
         <el-form-item>
           <el-button type="primary" plain @click="addNew('0')">新增</el-button>
@@ -154,10 +158,11 @@
         </el-form-item>
 
         <el-form-item label="责任人">
-          <!-- <el-input v-model="mapInfo.shebei" placeholder="审批人">
-            <el-button slot="append">新增</el-button></el-input
-          > -->
-          <el-select
+          <el-input v-model="mapInfo.shebeilist" placeholder="责任人">
+            ></el-input
+          >
+
+          <!-- <el-select
             @focus="inputClick('责任人')"
             v-model="mapInfo.shebeilist"
             filterable
@@ -173,7 +178,7 @@
               :label="item.user_name + item.phone"
             >
             </el-option>
-          </el-select>
+          </el-select> -->
         </el-form-item>
         <el-form-item>
           <el-button type="primary" plain @click="addNew('1')">新增</el-button>
@@ -188,10 +193,9 @@
           ></el-input>
         </el-form-item>
         <el-form-item label="街道负责人">
-          <!-- <el-input v-model="mapInfo.xintiao" placeholder="审批人">
-            <el-button slot="append">新增</el-button>
-          </el-input> -->
-          <el-select
+          <el-input v-model="mapInfo.xintiaolist" placeholder="街道负责人">
+          </el-input>
+          <!-- <el-select
             @focus="inputClick('街道')"
             v-model="mapInfo.xintiaolist"
             filterable
@@ -208,7 +212,7 @@
             >
               {{ item.user_name + item.phone }}
             </el-option>
-          </el-select>
+          </el-select> -->
         </el-form-item>
         <el-form-item>
           <el-button type="primary" plain @click="addNew('3')">新增</el-button>
@@ -223,10 +227,9 @@
           ></el-input>
         </el-form-item>
         <el-form-item label="网格员">
-          <!-- <el-input v-model="mapInfo.zhuche" placeholder="审批人">
-            <el-button slot="append">新增</el-button></el-input
-          > -->
-          <el-select
+          <el-input v-model="mapInfo.zhuchelist" placeholder="网格员">
+          </el-input>
+          <!-- <el-select
             @focus="inputClick('网格员')"
             v-model="mapInfo.zhuchelist"
             filterable
@@ -242,7 +245,7 @@
               :value="parseInt(item.pid)"
             >
             </el-option>
-          </el-select>
+          </el-select> -->
         </el-form-item>
 
         <el-form-item>
@@ -412,8 +415,26 @@
           ></el-input>
         </el-form-item>
         <el-form-item label="短信推送">
-          <el-radio v-model="mapInfo.duanxin" label="0">开启</el-radio>
-          <el-radio v-model="mapInfo.duanxin" label="1">关闭</el-radio>
+          <el-radio v-model="mapInfo.duanxin" label="1">开启</el-radio>
+          <el-radio v-model="mapInfo.duanxin" label="0">关闭</el-radio>
+
+          <!-- <el-input
+            v-model="mapInfo.duanxin"
+          
+            placeholder="请填写备注"
+          ></el-input> -->
+        </el-form-item>
+      </el-form>
+      <el-form label-width="100px" :inline="true" class="demo-form-inline">
+        <el-form-item label="备注">
+          <el-input
+            v-model="mapInfo.reamrk"
+            placeholder="请填写备注"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="电话推送">
+          <el-radio v-model="mapInfo.phone" label="1">开启</el-radio>
+          <el-radio v-model="mapInfo.phone" label="0">关闭</el-radio>
 
           <!-- <el-input
             v-model="mapInfo.duanxin"
@@ -437,14 +458,10 @@
             ></el-input>
           </el-tooltip>
         </el-form-item>
-        <el-form-item label="备注">
-          <el-input
-            v-model="mapInfo.reamrk"
-            placeholder="请填写备注"
-          ></el-input>
-        </el-form-item>
+
         <div id="container"></div>
       </el-form>
+
       <span slot="footer" class="dialog-footer">
         <el-button @click="addNewSheBeiVisible = false">取 消</el-button>
         <el-button type="primary" @click="addNewSheBeiTrue()">确 定</el-button>
@@ -884,7 +901,10 @@ export default {
       let long_lat;
       let long_latbai;
       let ftelephone;
-
+      let one;
+      let two;
+      let three;
+      let four;
       addLegalFireMan(
         0,
         this.mapInfo.addUser,
@@ -898,8 +918,49 @@ export default {
         (res) => {
           if (res.data.list[0].status == "true") {
             this.$message.success("添加成功");
+
+            switch (this.state) {
+              case "0":
+                this.one = this.mapInfo.addUser + "," + this.mapInfo.addPhone;
+                break;
+              case "1":
+                this.two = this.mapInfo.addUser + "," + this.mapInfo.addPhone;
+                break;
+              case "2":
+                this.three = this.mapInfo.addUser + "," + this.mapInfo.addPhone;
+                break;
+              case "3":
+                this.four = this.mapInfo.addUser + "," + this.mapInfo.addPhone;
+                break;
+            }
+
+            this.mapInfo.huilulist = this.one;
+            this.mapInfo.shebeilist = this.two;
+            this.mapInfo.zhuchelist = this.three;
+            this.mapInfo.xintiaolist = this.four;
+            this.$forceUpdate();
           } else {
             this.$message.error(res.data.list[0].mess);
+            switch (this.state) {
+              case "0":
+                this.one = this.mapInfo.addUser + "," + this.mapInfo.addPhone;
+                break;
+              case "1":
+                this.two = this.mapInfo.addUser + "," + this.mapInfo.addPhone;
+                break;
+              case "2":
+                this.three = this.mapInfo.addUser + "," + this.mapInfo.addPhone;
+                break;
+              case "3":
+                this.four = this.mapInfo.addUser + "," + this.mapInfo.addPhone;
+                break;
+            }
+
+            this.mapInfo.huilulist = this.one;
+            this.mapInfo.shebeilist = this.two;
+            this.mapInfo.zhuchelist = this.three;
+            this.mapInfo.xintiaolist = this.four;
+            this.$forceUpdate();
           }
         },
         (rej) => {
@@ -1372,7 +1433,8 @@ export default {
         loopNumber,
         devId,
         this.mapInfo.reamrk,
-        this.mapInfo.duanxin //短信推送
+        this.mapInfo.duanxin, //短信推送
+        this.mapInfo.phone //短信推送
       ).then(
         (res) => {
           if (res.data.list[0].status == "true") {

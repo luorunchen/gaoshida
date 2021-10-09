@@ -250,7 +250,9 @@
                 </div>
                 <div
                   style="margin-left: 14px; color: #00e4ff"
-                  @click="alarmInfoClick(item.did, item.devicenoid)"
+                  @click="
+                    alarmInfoClick(item.did, item.deviceid || item.devicenoid)
+                  "
                 >
                   <div>设备:{{ item.deviceno_name }}</div>
                   <div>地址:{{ item.address }}</div>
@@ -310,7 +312,7 @@ import PublicPopUps from "../FireInternetOfThings/translate/publicPopUps";
 export default {
   data() {
     return {
-      imagesUrl: "http://124.71.11.195:80/image/1000/1617435800865juxing4.png",
+      imagesUrl: "https://gsdiot.com/image/1000/1617435800865juxing4.png",
       fileList: [],
       pagetype: 3,
       fullscreenLoading: false,
@@ -401,7 +403,7 @@ export default {
       getLogo(this.utils.userName).then((res) => {
         console.log(res.data, "=======");
         if (res.data != "") {
-          this.imagesUrl = `http://${res.data}`;
+          this.imagesUrl = `https://${res.data}`;
         }
 
         // http://124.71.11.195/image/1000/1615798468172juxing4.png
@@ -739,13 +741,18 @@ export default {
         xAxis: {
           type: "category",
           data: [
-            "星期一",
-            "星期二",
-            "星期三",
-            "星期四",
-            "星期五",
-            "星期六",
-            "星期天",
+            "一月",
+            "二月",
+            "三月",
+            "四月",
+            "五月",
+            "六月",
+            "七月",
+            "八月",
+            "九月",
+            "十月",
+            "十一月",
+            "十二月",
           ],
           axisLine: {
             lineStyle: {
@@ -779,7 +786,7 @@ export default {
         },
         series: [
           {
-            data: [150, 230, 224, 218, 135, 147, 260],
+            data: [150, 230, 224, 218, 135, 147, 260, 157, 179, 145, 134, 165],
             type: "line",
           },
         ],
@@ -945,12 +952,12 @@ export default {
 
         res.data.forEach((el) => {
           // if(el.typeName)
-
+          console.log(el.typeName.indexOf("漏电") < 0, 5555);
           if (el.typeName.indexOf("欠压") < 0) {
             res.data.push({ typeName: "欠压预警", num: "0" });
           }
           if (el.typeName.indexOf("漏电") < 0) {
-            res.data.push({ typeName: "漏电预警", num: "0" });
+            res.data.push({ typeName: "漏电故障", num: "0" });
           }
           if (el.typeName.indexOf("短路") < 0) {
             res.data.push({ typeName: "短路预警", num: "0" });
@@ -983,21 +990,22 @@ export default {
         // res.data.filter((item, index) => {
         //   return res.data.indexOf(res.data.typeName) === item.typeName;
         // });
-        console.log(res.data);
+        //数组去重
         var arr2 = res.data.filter((x, index, self) => {
           let arrList = [];
           res.data.forEach((el) => {
             arrList.push(el.typeName);
             // num.push(el.num);
           });
+
           return arrList.indexOf(x.typeName) === index;
         });
+
         arr2.forEach((el) => {
           name.push(el.typeName);
           num.push(el.num);
         });
-        console.log(arr2);
-        console.log(res.data);
+
         // ////console.log(listName);
         myChart_four.setOption({
           // -----------------------------------------
@@ -1257,14 +1265,14 @@ export default {
             {
               name: "故障数",
               type: "line",
-              stack: "总量",
+
               areaStyle: {},
               data: fault,
             },
             {
               name: "报警数",
               type: "line",
-              stack: "总量",
+
               areaStyle: {},
               data: data,
             },

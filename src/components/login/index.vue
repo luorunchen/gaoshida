@@ -133,12 +133,14 @@ export default {
           if (res.data.role[0] == 2000) {
             res.data.role[0] = 1000;
           }
+          console.log(res.data.token, "token");
           sessionStorage.setItem("userName", username);
           sessionStorage.setItem("role", res.data.role[0]);
 
           sessionStorage.setItem("new_role", res.data.new_role);
           sessionStorage.setItem("region", res.data.region);
           sessionStorage.setItem("power", res.data.power);
+          sessionStorage.setItem("token", res.data.token);
           this.utils.userName = username;
           this.utils.powerId = res.data.new_role;
           if (this.utils.powerId == 2000) {

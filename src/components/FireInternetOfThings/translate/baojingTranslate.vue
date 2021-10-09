@@ -150,57 +150,67 @@
                   {{ scope.row.leakageAlarmCurrentValue }} </span
                 >mA
               </template>
-              <template v-if="scope.row.type == 'A相电流-报警'">
+              <template v-else-if="scope.row.type == 'A相电流-报警'">
                 <span style="color: red">
                   {{ scope.row.currentAlarmAvalue }} </span
                 >A
               </template>
-              <template v-if="scope.row.type == 'B相电流-报警'">
+              <template v-else-if="scope.row.type == 'B相电流-报警'">
                 <span style="color: red">
                   {{ scope.row.currentAlarmBvalue }} </span
                 >A
               </template>
-              <template v-if="scope.row.type == 'C相电流-报警'">
+              <template v-else-if="scope.row.type == 'C相电流-报警'">
                 <span style="color: red">
                   {{ scope.row.currentAlarmBvalue }} </span
                 >A
               </template>
-              <template v-if="scope.row.type == 'B温度-报警'">
+              <template v-else-if="scope.row.type == 'B温度-报警'">
                 <span style="color: red">
                   {{ scope.row.temperatureAlarmBvalue }} </span
                 >℃
               </template>
-              <template v-if="scope.row.type == 'A温度-报警'">
+              <template v-else-if="scope.row.type == 'A温度-报警'">
                 <span style="color: red">
                   {{ scope.row.temperatureAlarmAvalue }} </span
                 >℃
               </template>
-              <template v-if="scope.row.type == 'C温度-报警'">
+              <template v-else-if="scope.row.type == 'C温度-报警'">
                 <span style="color: red">
                   {{ scope.row.temperatureAlarmCvalue }} </span
                 >℃
               </template>
-              <template v-if="scope.row.type == 'N温度-报警'">
+              <template v-else-if="scope.row.type == 'N温度-报警'">
                 <span style="color: red">
                   {{ scope.row.temperatureAlarmNvalue }} </span
                 >℃
               </template>
-              <template v-if="scope.row.type == '漏电故障'">
+              <template v-else-if="scope.row.type == 'L线温度报警'">
+                <span style="color: red">
+                  {{ scope.row.temperatureAlarmAvalue }} </span
+                >℃
+              </template>
+              <template v-else-if="scope.row.type == 'N线温度报警'">
+                <span style="color: red">
+                  {{ scope.row.temperatureAlarmNvalue }} </span
+                >℃
+              </template>
+              <template v-else-if="scope.row.type == '漏电故障'">
                 <span style="color: red">
                   {{ scope.row.noAlarmCurrentValue }} </span
                 >mA
               </template>
-              <template v-if="scope.row.type == 'A相电压过载-报警'">
+              <template v-else-if="scope.row.type == 'A相电压过载-报警'">
                 <span style="color: red">
                   {{ scope.row.voltageAlarmAvalue }} </span
                 >V
               </template>
-              <template v-if="scope.row.type == 'B相电压-报警'">
+              <template v-else-if="scope.row.type == 'B相电压-报警'">
                 <span style="color: red">
                   {{ scope.row.voltageAlarmBvalue }} </span
                 >V
               </template>
-              <template v-if="scope.row.type == 'C相电压-报警'">
+              <template v-else-if="scope.row.type == 'C相电压-报警'">
                 <span style="color: red">
                   {{ scope.row.voltageAlarmCvalue }} </span
                 >V

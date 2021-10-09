@@ -19,9 +19,9 @@
           placeholder="项目名称"
         ></el-input>
       </el-form-item>
-      <el-form-item label="设备编号">
+      <!-- <el-form-item label="设备编号">
         <el-input v-model="formInline.imei" placeholder="设备编号"></el-input>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-button type="primary" @click="onSubmit">查询</el-button>
       </el-form-item>
@@ -66,7 +66,7 @@
     >
       <el-card class="box-card">
         <div slot="header" class="clearfix">
-          <span>最近7天用电量</span>
+          <span>最近一年用电量</span>
         </div>
         <div class="echart"></div>
       </el-card>
@@ -126,7 +126,7 @@ export default {
   },
   methods: {
     onSubmit() {
-      console.log("submit!");
+      this.getDeviceStatusFun();
     },
     handleSizeChange(val) {
       this.current = val;
@@ -144,7 +144,7 @@ export default {
         this.size,
         "",
         this.current,
-        "",
+        this.formInline.proName,
         3,
         this.utils.userName,
         1 //在线:1 离线:0
@@ -162,21 +162,37 @@ export default {
           xAxis: {
             type: "category",
             data: [
-              "星期一",
-              "星期二",
-              "星期三",
-              "星期四",
-              "星期五",
-              "星期六",
-              "星期日",
+              "一月",
+              "二月",
+              "三月",
+              "四月",
+              "五月",
+              "六月",
+              "七月",
+              "八月",
+              "九月",
+              "十月",
+              "十一月",
+              "十二月",
             ],
+          },
+          tooltip: {
+            trigger: "axis",
+            axisPointer: {
+              type: "cross",
+              label: {
+                backgroundColor: "#6a7985",
+              },
+            },
           },
           yAxis: {
             type: "value",
           },
           series: [
             {
-              data: [150, 230, 224, 218, 135, 147, 260],
+              data: [
+                150, 230, 224, 218, 135, 147, 260, 157, 179, 145, 134, 165,
+              ],
               type: "line",
             },
           ],

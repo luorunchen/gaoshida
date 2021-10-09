@@ -395,6 +395,7 @@
       title="查看"
       :visible.sync="innerVisible"
       :modal-append-to-body="false"
+      :before-close="handleCloseInnerVisible"
     >
       <el-row
         ><el-button type="primary " @click="devicesSetting">设备设置</el-button>
@@ -412,12 +413,12 @@
             <ul v-for="(item, index) in ElecDataList.DevData" :key="index">
               <div
                 v-if="
-                  (ParaState.start == 0 && ParaState.dSid == '3') ||
-                  (ParaState.devstatus == 1 && ParaState.dSid == '22')
+                  (ParaState.devstatus == 1 && ParaState.dSid == '3') ||
+                  (ParaState.start == 0 && ParaState.dSid == '22')
                 "
                 style="
                   position: absolute;
-                  background: #3694e4;
+                  background: #5f5b5b;
                   width: 50px;
                   color: #fff;
                   text-align: center;
@@ -429,7 +430,7 @@
                 v-else
                 style="
                   position: absolute;
-                  background: #5f5b5b;
+                  background: #3694e4;
                   width: 50px;
                   color: #fff;
                   text-align: center;
@@ -604,14 +605,14 @@
 
                                 <p>{{ item.noVoltageAlarmAValue }}V</p>
 
-                                <p>{{ shengyu_loudian.twoDianYa }}V</p>
+                                <p>{{ shengyu_loudian.louDianvoltage }}V</p>
                               </div>
                             </el-col>
                             <el-col :span="8">
                               <div class="imgWapper_img">
                                 <img src="../../../assets/images/dianya.png" />
                                 <p>{{ item.noLeakageAlarmCCurrentValue }}V</p>
-                                <p>{{ shengyu_loudian.louDianvoltage }}V</p>
+                                <p>{{ shengyu_loudian.u_voltage }}V</p>
                               </div>
                             </el-col>
                           </el-row>
@@ -675,167 +676,11 @@
                     item.info == '22' ||
                     item.info == '38' ||
                     item.info == '39' ||
-                    (item.info == '0' && item.type.indexOf('C温度') != -1)
+                    (item.info == '0' && item.type.indexOf('C温度') != -1) ||
+                    (item.info == '0' && item.type.indexOf('L温度') != -1) ||
+                    (item.info == '0' && item.type.indexOf('双温度') != -1)
                   "
                 >
-                  <!-- <el-col :span="8"
-                  ><div class="grid-content bg-purple">
-                    <div class="imgWapper">
-                      <el-row>
-                        <template>
-                          <el-col :span="6">
-                            <div class="imgWapper_img">
-                              <img src="../../../assets/images/dianliu.png" />
-                              <p>{{ shengyu_loudian.oneAlarm }}A</p>
-                              <p>{{ shengyu_loudian.oneDianLiu }}A</p>
-                            </div>
-                          </el-col>
-                          <el-col :span="6">
-                            <div class="imgWapper_img">
-                              <img
-                                src="../../../assets/images/dianliu.png"
-                                width="35px"
-                                height="35px"
-                              />
-                              <p>{{ shengyu_loudian.twoAlarm }}A</p>
-                              <p>{{ shengyu_loudian.twoDianLiu }}A</p>
-                            </div>
-                          </el-col>
-                          <el-col :span="6">
-                            <div class="imgWapper_img">
-                              <img src="../../../assets/images/dianliu.png" />
-                              <p>{{ shengyu_loudian.threeAlarm }}A</p>
-                              <p>{{ shengyu_loudian.threeDianLiu }}A</p>
-                            </div>
-                          </el-col>
-                          <el-col :span="6">
-                            <div class="imgWapper_img">
-                              <img src="../../../assets/images/dianliu.png" />
-                              <p>{{ shengyu_loudian.fourAlarm }}mA</p>
-                              <p>{{ shengyu_loudian.fourDianLiu }}mA</p>
-                            </div>
-                          </el-col>
-                        </template>
-                      </el-row>
-                      <ul>
-                        <li>报警状态:无</li>
-                        <li>报警值:无</li>
-                        <li>报警时间:无</li>
-                      </ul>
-                    </div>
-                  </div></el-col
-                >
-
-                <el-col :span="8"
-                  ><div class="grid-content bg-purple">
-                    <div class="imgWapper">
-                      <el-row>
-                        <el-col :span="8">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/dianya.png" />
-                            <p>{{ shengyu_loudian.oneVolatage }}V</p>
-                            <p>{{ shengyu_loudian.oneDianYa }}V</p>
-                          </div>
-                        </el-col>
-                        <el-col :span="8">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/dianya.png" />
-                            <p>{{ shengyu_loudian.twoVolatage }}V</p>
-                            <p>{{ shengyu_loudian.twoDianYa }}V</p>
-                          </div>
-                        </el-col>
-                        <el-col :span="8">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/dianya.png" />
-                            <p>{{ shengyu_loudian.twoVolatage }}V</p>
-                            <p>{{ shengyu_loudian.twoDianYa }}V</p>
-                          </div>
-                        </el-col>
-                      </el-row>
-                      <ul>
-                        <li>报警状态:无</li>
-                        <li>报警值:无</li>
-                        <li>报警时间:无</li>
-                      </ul>
-                    </div>
-                  </div></el-col
-                >
-                <el-col :span="8"
-                  ><div class="grid-content bg-purple">
-                    <div class="imgWapper">
-                      <el-row>
-                        <el-col :span="6">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/wenduji.png" />
-                            <p>{{ shengyu_loudian.oneTempera }}℃</p>
-                            <p>{{ shengyu_loudian.oneWenDu }}℃</p>
-                          </div>
-                        </el-col>
-                        <el-col :span="6">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/wenduji.png" />
-                            <p>{{ shengyu_loudian.twoTempera }}℃</p>
-                            <p>{{ shengyu_loudian.twoWenDu }}℃</p>
-                          </div>
-                        </el-col>
-                        <el-col :span="6">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/wenduji.png" />
-                            <p>{{ shengyu_loudian.threeTempera }}℃</p>
-                            <p>{{ shengyu_loudian.threeWenDu }}℃</p>
-                          </div>
-                        </el-col>
-                        <el-col :span="6">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/wenduji.png" />
-                            <p>{{ shengyu_loudian.fourTempera }}℃</p>
-                            <p>{{ shengyu_loudian.fourWenDu }}℃</p>
-                          </div>
-                        </el-col>
-                      </el-row>
-                      <ul>
-                        <li>
-                          报警状态: <span>{{ item.type }}</span>
-                        </li>
-                        <li>
-                          报警值:
-                          <span v-if="item.type.indexOf('N温度') != -1"
-                            >{{
-                              item.temperatureAlarmNvalue == ""
-                                ? item.noAlarmNTemperatureValue
-                                : item.temperatureAlarmNvalue
-                            }}℃
-                          </span>
-                          <span v-if="item.type.indexOf('A温度') != -1"
-                            >{{
-                              item.temperatureAlarmAvalue == ""
-                                ? item.noAlarmNTemperatureValue
-                                : item.temperatureAlarmAvalue
-                            }}℃
-                          </span>
-                          <span v-if="item.type.indexOf('B温度') != -1"
-                            >{{
-                              item.temperatureAlarmBvalue == ""
-                                ? item.noAlarmNTemperatureValue
-                                : item.temperatureAlarmBvalue
-                            }}℃
-                          </span>
-                          <span v-if="item.type.indexOf('C温度') != -1"
-                            >{{
-                              item.temperatureAlarmCvalue == ""
-                                ? item.noAlarmNTemperatureValue
-                                : item.temperatureAlarmCvalue
-                            }}℃
-                          </span>
-                        </li>
-                        <li>
-                          报警时间: <span>{{ item.regdate }}</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div></el-col
-                > -->
-
                   <!-- 单项设备 报警信息------------------------------------------------------------------ -->
                   <el-row
                     :gutter="20"
@@ -869,7 +714,10 @@
                             </template>
                           </el-row>
                           <ul>
-                            <li>
+                            <li>报警状态:无</li>
+                            <li>报警值:无</li>
+                            <li>报警时间:无</li>
+                            <!-- <li>
                               报警状态: <span>{{ item.type }}</span>
                             </li>
                             <li>
@@ -878,7 +726,7 @@
                             </li>
                             <li>
                               报警时间: <span>{{ item.regdate }}</span>
-                            </li>
+                            </li> -->
                           </ul>
                         </div>
                       </div></el-col
@@ -892,14 +740,14 @@
                                 <img src="../../../assets/images/dianya.png" />
 
                                 <p>{{ item.noVoltageAlarmAValue }}V</p>
-                                <p>{{ shengyu_loudian.oneDianYa }}V</p>
+                                <p>{{ shengyu_loudian.louDianvoltage }}V</p>
                               </div>
                             </el-col>
                             <el-col :span="8">
                               <div class="imgWapper_img">
                                 <img src="../../../assets/images/dianya.png" />
                                 <p>{{ item.noLeakageAlarmCCurrentValue }}V</p>
-                                <p>{{ shengyu_loudian.louDianvoltage }}V</p>
+                                <p>{{ shengyu_loudian.u_voltage }}V</p>
                               </div>
                             </el-col>
                           </el-row>
@@ -918,22 +766,29 @@
                             <el-col :span="6">
                               <div class="imgWapper_img">
                                 <img src="../../../assets/images/wenduji.png" />
-                                <p>{{ item.temperatureAlarmAvalue }}℃</p>
+                                <p>{{ item.noAlarmATemperatureValue || 0 }}℃</p>
                                 <p>{{ shengyu_loudian.oneWenDu }}℃</p>
                               </div>
                             </el-col>
                             <el-col :span="6">
                               <div class="imgWapper_img">
                                 <img src="../../../assets/images/wenduji.png" />
-                                <p>{{ item.temperatureAlarmNvalue }}℃</p>
+                                <p>{{ item.noAlarmNTemperatureValue || 0 }}℃</p>
                                 <p>{{ shengyu_loudian.fourWenDu }}℃</p>
                               </div>
                             </el-col>
                           </el-row>
                           <ul>
-                            <li>报警状态:无</li>
-                            <li>报警值:无</li>
-                            <li>报警时间:无</li>
+                            <li>
+                              报警状态: <span>{{ item.type }}</span>
+                            </li>
+                            <li>
+                              报警值:
+                              <span>{{ item.noAlarmATemperatureValue }}℃</span>
+                            </li>
+                            <li>
+                              报警时间: <span>{{ item.regdate }}</span>
+                            </li>
                           </ul>
                         </div>
                       </div></el-col
@@ -955,143 +810,10 @@
                     item.info == '1' ||
                     item.info == '32' ||
                     item.info == '33' ||
-                    (item.info == '0' && item.type.indexOf('C电流') != -1)
+                    (item.info == '0' && item.type.indexOf('C电流') != -1) ||
+                    (item.info == '0' && item.type.indexOf('电弧') != -1)
                   "
                 >
-                  <!-- <el-col :span="8"
-                  ><div class="grid-content bg-purple">
-                    <div class="imgWapper">
-                      <el-row>
-                        <template>
-                          <el-col :span="6">
-                            <div class="imgWapper_img">
-                              <img src="../../../assets/images/dianliu.png" />
-                              <p>{{ shengyu_loudian.oneAlarm }}A</p>
-                              <p>{{ shengyu_loudian.oneDianLiu }}A</p>
-                            </div>
-                          </el-col>
-                          <el-col :span="6">
-                            <div class="imgWapper_img">
-                              <img src="../../../assets/images/dianliu.png" />
-                              <p>{{ shengyu_loudian.twoAlarm }}A</p>
-                              <p>{{ shengyu_loudian.twoDianLiu }}A</p>
-                            </div>
-                          </el-col>
-                          <el-col :span="6">
-                            <div class="imgWapper_img">
-                              <img src="../../../assets/images/dianliu.png" />
-                              <p>{{ shengyu_loudian.threeAlarm }}A</p>
-                              <p>{{ shengyu_loudian.threeDianLiu }}A</p>
-                            </div>
-                          </el-col>
-                          <el-col :span="6">
-                            <div class="imgWapper_img">
-                              <img src="../../../assets/images/dianliu.png" />
-                              <p>{{ shengyu_loudian.fourAlarm }}mA</p>
-                              <p>{{ shengyu_loudian.fourDianLiu }}mA</p>
-                            </div>
-                          </el-col>
-                        </template>
-                      </el-row>
-                      <ul>
-                        <li>
-                          报警状态: <span>{{ item.type }}</span>
-                        </li>
-                        <li>
-                          报警值:
-                          <span v-if="item.type.indexOf('A相电流') != -1"
-                            >{{ item.currentAlarmAvalue }}A</span
-                          >
-                          <span v-if="item.type.indexOf('B相电流') != -1"
-                            >{{ item.currentAlarmBvalue }}A</span
-                          >
-                          <span v-if="item.type.indexOf('C相电流') != -1"
-                            >{{ item.currentAlarmCvalue }}A</span
-                          >
-                        </li>
-                        <li>
-                          报警时间: <span>{{ item.regdate }}</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div></el-col
-                >
-                <el-col :span="8"
-                  ><div class="grid-content bg-purple">
-                    <div class="imgWapper">
-                      <el-row>
-                        <el-col :span="8">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/dianya.png" />
-                            <p>{{ shengyu_loudian.oneVolatage }}V</p>
-                            <p>{{ shengyu_loudian.oneDianYa }}V</p>
-                          </div>
-                        </el-col>
-                        <el-col :span="8">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/dianya.png" />
-                            <p>{{ shengyu_loudian.twoVolatage }}V</p>
-                            <p>{{ shengyu_loudian.twoDianYa }}V</p>
-                          </div>
-                        </el-col>
-                        <el-col :span="8">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/dianya.png" />
-                            <p>{{ shengyu_loudian.twoVolatage }}V</p>
-                            <p>{{ shengyu_loudian.twoDianYa }}V</p>
-                          </div>
-                        </el-col>
-                      </el-row>
-                      <ul>
-                        <li>报警状态:无</li>
-                        <li>报警值:无</li>
-                        <li>报警时间:无</li>
-                      </ul>
-                    </div>
-                  </div></el-col
-                >
-                <el-col :span="8"
-                  ><div class="grid-content bg-purple">
-                    <div class="imgWapper">
-                      <el-row>
-                        <el-col :span="6">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/wenduji.png" />
-                            <p>{{ shengyu_loudian.oneTempera }}℃</p>
-                            <p>{{ shengyu_loudian.oneWenDu }}℃</p>
-                          </div>
-                        </el-col>
-                        <el-col :span="6">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/wenduji.png" />
-                            <p>{{ shengyu_loudian.twoTempera }}℃</p>
-                            <p>{{ shengyu_loudian.twoWenDu }}℃</p>
-                          </div>
-                        </el-col>
-                        <el-col :span="6">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/wenduji.png" />
-                            <p>{{ shengyu_loudian.threeTempera }}℃</p>
-                            <p>{{ shengyu_loudian.threeWenDu }}℃</p>
-                          </div>
-                        </el-col>
-                        <el-col :span="6">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/wenduji.png" />
-                            <p>{{ shengyu_loudian.fourTempera }}℃</p>
-                            <p>{{ shengyu_loudian.fourWenDu }}℃</p>
-                          </div>
-                        </el-col>
-                      </el-row>
-                      <ul>
-                        <li>报警状态:无</li>
-                        <li>报警值:无</li>
-                        <li>报警时间:无</li>
-                      </ul>
-                    </div>
-                  </div></el-col
-                > -->
-
                   <!-- 单项设备 报警信息------------------------------------------------------------------ -->
                   <el-row
                     :gutter="20"
@@ -1156,14 +878,14 @@
                                 <img src="../../../assets/images/dianya.png" />
 
                                 <p>{{ item.noVoltageAlarmAValue }}V</p>
-                                <p>{{ shengyu_loudian.twoDianYa }}V</p>
+                                <p>{{ shengyu_loudian.louDianvoltage }}V</p>
                               </div>
                             </el-col>
                             <el-col :span="8">
                               <div class="imgWapper_img">
                                 <img src="../../../assets/images/dianya.png" />
                                 <p>{{ item.noLeakageAlarmCCurrentValue }}V</p>
-                                <p>{{ shengyu_loudian.louDianvoltage }}V</p>
+                                <p>{{ shengyu_loudian.u_voltage }}V</p>
                               </div>
                             </el-col>
                           </el-row>
@@ -1182,14 +904,14 @@
                             <el-col :span="6">
                               <div class="imgWapper_img">
                                 <img src="../../../assets/images/wenduji.png" />
-                                <p>{{ item.temperatureAlarmAvalue }}℃</p>
+                                <p>{{ item.temperatureAlarmAvalue || 0 }}℃</p>
                                 <p>{{ shengyu_loudian.oneWenDu }}℃</p>
                               </div>
                             </el-col>
                             <el-col :span="6">
                               <div class="imgWapper_img">
                                 <img src="../../../assets/images/wenduji.png" />
-                                <p>{{ item.temperatureAlarmNvalue }}℃</p>
+                                <p>{{ item.temperatureAlarmNvalue || 0 }}℃</p>
                                 <p>{{ shengyu_loudian.fourWenDu }}℃</p>
                               </div>
                             </el-col>
@@ -1212,154 +934,19 @@
                     item.info == '8' ||
                     item.info == '11' ||
                     item.info == '14' ||
-                    (item.info == '0' && item.type.indexOf('A电压') != -1) ||
+                    (item.info == '0' && item.type.indexOf('A相电压') != -1) ||
                     item.info == '6' ||
                     item.info == '9' ||
                     item.info == '12' ||
                     item.info == '15' ||
-                    (item.info == '0' && item.type.indexOf('B电压') != -1) ||
+                    (item.info == '0' && item.type.indexOf('B相电压') != -1) ||
                     item.info == '4' ||
                     item.info == '7' ||
                     item.info == '10' ||
                     item.info == '13' ||
-                    (item.info == '0' && item.type.indexOf('C电压') != -1)
+                    (item.info == '0' && item.type.indexOf('C相电压') != -1)
                   "
                 >
-                  <!-- <el-col :span="8"
-                  ><div class="grid-content bg-purple">
-                    <div class="imgWapper">
-                      <el-row>
-                        <template>
-                          <el-col :span="6">
-                            <div class="imgWapper_img">
-                              <img src="../../../assets/images/dianliu.png" />
-                              <p>{{ shengyu_loudian.oneAlarm }}A</p>
-                              <p>{{ shengyu_loudian.oneDianLiu }}A</p>
-                            </div>
-                          </el-col>
-                          <el-col :span="6">
-                            <div class="imgWapper_img">
-                              <img src="../../../assets/images/dianliu.png" />
-                              <p>{{ shengyu_loudian.twoAlarm }}A</p>
-                              <p>{{ shengyu_loudian.twoDianLiu }}A</p>
-                            </div>
-                          </el-col>
-                          <el-col :span="6">
-                            <div class="imgWapper_img">
-                              <img src="../../../assets/images/dianliu.png" />
-                              <p>{{ shengyu_loudian.threeAlarm }}A</p>
-                              <p>{{ shengyu_loudian.threeDianLiu }}A</p>
-                            </div>
-                          </el-col>
-                          <el-col :span="6">
-                            <div class="imgWapper_img">
-                              <img src="../../../assets/images/dianliu.png" />
-                              <p>{{ shengyu_loudian.fourAlarm }}mA</p>
-                              <p>{{ shengyu_loudian.fourDianLiu }}mA</p>
-                            </div>
-                          </el-col>
-                        </template>
-                      </el-row>
-                      <ul>
-                        <li>报警状态:无</li>
-                        <li>报警值:无</li>
-                        <li>报警时间:无</li>
-                      </ul>
-                    </div>
-                  </div></el-col
-                >
-                <el-col :span="8"
-                  ><div class="grid-content bg-purple">
-                    <div class="imgWapper">
-                      <el-row>
-                        <el-col :span="8">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/dianya.png" />
-                            <p>{{ shengyu_loudian.oneVolatage }}V</p>
-                            <p>{{ shengyu_loudian.oneDianYa }}V</p>
-                          </div>
-                        </el-col>
-                        <el-col :span="8">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/dianya.png" />
-                            <p>{{ shengyu_loudian.twoVolatage }}V</p>
-                            <p>{{ shengyu_loudian.twoDianYa }}V</p>
-                          </div>
-                        </el-col>
-                        <el-col :span="8">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/dianya.png" />
-                            <p>{{ shengyu_loudian.twoVolatage }}V</p>
-                            <p>{{ shengyu_loudian.twoDianYa }}V</p>
-                          </div>
-                        </el-col>
-                      </el-row>
-                      <ul>
-                        <li>
-                          报警状态: <span>{{ item.type }}</span>
-                        </li>
-                        <li>
-                          报警值:
-                          <span v-if="item.type.indexOf('A电压') != -1"
-                            >{{ item.noVoltageAlarmAValue }}A</span
-                          >
-                          <span v-if="item.type.indexOf('B电压') != -1"
-                            >{{ item.noVoltageAlarmBValue }}A</span
-                          >
-                          <span v-if="item.type.indexOf('C电压') != -1"
-                            >{{ item.noVoltageAlarmCValue }}A</span
-                          >
-                        </li>
-
-                        <li>
-                          报警时间: <span>{{ item.regdate }}</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div></el-col
-                >
-                <el-col :span="8"
-                  ><div class="grid-content bg-purple">
-                    <div class="imgWapper">
-                      <el-row>
-                        <el-col :span="6">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/wenduji.png" />
-                            <p>{{ shengyu_loudian.oneTempera }}℃</p>
-                            <p>{{ shengyu_loudian.oneWenDu }}℃</p>
-                          </div>
-                        </el-col>
-                        <el-col :span="6">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/wenduji.png" />
-                            <p>{{ shengyu_loudian.twoTempera }}℃</p>
-                            <p>{{ shengyu_loudian.twoWenDu }}℃</p>
-                          </div>
-                        </el-col>
-                        <el-col :span="6">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/wenduji.png" />
-                            <p>{{ shengyu_loudian.threeTempera }}℃</p>
-                            <p>{{ shengyu_loudian.threeWenDu }}℃</p>
-                          </div>
-                        </el-col>
-                        <el-col :span="6">
-                          <div class="imgWapper_img">
-                            <img src="../../../assets/images/wenduji.png" />
-                            <p>{{ shengyu_loudian.fourTempera }}℃</p>
-                            <p>{{ shengyu_loudian.fourWenDu }}℃</p>
-                          </div>
-                        </el-col>
-                      </el-row>
-                      <ul>
-                        <li>报警状态:无</li>
-                        <li>报警值:无</li>
-                        <li>报警时间:无</li>
-                      </ul>
-                    </div>
-                  </div></el-col
-                > -->
-
                   <!-- 单项设备 报警信息------------------------------------------------------------------ -->
                   <el-row
                     :gutter="20"
@@ -1410,14 +997,14 @@
 
                                 <p>{{ item.noVoltageAlarmAValue }}V</p>
 
-                                <p>{{ shengyu_loudian.twoDianYa }}V</p>
+                                <p>{{ shengyu_loudian.louDianvoltage }}V</p>
                               </div>
                             </el-col>
                             <el-col :span="8">
                               <div class="imgWapper_img">
                                 <img src="../../../assets/images/dianya.png" />
                                 <p>{{ item.noLeakageAlarmCCurrentValue }}V</p>
-                                <p>{{ shengyu_loudian.louDianvoltage }}V</p>
+                                <p>{{ shengyu_loudian.u_voltage }}V</p>
                               </div>
                             </el-col>
                           </el-row>
@@ -1452,14 +1039,14 @@
                             <el-col :span="6">
                               <div class="imgWapper_img">
                                 <img src="../../../assets/images/wenduji.png" />
-                                <p>{{ item.temperatureAlarmAvalue }}℃</p>
+                                <p>{{ item.temperatureAlarmAvalue || 0 }}℃</p>
                                 <p>{{ shengyu_loudian.oneWenDu }}℃</p>
                               </div>
                             </el-col>
                             <el-col :span="6">
                               <div class="imgWapper_img">
                                 <img src="../../../assets/images/wenduji.png" />
-                                <p>{{ item.temperatureAlarmNvalue }}℃</p>
+                                <p>{{ item.temperatureAlarmNvalue || 0 }}℃</p>
                                 <p>{{ shengyu_loudian.fourWenDu }}℃</p>
                               </div>
                             </el-col>
@@ -1474,6 +1061,123 @@
                     >
                   </el-row>
                   <!-- 单项设备 报警信息------------------------------------------------------------------ -->
+                </template>
+
+                <!-- 门磁报警 -->
+                <template
+                  v-if="
+                    item.type.indexOf('烟雾') != -1 ||
+                    item.type.indexOf('门磁') != -1 ||
+                    item.type.indexOf('红外') != -1
+                  "
+                >
+                  <el-row
+                    :gutter="20"
+                    v-for="(item, index) in getDeviceByDevIdList.mess5"
+                    :key="index"
+                  >
+                    <el-col :span="8"
+                      ><div class="grid-content bg-purple">
+                        <div class="imgWapper">
+                          <el-row type="flex" justify="center">
+                            <template>
+                              <el-col :span="6">
+                                <div class="imgWapper_img">
+                                  <img
+                                    src="../../../assets/images/dianliu.png"
+                                  />
+                                  <p>{{ shengyu_loudian.oneAlarm }}A</p>
+                                  <p>{{ shengyu_loudian.oneDianLiu }}A</p>
+                                </div>
+                              </el-col>
+
+                              <el-col :span="6">
+                                <div class="imgWapper_img">
+                                  <img
+                                    src="../../../assets/images/dianliu.png"
+                                  />
+                                  <p>{{ shengyu_loudian.fourAlarm }}mA</p>
+                                  <p>{{ shengyu_loudian.fourDianLiu }}mA</p>
+                                </div>
+                              </el-col>
+                            </template>
+                          </el-row>
+                          <ul>
+                            <li>报警状态: 无</li>
+                            <li>报警值:无</li>
+                            <li>报警时间: 无</li>
+                          </ul>
+                        </div>
+                      </div></el-col
+                    >
+                    <el-col :span="8"
+                      ><div class="grid-content bg-purple">
+                        <div class="imgWapper">
+                          <el-row type="flex" justify="center">
+                            <el-col :span="8">
+                              <div class="imgWapper_img">
+                                <img src="../../../assets/images/dianya.png" />
+
+                                <p>{{ shengyu_loudian.oneVolatage }}V</p>
+                                <p>{{ shengyu_loudian.louDianvoltage }}V</p>
+
+                                <!-- <p>{{ shengyu_loudian.oneVolatage }}V</p>
+                          <p>{{ shengyu_loudian.oneDianYa }}V</p> -->
+                              </div>
+                            </el-col>
+                            <el-col :span="8">
+                              <div class="imgWapper_img">
+                                <img src="../../../assets/images/dianya.png" />
+                                <p>{{ shengyu_loudian.threeAlarm }}V</p>
+                                <p>{{ shengyu_loudian.u_voltage }}V</p>
+                                <!-- <p>{{ shengyu_loudian.twoVolatage }}V</p>
+                          <p>{{ shengyu_loudian.twoDianYa }}V</p> -->
+                              </div>
+                            </el-col>
+                            <!-- <el-col :span="8">
+                        <div class="imgWapper_img">
+                          <img src="../../../assets/images/dianya.png" />
+                          <p>{{ shengyu_loudian.twoVolatage }}V</p>
+                          <p>{{ shengyu_loudian.twoDianYa }}V</p>
+                        </div>
+                      </el-col> -->
+                          </el-row>
+                          <ul>
+                            <li>报警状态:无</li>
+                            <li>报警值:无</li>
+                            <li>报警时间:无</li>
+                          </ul>
+                        </div>
+                      </div></el-col
+                    >
+                    <el-col :span="8"
+                      ><div class="grid-content bg-purple">
+                        <div class="imgWapper">
+                          <el-row type="flex" justify="center">
+                            <el-col :span="6">
+                              <div class="imgWapper_img">
+                                <img src="../../../assets/images/wenduji.png" />
+                                <p>{{ shengyu_loudian.Lwendu }}℃</p>
+                                <p>{{ shengyu_loudian.oneWenDu }}℃</p>
+                              </div>
+                            </el-col>
+                            <el-col :span="6">
+                              <div class="imgWapper_img">
+                                <img src="../../../assets/images/wenduji.png" />
+                                <p>{{ shengyu_loudian.Nwendu || 0 }}℃</p>
+                                <p>{{ shengyu_loudian.fourWenDu || 0 }}℃</p>
+                              </div>
+                            </el-col>
+                          </el-row>
+                          <ul>
+                            <li>报警状态:无</li>
+                            <li>报警值:无</li>
+                            <li>报警时间:无</li>
+                          </ul>
+                        </div>
+                      </div></el-col
+                    >
+                  </el-row>
                 </template>
               </el-row>
             </template>
@@ -1529,7 +1233,8 @@
                             <img src="../../../assets/images/dianya.png" />
 
                             <p>{{ shengyu_loudian.oneVolatage }}V</p>
-                            <p>{{ shengyu_loudian.twoDianYa }}V</p>
+                            <p>{{ shengyu_loudian.louDianvoltage }}V</p>
+
                             <!-- <p>{{ shengyu_loudian.oneVolatage }}V</p>
                           <p>{{ shengyu_loudian.oneDianYa }}V</p> -->
                           </div>
@@ -1538,7 +1243,7 @@
                           <div class="imgWapper_img">
                             <img src="../../../assets/images/dianya.png" />
                             <p>{{ shengyu_loudian.threeAlarm }}V</p>
-                            <p>{{ shengyu_loudian.twoDianLiu }}V</p>
+                            <p>{{ shengyu_loudian.u_voltage }}V</p>
                             <!-- <p>{{ shengyu_loudian.twoVolatage }}V</p>
                           <p>{{ shengyu_loudian.twoDianYa }}V</p> -->
                           </div>
@@ -1612,7 +1317,8 @@
                     item.info == '26' ||
                     item.info == '27' ||
                     (item.info == '0' && item.type.indexOf('漏电') != -1) ||
-                    (item.info == '0' && item.type.indexOf('剩余') != -1)
+                    (item.info == '0' && item.type.indexOf('剩余') != -1) ||
+                    item.type.indexOf('漏电') != -1
                   "
                 >
                   <el-col :span="8"
@@ -1763,7 +1469,9 @@
                     item.info == '22' ||
                     item.info == '38' ||
                     item.info == '39' ||
-                    (item.info == '0' && item.type.indexOf('C温度') != -1)
+                    (item.info == '0' && item.type.indexOf('C温度') != -1) ||
+                    (item.info == '0' && item.type.indexOf('L温度') != -1) ||
+                    (item.info == '0' && item.type.indexOf('双线温度') != -1)
                   "
                 >
                   <el-col :span="8"
@@ -1938,7 +1646,8 @@
                     item.info == '1' ||
                     item.info == '32' ||
                     item.info == '33' ||
-                    (item.info == '0' && item.type.indexOf('C电流') != -1)
+                    (item.info == '0' && item.type.indexOf('C电流') != -1) ||
+                    item.type.indexOf('灭弧') != -1
                   "
                 >
                   <el-col :span="8"
@@ -2230,8 +1939,154 @@
                     </div></el-col
                   >
                 </template>
+
+                <!-- 烟雾,门磁,红外火警,功率 -->
+                <template
+                  v-if="
+                    item.type.indexOf('烟雾') != -1 ||
+                    item.type.indexOf('门磁') != -1 ||
+                    item.type.indexOf('红外') != -1 ||
+                    item.type.indexOf('功率过高') != -1 ||
+                    item.type.indexOf('功率过低') != -1 ||
+                    item.type.indexOf('灭火器启动') != -1
+                  "
+                >
+                  <el-row
+                    :gutter="20"
+                    v-for="(item, index) in getDeviceByDevIdList.mess5"
+                    :key="index"
+                  >
+                    <el-col :span="8"
+                      ><div class="grid-content bg-purple">
+                        <div class="imgWapper">
+                          <el-row>
+                            <template>
+                              <el-col :span="6">
+                                <div class="imgWapper_img">
+                                  <img
+                                    src="../../../assets/images/dianliu.png"
+                                  />
+                                  <p>{{ shengyu_loudian.oneAlarm }}A</p>
+                                  <p>{{ shengyu_loudian.oneDianLiu }}A</p>
+                                </div>
+                              </el-col>
+                              <el-col :span="6">
+                                <div class="imgWapper_img">
+                                  <img
+                                    src="../../../assets/images/dianliu.png"
+                                  />
+                                  <p>{{ shengyu_loudian.twoAlarm }}A</p>
+                                  <p>{{ shengyu_loudian.twoDianLiu }}A</p>
+                                </div>
+                              </el-col>
+                              <el-col :span="6">
+                                <div class="imgWapper_img">
+                                  <img
+                                    src="../../../assets/images/dianliu.png"
+                                  />
+                                  <p>{{ shengyu_loudian.threeAlarm }}A</p>
+                                  <p>{{ shengyu_loudian.threeDianLiu }}A</p>
+                                </div>
+                              </el-col>
+                              <el-col :span="6">
+                                <div class="imgWapper_img">
+                                  <img
+                                    src="../../../assets/images/dianliu.png"
+                                  />
+                                  <p>{{ shengyu_loudian.fourAlarm }}mA</p>
+                                  <p>{{ shengyu_loudian.fourDianLiu }}mA</p>
+                                </div>
+                              </el-col>
+                            </template>
+                          </el-row>
+                          <ul>
+                            <li>报警状态: 无</li>
+                            <li>报警值:无</li>
+                            <li>报警时间: 无</li>
+                          </ul>
+                        </div>
+                      </div></el-col
+                    >
+                    <el-col :span="8"
+                      ><div class="grid-content bg-purple">
+                        <div class="imgWapper">
+                          <el-row>
+                            <el-col :span="8">
+                              <div class="imgWapper_img">
+                                <img src="../../../assets/images/dianya.png" />
+                                <p>{{ shengyu_loudian.oneVolatage }}V</p>
+                                <p>{{ shengyu_loudian.oneDianYa }}V</p>
+                              </div>
+                            </el-col>
+                            <el-col :span="8">
+                              <div class="imgWapper_img">
+                                <img src="../../../assets/images/dianya.png" />
+                                <p>{{ shengyu_loudian.twoVolatage }}V</p>
+                                <p>{{ shengyu_loudian.twoDianYa }}V</p>
+                              </div>
+                            </el-col>
+                            <el-col :span="8">
+                              <div class="imgWapper_img">
+                                <img src="../../../assets/images/dianya.png" />
+                                <p>{{ shengyu_loudian.twoVolatage }}V</p>
+                                <p>{{ shengyu_loudian.twoDianYa }}V</p>
+                              </div>
+                            </el-col>
+                          </el-row>
+                          <ul>
+                            <li>报警状态:无</li>
+                            <li>报警值:无</li>
+                            <li>报警时间:无</li>
+                          </ul>
+                        </div>
+                      </div></el-col
+                    >
+                    <el-col :span="8"
+                      ><div class="grid-content bg-purple">
+                        <div class="imgWapper">
+                          <el-row>
+                            <el-col :span="6">
+                              <div class="imgWapper_img">
+                                <img src="../../../assets/images/wenduji.png" />
+                                <p>{{ shengyu_loudian.oneTempera }}℃</p>
+                                <p>{{ shengyu_loudian.oneWenDu }}℃</p>
+                              </div>
+                            </el-col>
+                            <el-col :span="6">
+                              <div class="imgWapper_img">
+                                <img src="../../../assets/images/wenduji.png" />
+                                <p>{{ shengyu_loudian.twoTempera }}℃</p>
+                                <p>{{ shengyu_loudian.twoWenDu }}℃</p>
+                              </div>
+                            </el-col>
+                            <el-col :span="6">
+                              <div class="imgWapper_img">
+                                <img src="../../../assets/images/wenduji.png" />
+                                <p>{{ shengyu_loudian.threeTempera }}℃</p>
+                                <p>{{ shengyu_loudian.threeWenDu }}℃</p>
+                              </div>
+                            </el-col>
+                            <el-col :span="6">
+                              <div class="imgWapper_img">
+                                <img src="../../../assets/images/wenduji.png" />
+                                <p>{{ shengyu_loudian.fourTempera }}℃</p>
+                                <p>{{ shengyu_loudian.fourWenDu }}℃</p>
+                              </div>
+                            </el-col>
+                          </el-row>
+                          <ul>
+                            <li>报警状态:无</li>
+                            <li>报警值:无</li>
+                            <li>报警时间:无</li>
+                          </ul>
+                        </div>
+                      </div></el-col
+                    >
+                  </el-row>
+                </template>
               </el-row>
             </template>
+            <!-- 正常设备 -->
             <template
               v-else-if="
                 this.ElecDataList_typeName == '正常' &&
@@ -2408,7 +2263,16 @@
             <div class="one_echarts">
               <p class="titleP">电流统计图</p>
               <div
+                v-if="popUps != 'yes'"
                 class="echarts_wapper_one_search"
+                v-loading="echarts_loading"
+                element-loading-text="拼命加载中"
+                element-loading-spinner="el-icon-loading"
+                element-loading-background="rgba(255,255,255)"
+              ></div>
+              <div
+                v-else
+                class="echarts_wapper_one_search_copy"
                 v-loading="echarts_loading"
                 element-loading-text="拼命加载中"
                 element-loading-spinner="el-icon-loading"
@@ -2418,7 +2282,16 @@
             <div class="two_echarts">
               <p class="titleP">温度统计图</p>
               <div
+                v-if="popUps != 'yes'"
                 class="echarts_wapper_two_search"
+                v-loading="echarts_loading"
+                element-loading-text="拼命加载中"
+                element-loading-spinner="el-icon-loading"
+                element-loading-background="rgba(255,255,255)"
+              ></div>
+              <div
+                v-else
+                class="echarts_wapper_two_search_copy"
                 v-loading="echarts_loading"
                 element-loading-text="拼命加载中"
                 element-loading-spinner="el-icon-loading"
@@ -2428,7 +2301,16 @@
             <div class="three_echarts">
               <p class="titleP">电压统计图</p>
               <div
+                v-if="popUps != 'yes'"
                 class="echarts_wapper_three_search"
+                v-loading="echarts_loading"
+                element-loading-text="拼命加载中"
+                element-loading-spinner="el-icon-loading"
+                element-loading-background="rgba(255,255,255)"
+              ></div>
+              <div
+                v-else
+                class="echarts_wapper_three_search_copy"
                 v-loading="echarts_loading"
                 element-loading-text="拼命加载中"
                 element-loading-spinner="el-icon-loading"
@@ -2451,6 +2333,7 @@
       title="设备设置"
       :visible.sync="innerVisible_shebei"
       :modal-append-to-body="false"
+      :before-close="handleClose"
     >
       <el-row>
         <el-col :span="6"
@@ -2559,11 +2442,11 @@
                 <el-col :span="8">
                   <div
                     v-if="
-                      (ParaState.start == 0 && ParaState.dSid == '3') ||
-                      (ParaState.devstatus == 1 && ParaState.dSid == '22')
+                      (ParaState.devstatus == 1 && ParaState.dSid == '3') ||
+                      (ParaState.start == 0 && ParaState.dSid == '22')
                     "
                     style="
-                      background: #3694e4;
+                      background: #5f5b5b;
                       height: 30px;
                       margin: 10px;
                       line-height: 30px;
@@ -2576,7 +2459,8 @@
                   <div
                     v-else
                     style="
-                      background: #5f5b5b;
+                      background: #3694e4;
+
                       height: 30px;
                       margin: 10px;
                       line-height: 30px;
@@ -3363,7 +3247,7 @@ import {
 
 import EZUIKit from "ezuikit-js";
 export default {
-  props: ["pagetype"],
+  props: ["pagetype", "popUps"],
   data() {
     return {
       caozuojilv: [],
@@ -3441,6 +3325,43 @@ export default {
   },
 
   methods: {
+    //首页报警信息打开的方法
+    openTypeFun(devID, imei, type) {
+      console.log(654);
+      switch (type) {
+        //烟感
+        case "2":
+          this.SmartIndependentSmokeSee(devID, imei);
+          break;
+        // 消防水
+        case "4":
+          this.shuiyaSee("yeya", devID);
+          break;
+        //电气火灾
+        case "3":
+          this.see(devID, imei);
+          break;
+        case "24":
+          this.see(devID, imei);
+          break;
+        case "10":
+          this.SmartIndependentSmokeSee(devID, imei);
+          break;
+        case "5":
+          this.FireAlarmSystem(devID, imei);
+          break;
+      }
+      //独立烟感
+      // this.SmartIndependentSmokeSee();
+      // //火灾报警
+      // this.FireAlarmSystem();
+      // //消防水
+      // this.shuiyaSee();
+    },
+    handleClose() {
+      this.activeName = "second";
+      this.innerVisible_shebei = false;
+    },
     initOff() {
       this.dialogVisible = true;
     },
@@ -3566,8 +3487,6 @@ export default {
       });
     },
     SetParameterApiFun() {
-      console.log(this.ParaState.dSid, 7777777);
-
       if (this.ParaState.dSid == "3") {
         SetParameterApi(
           this.ElecDataList.DevData[0].productNumber,
@@ -3612,7 +3531,7 @@ export default {
                       this.getDeviceByDevIdList.mess2[0].noVoltageAlarmBValue,
                     threeVolatage:
                       this.getDeviceByDevIdList.mess2[0].noVoltageAlarmCValue,
-                    oneDianYa: res.data.row.BDianLiu,
+                    oneDianYa: res.data.row.ADianYa,
                     twoDianYa: res.data.row.BDianYa,
                     threeDianYa: res.data.row.CDianYa,
                     oneTempera:
@@ -3637,6 +3556,7 @@ export default {
                       this.getDeviceByDevIdList.mess2[0].temperatureAlarmNvalue,
                     louDianDianLiu: res.data.row.SYdianliu,
                     louDianvoltage: res.data.row.ADianYa,
+                    u_voltage: res.data.row.u_voltage,
                   };
                   // console.log(this.shengyu_loudian);
                 }
@@ -4008,6 +3928,10 @@ export default {
         }
       );
     },
+    handleCloseInnerVisible() {
+      clearInterval(this.interval);
+      this.innerVisible = false;
+    },
     //历史报警
     Historical_alarm() {
       this.Historical_alarm_list_loading = true;
@@ -4054,11 +3978,12 @@ export default {
       if (this.getDeviceByDevIdList == "") {
         return "";
       }
-
-      getParaState(this.utils.userName, productNumber).then((res) => {
-        this.ParaState = res.data.data;
-        console.log(this.ParaState, "==============");
-      });
+      this.interval = setInterval(() => {
+        getParaState(this.utils.userName, productNumber).then((res) => {
+          this.ParaState = res.data.data;
+          // console.log(this.ParaState, "==============");
+        });
+      }, 3000);
 
       // 设备详情接口
       ElecData(devId, now).then((res) => {
@@ -4124,6 +4049,7 @@ export default {
               Nwendu: this.getDeviceByDevIdList.mess2[0].temperatureAlarmNvalue,
               louDianDianLiu: res.data.row.SYdianliu,
               louDianvoltage: res.data.row.ADianYa,
+              u_voltage: res.data.row.u_voltage,
             };
             // console.log(this.shengyu_loudian);
           });
@@ -4261,9 +4187,32 @@ export default {
           var three_echart_left;
 
           this.$nextTick(() => {
-            one_echart_left = this.$echarts.init(
-              document.querySelector(".echarts_wapper_one_search")
-            );
+            if (this.popUps == "yes") {
+              one_echart_left = this.$echarts.init(
+                document.querySelector(".echarts_wapper_one_search_copy")
+              );
+              // 第二个图表
+              two_echart_left = this.$echarts.init(
+                document.querySelector(".echarts_wapper_two_search_copy")
+              );
+              three_echart_left = this.$echarts.init(
+                document.querySelector(".echarts_wapper_three_search_copy")
+              );
+            } else {
+              one_echart_left = this.$echarts.init(
+                document.querySelector(".echarts_wapper_one_search")
+              );
+              // 第二个图表
+              two_echart_left = this.$echarts.init(
+                document.querySelector(".echarts_wapper_two_search")
+              );
+              three_echart_left = this.$echarts.init(
+                document.querySelector(".echarts_wapper_three_search")
+              );
+            }
+            // one_echart_left = this.$echarts.init(
+            //   document.querySelector(".echarts_wapper_one_search")
+            // );
 
             // 电流统计图
             one_echart_left.setOption({
@@ -4320,11 +4269,6 @@ export default {
               ],
             });
 
-            // 第二个图表
-            two_echart_left = this.$echarts.init(
-              document.querySelector(".echarts_wapper_two_search")
-            );
-
             two_echart_left.setOption({
               tooltip: {
                 trigger: "axis",
@@ -4378,58 +4322,56 @@ export default {
                 },
               ],
             });
-          });
 
-          //第三个图表
-          three_echart_left = this.$echarts.init(
-            document.querySelector(".echarts_wapper_three_search")
-          );
-          three_echart_left.setOption({
-            tooltip: {
-              trigger: "axis",
-            },
-            legend: {
-              data: ["A电压(V)", "B电压(V)", "C电压(V)"],
-            },
-            grid: {
-              left: "3%",
-              right: "4%",
-              bottom: "3%",
-              containLabel: true,
-            },
-            toolbox: {
-              feature: {
-                saveAsImage: {},
+            //第三个图表
+
+            three_echart_left.setOption({
+              tooltip: {
+                trigger: "axis",
               },
-            },
-            xAxis: {
-              type: "category",
-              boundaryGap: false,
-              data: name.reverse(),
-            },
-            yAxis: {
-              type: "value",
-            },
-            series: [
-              {
-                name: "A电压(V)",
-                type: "line",
-                // stack: "总量",
-                data: dianYaA.reverse(),
+              legend: {
+                data: ["A电压(V)", "B电压(V)", "C电压(V)"],
               },
-              {
-                name: "B电压(V)",
-                type: "line",
-                // stack: "总量",
-                data: dianYaB.reverse(),
+              grid: {
+                left: "3%",
+                right: "4%",
+                bottom: "3%",
+                containLabel: true,
               },
-              {
-                name: "C电压(V)",
-                type: "line",
-                // stack: "总量",
-                data: dianYaC.reverse(),
+              toolbox: {
+                feature: {
+                  saveAsImage: {},
+                },
               },
-            ],
+              xAxis: {
+                type: "category",
+                boundaryGap: false,
+                data: name.reverse(),
+              },
+              yAxis: {
+                type: "value",
+              },
+              series: [
+                {
+                  name: "A电压(V)",
+                  type: "line",
+                  // stack: "总量",
+                  data: dianYaA.reverse(),
+                },
+                {
+                  name: "B电压(V)",
+                  type: "line",
+                  // stack: "总量",
+                  data: dianYaB.reverse(),
+                },
+                {
+                  name: "C电压(V)",
+                  type: "line",
+                  // stack: "总量",
+                  data: dianYaC.reverse(),
+                },
+              ],
+            });
           });
         });
       }
@@ -4806,8 +4748,8 @@ export default {
           this.fazhishezhi.NXWD = row.NWenDu;
           this.fazhishezhi.SYDL = row.SYdianliu;
           this.fazhishezhi.AXDL = row.ADianLiu;
-          this.fazhishezhi.BXDL = row.BDianLiu;
-          this.fazhishezhi.CXDL = row.BDianYa;
+          this.fazhishezhi.BXDL = row.ADianYa;
+          this.fazhishezhi.CXDL = row.u_voltage;
           this.fazhishezhi.AXDY = row.ADianYa;
           this.fazhishezhi.BXDY = row.BDianYa;
           this.fazhishezhi.CXDY = row.CDianYa;
@@ -4862,8 +4804,8 @@ export default {
             this.fazhishezhi.NXWD = row.NWenDu;
             this.fazhishezhi.SYDL = row.SYdianliu;
             this.fazhishezhi.AXDL = row.ADianLiu;
-            this.fazhishezhi.BXDL = row.BDianLiu;
-            this.fazhishezhi.CXDL = row.BDianYa;
+            this.fazhishezhi.BXDL = row.ADianYa;
+            this.fazhishezhi.CXDL = row.u_voltage;
             this.fazhishezhi.AXDY = row.ADianYa;
             this.fazhishezhi.BXDY = row.BDianYa;
             this.fazhishezhi.CXDY = row.CDianYa;
@@ -5294,6 +5236,11 @@ export default {
     }
   }
 }
+
+// ::v-deep.el-dialog__headerbtn .el-dialog__close {
+//   color: #fff;
+// }
+
 /deep/.el-textarea__inner {
   width: 90%;
   margin-left: 15px;
@@ -5301,10 +5248,13 @@ export default {
 /deep/.el-dialog__header {
   background: #1071e2;
 
-  /deep/.el-dialog__title {
+  .el-dialog__title {
     color: #fff;
   }
-  /deep/.el-dialog__headerbtn .el-dialog__close {
+  .el-dialog__headerbtn .el-dialog__close {
+    color: #fff;
+  }
+  .el-dialog__headerbtn .el-dialog__close {
     color: #fff;
   }
 }
@@ -5506,6 +5456,10 @@ export default {
         width: 100%;
         height: 300px;
       }
+      .echarts_wapper_two_search_copy {
+        width: 100%;
+        height: 300px;
+      }
     }
     .three_echarts {
       height: 340px;
@@ -5519,6 +5473,10 @@ export default {
         // text-align: center;
       }
       .echarts_wapper_three_search {
+        width: 100%;
+        height: 300px;
+      }
+      .echarts_wapper_three_search_copy {
         width: 100%;
         height: 300px;
       }
@@ -5551,6 +5509,10 @@ export default {
         // text-align: center;
       }
       .echarts_wapper_one_search {
+        width: 100%;
+        height: 300px;
+      }
+      .echarts_wapper_one_search_copy {
         width: 100%;
         height: 300px;
       }

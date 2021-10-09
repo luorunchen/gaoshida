@@ -30,17 +30,21 @@
     <template>
       <el-table :data="tableData" style="width: 100%" height="650px">
         <el-table-column type="index" width="50"> </el-table-column>
-        <el-table-column prop="pname" label="项目名称" width="180">
+        <el-table-column prop="name" label="项目名称" width="180">
         </el-table-column>
-        <el-table-column prop="address" label="项目位置" width="180">
+        <el-table-column prop="location" label="项目位置" width="180">
         </el-table-column>
-        <el-table-column prop="devno" label="设备编号"> </el-table-column>
-        <el-table-column prop="type" label="事件详情"> </el-table-column>
-        <el-table-column prop="regdate" label="事件时间"> </el-table-column>
+        <el-table-column prop="productNumber" label="设备编号">
+        </el-table-column>
+        <el-table-column prop="typeName" label="事件详情"> </el-table-column>
+        <el-table-column prop="alarmFaultDate" label="事件时间">
+        </el-table-column>
         <el-table-column prop="address" label="操作">
           <template slot-scope="scope">
             <div class="caozuo">
-              <span @click="see(scope.row.devId)">查看</span>
+              <span @click="see(scope.row.devId, scope.row.productNumber)"
+                >查看</span
+              >
             </div>
           </template>
         </el-table-column>
@@ -65,8 +69,8 @@
 </template>
 
 <script>
-import BaojingTranslate from "../../FireInternetOfThings/translate/baojingTranslate";
-import { getAlarmDevice } from "@/api/index.js";
+import BaojingTranslate from "../../FireInternetOfThings/translate/publicPopUps";
+import { getAlarmDevice, getHistoryAlarm } from "@/api/index.js";
 export default {
   data() {
     return {
@@ -79,6 +83,7 @@ export default {
       current: 10,
       size: 1,
       currentPage4: 1,
+      num: "",
     };
   },
   mounted() {
@@ -88,8 +93,8 @@ export default {
     BaojingTranslate,
   },
   methods: {
-    see(data) {
-      this.$refs.baojingTranslate.see(264224);
+    see(data, devno) {
+      this.$refs.baojingTranslate.see(data, devno);
     },
     btn(num) {
       this.num = num;
@@ -97,18 +102,23 @@ export default {
     },
     DeviceAlarmFun(obj) {
       console.log(this.num);
-      getAlarmDevice(
-        this.utils.userName,
+      getHistoryAlarm(
+        this.formInline.imei,
         this.size,
         this.num,
         this.current,
-        obj
+        this.formInline.proName,
+        "温度"
       ).then((res) => {
-        if (obj != "" && res.data.list.length <= 0) {
+        if (
+          (this.formInline.ime != "" || this.formInline.proName != "") &&
+          res.data.data.length <= 0
+        ) {
           return this.$message.error("未查询到结果");
         }
-        this.tableData = res.data.list;
+        this.tableData = res.data.data;
         this.totals = res.data.total * 1;
+        console.log(this.tableData, 6666);
       });
     },
     handleSizeChange(val) {
