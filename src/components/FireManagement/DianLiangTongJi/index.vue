@@ -30,16 +30,18 @@
     <template>
       <el-table :data="tableData" style="width: 100%" height="650px" border>
         <el-table-column type="index" width="50"> </el-table-column>
-        <el-table-column prop="name" label="项目名称"> </el-table-column>
-        <el-table-column prop="location" label="项目位置"> </el-table-column>
-        <el-table-column prop="policy" label="月用电量"> </el-table-column>
+        <el-table-column prop="productNumber" label="设备编号">
+        </el-table-column>
+        <el-table-column prop="installLocation" label="项目位置">
+        </el-table-column>
+        <!-- <el-table-column prop="policy" label="月用电量"> </el-table-column> -->
         <!-- <el-table-column prop="address" label="事件详情"> </el-table-column> -->
         <el-table-column prop="heartbeatTime" label="计量时间">
         </el-table-column>
         <el-table-column prop="address" label="操作">
           <template slot-scope="scope">
             <div class="caozuo">
-              <span @click="set">查看</span>
+              <span @click="set(scope.row.productNumber)">查看</span>
             </div>
           </template>
         </el-table-column>
@@ -64,9 +66,17 @@
       :visible.sync="dialogVisible"
       width="50%"
     >
-      <el-card class="box-card">
+      <el-date-picker
+        v-model="value2"
+        type="month"
+        value-format="MM"
+        placeholder="选择月"
+        @change="monthChange"
+      >
+      </el-date-picker>
+      <el-card class="box-card" style="margin-top: 20px">
         <div slot="header" class="clearfix">
-          <span>最近一年用电量</span>
+          <span>用电量</span>
         </div>
         <div class="echart"></div>
       </el-card>
@@ -82,7 +92,7 @@
 </template>
 
 <script>
-import { getDeviceStatus } from "@/api/index.js";
+import { getDeviceStatus, getDevicePowerDian } from "@/api/index.js";
 export default {
   data() {
     return {
@@ -90,6 +100,7 @@ export default {
         proName: "",
         imei: "",
       },
+      value2: "",
       currentPage4: 1,
       checkList: [],
       timeValue: "",
@@ -125,6 +136,9 @@ export default {
     this.getDeviceStatusFun();
   },
   methods: {
+    monthChange(e) {
+      this.getDevicePowerDianFun();
+    },
     onSubmit() {
       this.getDeviceStatusFun();
     },
@@ -153,51 +167,68 @@ export default {
         this.totals = res.data.total * 1;
       });
     },
-    set() {
-      this.dialogVisible = true;
+    getDevicePowerDianFun() {
+      getDevicePowerDian(this.utils.userName, this.imei, this.value2).then(
+        (res) => {
+          let time = [];
+          let data = [];
+          let arr = [];
+          console.log(this.value2, "dsadsa");
+          if (this.value2 != "" && this.value2 != null) {
+            if (res.data.dayData.length == 0) {
+              return this.$message.error("设备暂无用电数据");
+            } else {
+              arr = res.data.dayData;
+            }
+          } else {
+            if (res.data.monthData.length == 0) {
+              return this.$message.error("设备暂无用电数据");
+            } else {
+              arr = res.data.monthData;
+            }
+          }
 
-      this.$nextTick(() => {
-        let shui_echart = this.$echarts.init(document.querySelector(".echart"));
-        shui_echart.setOption({
-          xAxis: {
-            type: "category",
-            data: [
-              "一月",
-              "二月",
-              "三月",
-              "四月",
-              "五月",
-              "六月",
-              "七月",
-              "八月",
-              "九月",
-              "十月",
-              "十一月",
-              "十二月",
-            ],
-          },
-          tooltip: {
-            trigger: "axis",
-            axisPointer: {
-              type: "cross",
-              label: {
-                backgroundColor: "#6a7985",
-              },
-            },
-          },
-          yAxis: {
-            type: "value",
-          },
-          series: [
-            {
-              data: [
-                150, 230, 224, 218, 135, 147, 260, 157, 179, 145, 134, 165,
-              ],
-              type: "line",
-            },
-          ],
-        });
-      });
+          arr.forEach((item, index) => {
+            time.push(item.date);
+            data.push(item.phasepowerkw);
+
+            this.$nextTick(() => {
+              let shui_echart = this.$echarts.init(
+                document.querySelector(".echart")
+              );
+              shui_echart.setOption({
+                xAxis: {
+                  type: "category",
+                  data: time,
+                },
+                tooltip: {
+                  trigger: "axis",
+                  axisPointer: {
+                    type: "cross",
+                    label: {
+                      backgroundColor: "#6a7985",
+                    },
+                  },
+                },
+                yAxis: {
+                  type: "value",
+                },
+                series: [
+                  {
+                    data,
+                    type: "line",
+                  },
+                ],
+              });
+            });
+          });
+        }
+      );
+    },
+    set(productNumber) {
+      this.dialogVisible = true;
+      this.imei = productNumber;
+      this.getDevicePowerDianFun();
     },
   },
 };

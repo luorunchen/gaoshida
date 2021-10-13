@@ -1109,5 +1109,15 @@ export function delTaskDevice(id, type) {
     }
   })
 }
+//电量统计
+export function getDevicePowerDian(username, imei, month) {
+  return service({
+    url: `/WebProject/getDevicePower.action`,
+    method: 'GET',
+    params: {
+      username, imei, month
+    }
+  })
+}
 
 
