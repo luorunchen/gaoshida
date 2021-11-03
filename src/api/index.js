@@ -1119,5 +1119,15 @@ export function getDevicePowerDian(username, imei, month) {
     }
   })
 }
+//功率因素
+export function getNonphasekw(imei) {
+  return service({
+    url: `/getReclosing.action`,
+    method: 'GET',
+    params: {
+      imei
+    }
+  })
+}
 
 

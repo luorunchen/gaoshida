@@ -92,7 +92,11 @@
 </template>
 
 <script>
-import { getDeviceStatus, getDevicePowerDian } from "@/api/index.js";
+import {
+  getDeviceStatus,
+  getDevicePowerDian,
+  getAllDeviceWeb,
+} from "@/api/index.js";
 export default {
   data() {
     return {
@@ -153,18 +157,39 @@ export default {
       this.getDeviceStatusFun();
     },
     getDeviceStatusFun() {
-      getDeviceStatus(
+      // getAllDeviceWeb(
+      //   this.utils.userName,
+      //   this.size,
+      //   "",
+      //   this.current,
+      //   this.formInline.proName,
+      //   3,
+      //   this.utils.userName,
+      //   "0" //在线:1 离线:0
+      // ).then((res) => {
+      //   this.tableData = res.data.list;
+      //   this.totals = res.data.total * 1;
+      // });
+
+      let col = "";
+      let kw = "";
+      let state = 0;
+      // let ls = 10;
+      // let cp = 1;
+      getAllDeviceWeb(
         this.utils.userName,
         this.size,
-        "",
+
+        col,
+        state,
+        kw,
         this.current,
-        this.formInline.proName,
-        3,
-        this.utils.userName,
-        1 //在线:1 离线:0
+        this.formInline.user,
+        this.optionsValue
       ).then((res) => {
-        this.tableData = res.data.list;
-        this.totals = res.data.total * 1;
+        this.tableData = res.data.list[0].allObj;
+        console.log(this.getAllDeviceWeb_list);
+        this.totals = res.data.list[0].count;
       });
     },
     getDevicePowerDianFun() {

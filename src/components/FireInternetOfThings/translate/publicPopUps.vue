@@ -2221,6 +2221,20 @@
               </el-row>
             </template>
           </template>
+          <div class="stateDate">
+            <el-row>
+              <el-col :span="8">
+                <!-- <img src="../../../assets/images/gonglu.png" alt="" srcset="" /> -->
+                无功功率： {{ getNonphasekwList.nonphasekw || 0 }}W
+              </el-col>
+              <el-col :span="8">
+                功率因素： {{ getNonphasekwList.powerParam || 0 }}</el-col
+              >
+              <el-col :span="8">
+                电量：{{ getNonphasekwList.phasepowerkw || 0 }}kW·h
+              </el-col>
+            </el-row>
+          </div>
           <template
             v-if="this.$route.path == '/FireInternetOfThings/PowerDetection'"
           >
@@ -3243,6 +3257,7 @@ import {
   upSwitch,
   getDevicePush,
   getDevicePower,
+  getNonphasekw,
 } from "@/api/index.js";
 
 import EZUIKit from "ezuikit-js";
@@ -3250,6 +3265,7 @@ export default {
   props: ["pagetype", "popUps"],
   data() {
     return {
+      getNonphasekwList: {},
       caozuojilv: [],
       DeviceHistory: "",
       echarts_loading: false,
@@ -3984,7 +4000,11 @@ export default {
           // console.log(this.ParaState, "==============");
         });
       }, 3000);
-
+      //功率因素
+      getNonphasekw(productNumber).then((res) => {
+        console.log(res, "woshjres1321321esada");
+        this.getNonphasekwList = res.data.data;
+      });
       // 设备详情接口
       ElecData(devId, now).then((res) => {
         //重置照片
@@ -5516,6 +5536,12 @@ export default {
         width: 100%;
         height: 300px;
       }
+    }
+    .stateDate {
+      background: #1071e2;
+      color: #fff;
+      padding: 10px;
+      margin-bottom: 10px;
     }
   }
 }
